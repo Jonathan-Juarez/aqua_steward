@@ -1,0 +1,68 @@
+name: aqua_steward
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  animate_do: ^4.2.0
+  fl_chart: ^1.1.1
+  google_fonts: ^7.1.0 # Fuentes
+  http: ^1.6.0 # HTTP para hacer peticiones.
+  mqtt_client: ^10.11.9 # MQTT para conectar con el broker.
+  socket_io_client: ^3.1.4 # Socket para conectar en tiempo real con el socket.
+  provider: ^6.1.5+1 # Manejo de estados.
+  shared_preferences: ^2.5.4 # Persistencia de preferencias del usuario.
+  pdf: ^3.11.3 # Generar PDF.
+  printing: ^5.14.2 # Visualizar, gestionar PDF.
+  intl: ^0.20.2 # Formato de fechas.
+
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.7
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/data/water_level.json
+    - assets/data/water_turbidity.json
+    - assets/data/water_ph.json
+    - assets/images/gota.png
+    - assets/images/logo_AquaSteward.png
+    - assets/images/logo_transparente_AquaSteward.png
+    - assets/images/logo.png
+    - assets/images/deposit.png
+    - assets/images/branding.png
+    - assets/images/branding_dark.png
+
+# Ejecutar dart run flutter_launcher_icons para configurar el ícono de la app
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logo_AquaSteward.png"
+
+# Ejecutar dart run flutter_native_splash:create para configurar el splash screen de la app
+flutter_native_splash:
+  android: true
+  ios: true
+  web: false
+  color: "#FFFFFF"
+  color_dark: "#010915"
+  image: assets/images/logo_transparente_AquaSteward.png
+  branding: assets/images/branding.png
+  branding_dark: assets/images/branding_dark.png
+  android_12:
+    color: "#FFFFFF"
+    color_dark: "#010915"
+    image: assets/images/logo_transparente_AquaSteward.png
+    branding: assets/images/branding.png
+    branding_dark: assets/images/branding_dark.png

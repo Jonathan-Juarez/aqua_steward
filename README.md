@@ -82,7 +82,7 @@ Las características principales, incluyendo las que se tienen planeadas a futur
 
 ## Estructura del Proyecto con Clean Architecture
 
-El proyecto está diseñado para seguir los principios de Clean Architecture, organizando el código en capas modulares dentro de cada funcionalidad (feature) para maximizar la mantenibilidad, escalabilidad y la separación de responsabilidade. El proyecto todavía se encuentra en desarrollo, por lo que presentará cambios en la estructura.
+El proyecto está diseñado para seguir los principios de Clean Architecture, organizando el código en capas modulares dentro de cada funcionalidad (feature) para maximizar la mantenibilidad, escalabilidad y la separación de responsabilidades. El proyecto todavía se encuentra en desarrollo, por lo que presentará cambios en la estructura.
 
 ```text
 lib/

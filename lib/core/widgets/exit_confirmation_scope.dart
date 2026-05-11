@@ -1,4 +1,5 @@
-import 'package:aqua_steward/features/profile/presentation/widgets/dialog_emergent.dart';
+import 'package:aqua_steward/core/widgets/text_format.dart';
+import 'package:aqua_steward/core/widgets/dialog_emergent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -17,9 +18,10 @@ class ExitConfirmationScope extends StatelessWidget {
           context: context,
           builder: (context) => DialogEmergent(
             title: "¿Salir de la app?",
-            content: Text(
-              "¿Estás seguro de que quieres salir de la aplicación?",
-              style: Theme.of(context).textTheme.bodyMedium,
+            content: TextFormat(
+              text: "¿Estás seguro de que quieres salir de la aplicación?",
+              context: context,
+              type: "body",
             ),
             onPressed: () => SystemNavigator.pop(),
           ),

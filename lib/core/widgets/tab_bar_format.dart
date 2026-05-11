@@ -1,37 +1,38 @@
 import 'package:aqua_steward/core/theme/app_border.dart';
-import 'package:aqua_steward/core/theme/app_text.dart';
+import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:flutter/material.dart';
 
 class TabBarFormat extends StatelessWidget {
-  final List<String> titles;
+  final List<String> labels;
   final int selectedIndex;
-  final Color activeColor;
   final ValueChanged<int> onTabSelected;
+  final Color activeColor;
 
   const TabBarFormat({
     super.key,
-    required this.titles,
+    required this.labels,
     required this.selectedIndex,
-    required this.activeColor,
     required this.onTabSelected,
+    required this.activeColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
+        // Color cuando está desactivado (es toda la barra, pero encima se coloca otro para el activado).
         color: Theme.of(context).colorScheme.inversePrimary,
         borderRadius: AppBorder.all8,
       ),
       child: Row(
         children: List.generate(
-          titles.length,
+          labels.length,
           (index) => _TabItem(
-            title: titles[index],
+            label: labels[index],
             index: index,
-            activeColor: activeColor,
             selectedIndex: selectedIndex,
             onTabSelected: onTabSelected,
+            activeColor: activeColor,
           ),
         ),
       ),
@@ -41,18 +42,18 @@ class TabBarFormat extends StatelessWidget {
 
 // Widget privado auxiliar para cada botón individual
 class _TabItem extends StatelessWidget {
-  final String title;
+  final String label;
   final int index;
-  final Color activeColor;
   final int selectedIndex;
   final ValueChanged<int> onTabSelected;
+  final Color activeColor;
 
   const _TabItem({
-    required this.title,
+    required this.label,
     required this.index,
-    required this.activeColor,
     required this.selectedIndex,
     required this.onTabSelected,
+    required this.activeColor,
   });
 
   @override
@@ -60,7 +61,8 @@ class _TabItem extends StatelessWidget {
     final bool isSelected = selectedIndex == index;
 
     return Expanded(
-      child: GestureDetector(
+      child: InkWell(
+        borderRadius: AppBorder.all8,
         onTap: () => onTabSelected(index),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
@@ -70,11 +72,10 @@ class _TabItem extends StatelessWidget {
             borderRadius: AppBorder.all8,
           ),
           alignment: Alignment.center,
-          child: Text(
-            title,
-            style: isSelected
-                ? AppText.bodyWhite
-                : Theme.of(context).textTheme.bodyMedium,
+          child: TextFormat(
+            text: label,
+            context: context,
+            type: isSelected ? "bodyWhite" : "bodySecondary",
           ),
         ),
       ),

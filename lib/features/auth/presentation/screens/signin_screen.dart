@@ -1,14 +1,17 @@
-import 'package:aqua_steward/controller/auth_controller.dart';
+import 'package:aqua_steward/core/error/result_handler.dart';
+import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:aqua_steward/core/router/app_router.dart';
 import 'package:aqua_steward/core/theme/app_divider.dart';
 import 'package:aqua_steward/core/theme/app_icon.dart';
 import 'package:aqua_steward/core/utils/app_validators.dart';
-import 'package:aqua_steward/core/widgets/button_main.dart';
-import 'package:aqua_steward/core/widgets/button_dynamic.dart';
+import 'package:aqua_steward/core/widgets/button_format.dart';
 import 'package:aqua_steward/core/widgets/container_formart.dart';
-import 'package:aqua_steward/features/auth/presentation/widgets/scaffold_account.dart';
 import 'package:aqua_steward/core/widgets/text_field_format.dart';
+import 'package:aqua_steward/core/widgets/text_format.dart';
+import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
+import 'package:aqua_steward/features/auth/presentation/widgets/scaffold_account.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SigninScreen extends StatefulWidget {
   const SigninScreen({super.key});
@@ -18,34 +21,14 @@ class SigninScreen extends StatefulWidget {
 }
 
 class _SigninScreenState extends State<SigninScreen> {
-  final AuthController _authController = AuthController();
+  // Las llaves y controladores de UI pertenecen al estado efímero de la vista.
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  bool _isLoading = false;
-
-  void _signinUser() async {
-    setState(() {
-      _isLoading = true;
-    });
-    await _authController
-        .signinUser(
-          context: context,
-          email: _emailController.text,
-          password: _passwordController.text,
-        )
-        .whenComplete(() {
-          setState(() {
-            _isLoading = false;
-          });
-        });
-  }
-
   @override
   void dispose() {
-    // Libera los recursos de los controladores de texto.
+    // Se liberan los controladores al cerrar la pantalla.
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -57,48 +40,75 @@ class _SigninScreenState extends State<SigninScreen> {
       formKey: _formKey,
       body: ContainerFormat(
         children: [
-          Text(
-            'Iniciar sesión',
-            style: Theme.of(context).textTheme.titleMedium,
+          TextFormat(
+            text: context.l10n.auth_iniciar_sesion,
+            context: context,
+            type: "title",
           ),
           TextFieldFormat(
-            labelText: "Correo electronico",
+            labelText: context.l10n.auth_correo,
             icon: AppIcon.emailOutlined,
             keyboardType: TextInputType.emailAddress,
             controller: _emailController,
             maxLength: 40,
-            validator: AppValidators.validateEmail,
+            validator: (val) => AppValidators.validateEmail(context, val),
           ),
           TextFieldFormat(
-            labelText: "Contraseña",
+            labelText: context.l10n.auth_contrasena,
             icon: AppIcon.password,
             keyboardType: TextInputType.visiblePassword,
             controller: _passwordController,
             maxLength: 30,
-            validator: AppValidators.validatePassword,
+            validator: (val) => AppValidators.validatePassword(context, val),
           ),
-          ButtonMain(
-            formKey: _formKey,
-            label: "Iniciar sesión",
-            isLoading: _isLoading,
-            onPressed: _signinUser,
+          // Se usa Consumer solo para observar el estado de carga global del provider.
+          Consumer<AuthProvider>(
+            builder: (context, authProvider, _) => ButtonFormat(
+              formKey: _formKey,
+              label: context.l10n.auth_iniciar_sesion,
+              isLoading: authProvider.isLoading,
+              onConfirm: () async {
+                // Se pasan los valores de los controladores locales al método limpio del provider.
+                final result = await authProvider.signin(
+                  email: _emailController.text,
+                  password: _passwordController.text,
+                );
+
+                if (!mounted) return;
+
+                final isSuccess = context.processResult(
+                  result,
+                  successMessage: context.l10n.snackbar_inicio_sesion_exitoso,
+                );
+                if (isSuccess) {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    AppRouter.dashboard,
+                    (route) => false,
+                  );
+                }
+              },
+            ),
           ),
-          ButtonDynamic(
-            label: "¿Olvidaste tu contraseña?",
-            onPressed: () =>
+          ButtonFormat(
+            type: "text",
+            label: context.l10n.auth_olvido_contrasena,
+            onConfirm: () =>
                 Navigator.pushNamed(context, AppRouter.forgotPassword),
           ),
           AppDivider.dv8,
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                "¿No tienes cuenta?",
-                style: Theme.of(context).textTheme.bodyMedium,
+              TextFormat(
+                text: context.l10n.auth_no_tiene_cuenta,
+                context: context,
+                type: "body",
               ),
-              ButtonDynamic(
-                label: "Registrarse",
-                onPressed: () => Navigator.pushNamed(context, AppRouter.signup),
+              ButtonFormat(
+                type: "text",
+                label: context.l10n.auth_registrarse,
+                onConfirm: () => Navigator.pushNamed(context, AppRouter.signup),
               ),
             ],
           ),

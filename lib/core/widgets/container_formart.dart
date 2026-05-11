@@ -4,19 +4,38 @@ import 'package:flutter/material.dart';
 
 class ContainerFormat extends StatelessWidget {
   final List<Widget> children;
+  final VoidCallback? onTap;
+  final Color? color;
 
-  const ContainerFormat({super.key, required this.children});
+  const ContainerFormat({
+    super.key,
+    required this.children,
+    this.onTap,
+    this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Ink(
+      width: double.infinity,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
+        color: color ?? Theme.of(context).colorScheme.primary,
         borderRadius: AppBorder.all8,
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
+            blurRadius: 0.5,
+            offset: const Offset(0, 0.5),
+          ),
+        ],
       ),
-      child: Padding(
-        padding: AppPadding.all16,
-        child: Column(children: children),
+      child: InkWell(
+        borderRadius: AppBorder.all8,
+        onTap: onTap,
+        child: Padding(
+          padding: AppPadding.all8,
+          child: Column(mainAxisSize: MainAxisSize.min, children: children),
+        ),
       ),
     );
   }

@@ -1,21 +1,7 @@
-import "package:aqua_steward/features/alerts/presentation/screens/alerts_screen.dart";
-import "package:aqua_steward/features/auth/presentation/screens/confirmation_screen.dart";
-import "package:aqua_steward/features/auth/presentation/screens/forgot_password_screen.dart";
-import "package:aqua_steward/features/auth/presentation/screens/reset_password.dart";
-import "package:aqua_steward/features/auth/presentation/screens/start_screen.dart";
-import "package:aqua_steward/features/auth/presentation/screens/signin_screen.dart";
-import "package:aqua_steward/features/auth/presentation/screens/signup_screen.dart";
-import "package:aqua_steward/features/profile/presentation/screens/members_screen.dart";
-import "package:aqua_steward/features/reports/presentation/screens/add_deposit_screen.dart";
-import "package:aqua_steward/features/reports/presentation/screens/generate_reports_screen.dart";
-import "package:aqua_steward/features/monitoring/presentation/screens/parameters_details_screen.dart";
-import "package:aqua_steward/features/reports/presentation/screens/settings_threshold_screen.dart";
-import "package:aqua_steward/features/support/presentation/screens/contact_screen.dart";
-import "package:aqua_steward/features/support/presentation/screens/support_screen.dart";
-import "package:aqua_steward/features/monitoring/presentation/screens/dashborad_screen.dart";
-import "package:aqua_steward/features/profile/presentation/screens/profile_screen.dart";
-import "package:aqua_steward/features/support/presentation/screens/user_manual.dart";
+import "dart:typed_data";
 import "package:flutter/material.dart";
+import "package:provider/provider.dart";
+import "package:aqua_steward/core/router/imports.dart";
 
 class AppRouter {
   // Inicio de las rutas constantes.
@@ -31,6 +17,7 @@ class AppRouter {
   // Monitoreo
   static const String dashboard = "/dashboard";
   static const String parametersDetails = "/parameters-details";
+  static const String registers = "/registers";
 
   // Gestión de usuarios
   static const String profile = "/profile";
@@ -39,17 +26,20 @@ class AppRouter {
   // Depósitos
   static const String addDeposit = "/add_deposit";
   static const String settingsThreshold = "/settings_threshold";
+  static const String scanner = "/scanner";
 
   // Alertas
   static const String alerts = "/alerts";
 
   // Reportes
   static const String generateReports = "/generate_reports";
+  static const String pdfPreview = "/pdf_preview";
 
   // Soporte
   static const String support = "/support";
   static const String contact = "/contact";
   static const String userManual = "/user_manual";
+  static const String about = "/about";
 
   //Rutas del sistema.
   static Map<String, WidgetBuilder> routes = {
@@ -60,10 +50,10 @@ class AppRouter {
     resetPassword: (context) {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-      return ResetPasword(email: args["email"] as String);
+      return ResetPasswordScreen(email: args["email"] as String);
     },
 
-    forgotPassword: (context) => const ForgotPasword(),
+    forgotPassword: (context) => const ForgotPassword(),
     confirmationReset: (context) {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
@@ -84,11 +74,19 @@ class AppRouter {
     // Monitoring (Dashboard y Detalles)
     dashboard: (context) => const DashboardScreen(),
     //Parameters Details es la fusión de Registers y Reports.
-    parametersDetails: (context) {
-      // Recibe como argumentos los datos del depósito y el parámetro inicial.
+    // parametersDetails: (context) {
+    //   // Recibe como argumentos los datos del depósito y el parámetro inicial.
+    //   final args =
+    //       ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    //   return ParametersDetailsScreen(
+    //     initialParameter: args["initialParameter"] as String,
+    //     depositData: args["depositData"] as Map<String, dynamic>,
+    //   );
+    // },
+    registers: (context) {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-      return ParametersDetailsScreen(
+      return RegistersScreen(
         initialParameter: args["initialParameter"] as String,
         depositData: args["depositData"] as Map<String, dynamic>,
       );
@@ -96,10 +94,21 @@ class AppRouter {
 
     // Gestión de usuarios
     profile: (context) => const ProfileScreen(),
-    members: (context) => const MembersScreen(),
+    members: (context) {
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      return MembersScreen(depositId: args["depositId"] as String);
+    },
 
     // Depósitos
-    addDeposit: (context) => const AddDepositScreen(),
+    addDeposit: (context) {
+      // Soporta crear (sin args) y editar (con args).
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+      return AddDepositScreen(
+        depositData: args?["depositData"] as Map<String, dynamic>?,
+      );
+    },
     settingsThreshold: (context) {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
@@ -107,17 +116,34 @@ class AppRouter {
         depositData: args["depositData"] as Map<String, dynamic>,
       );
     },
+    scanner: (context) => const ScannerScreen(),
 
     // Alertas
     alerts: (context) => const AlertsScreen(),
 
     // Reportes
-    generateReports: (context) => const GenerateReportsScreen(),
+    generateReports: (context) {
+      final args = ModalRoute.of(context)!.settings.arguments as Uint8List?;
+      return GenerateReportsScreen(chartImage: args);
+    },
+    pdfPreview: (context) {
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      return PdfScreen(dataPdf: args);
+    },
     // Manejar CalendarStartEnd como un showDatePicker o un Dialog Modal.
 
     // Soporte
     support: (context) => const SupportScreen(),
-    contact: (context) => const ContactScreen(),
+    contact: (context) => ChangeNotifierProvider(
+      create: (_) => ContactProvider(
+        sendEmailUsecase: SendEmailUsecase(
+          ContactRepositoryImpl(ContactLauncherSource()),
+        ),
+      ),
+      child: const ContactScreen(),
+    ),
     userManual: (context) => const UserManualScreen(),
+    about: (context) => const AboutScreen(),
   };
 }

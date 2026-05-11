@@ -1,37 +1,56 @@
+import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:aqua_steward/core/router/app_router.dart';
+import 'package:aqua_steward/core/theme/app_color.dart';
+import 'package:aqua_steward/core/theme/app_icon.dart';
 import 'package:aqua_steward/core/theme/app_text.dart';
 import 'package:flutter/material.dart';
 
 class BottomBarFormat extends StatelessWidget {
-  final int selectedIndex;
-  const BottomBarFormat({super.key, required this.selectedIndex});
+  const BottomBarFormat({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Se obtiene la ruta actual para determinar el índice seleccionado.
+    final String? currentRoute = ModalRoute.of(context)?.settings.name;
+    final int selectedIndex = currentRoute == AppRouter.profile ? 1 : 0;
+
+    // Lista de items de la barra.
+    final List<Map<String, dynamic>> items = [
+      {
+        "icon": selectedIndex == 0 ? AppIcon.home : AppIcon.homeOutlined,
+        "label": context.l10n.button_inicio,
+        "route": AppRouter.dashboard,
+      },
+      {
+        "icon": selectedIndex == 1
+            ? AppIcon.person
+            : AppIcon.personOutlined(color: AppColor.white),
+        "label": context.l10n.button_perfil,
+        "route": AppRouter.profile,
+      },
+    ];
+
     return BottomAppBar(
       // Se quitan todos los paddings de Material 3 que deforman la barra.
       padding: EdgeInsets.zero,
+      // Se define la forma de la barra, dejando espacio para el botón flotante.
       shape: const CircularNotchedRectangle(),
-      notchMargin: 5.0,
+      // Se añade el clip para que el efecto splash del InkWell respete la forma de la barra.
+      clipBehavior: Clip.antiAlias,
       height: 60,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          // Icono Inicio
-          TabIcon(
-            context: context,
-            index: 0,
-            icon: selectedIndex == 0 ? Icons.home : Icons.home_outlined,
-            label: "Inicio",
-          ),
-
-          // Icono Perfil
-          TabIcon(
-            context: context,
-            index: 1,
-            icon: selectedIndex == 1 ? Icons.person : Icons.person_outlined,
-            label: "Perfil",
-          ),
+          for (int i = 0; i < items.length; i++)
+            Expanded(
+              child: TabIcon(
+                context: context,
+                index: i,
+                selectedIndex: selectedIndex,
+                icon: items[i]["icon"],
+                label: items[i]["label"],
+                route: items[i]["route"],
+              ),
+            ),
         ],
       ),
     );
@@ -40,22 +59,21 @@ class BottomBarFormat extends StatelessWidget {
   Widget TabIcon({
     required BuildContext context,
     required int index,
-    required IconData icon,
+    required int selectedIndex,
+    required Icon icon,
     required String label,
+    required String route,
   }) {
-    return GestureDetector(
+    return InkWell(
       onTap: () {
         if (index != selectedIndex) {
-          Navigator.pushReplacementNamed(
-            context,
-            index == 0 ? AppRouter.dashboard : AppRouter.profile,
-          );
+          Navigator.pushReplacementNamed(context, route);
         }
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: Colors.white, size: 24),
+          icon,
           Text(label, style: AppText.smallWhite),
         ],
       ),

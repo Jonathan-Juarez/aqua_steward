@@ -1,25 +1,29 @@
 import 'package:aqua_steward/core/router/app_router.dart';
 import 'package:aqua_steward/core/theme/app_icon.dart';
 import 'package:aqua_steward/core/utils/app_validators.dart';
-import 'package:aqua_steward/core/widgets/button_main.dart';
+import 'package:aqua_steward/core/widgets/button_format.dart';
+import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:aqua_steward/features/auth/presentation/widgets/scaffold_account.dart';
 import 'package:aqua_steward/core/widgets/text_field_format.dart';
 import 'package:aqua_steward/core/widgets/container_formart.dart';
+import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:flutter/material.dart';
 
-class ForgotPasword extends StatefulWidget {
-  const ForgotPasword({super.key});
+// Pantalla de recuperación de contraseña con gestión local de estado para UI.
+class ForgotPassword extends StatefulWidget {
+  const ForgotPassword({super.key});
 
   @override
-  State<ForgotPasword> createState() => _ForgotPaswordState();
+  State<ForgotPassword> createState() => _ForgotPasswordState();
 }
 
-class _ForgotPaswordState extends State<ForgotPasword> {
+class _ForgotPasswordState extends State<ForgotPassword> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
+    // Limpieza de controladores locales.
     _emailController.dispose();
     super.dispose();
   }
@@ -27,25 +31,26 @@ class _ForgotPaswordState extends State<ForgotPasword> {
   @override
   Widget build(BuildContext context) {
     return ScaffoldAccount(
-      formKey: formKey,
+      formKey: _formKey,
       body: ContainerFormat(
         children: [
-          Text(
-            "¿Olvidaste tu contraseña?",
-            style: Theme.of(context).textTheme.titleMedium,
+          TextFormat(
+            text: context.l10n.auth_olvido_contrasena,
+            context: context,
+            type: "title",
           ),
           TextFieldFormat(
-            labelText: "Correo electrónico",
+            labelText: context.l10n.auth_correo,
             icon: AppIcon.emailOutlined,
             keyboardType: TextInputType.emailAddress,
             controller: _emailController,
             maxLength: 40,
-            validator: AppValidators.validateEmail,
+            validator: (val) => AppValidators.validateEmail(context, val),
           ),
-          ButtonMain(
-            formKey: formKey,
-            label: "Confirmar",
-            onPressed: () => Navigator.pushNamed(
+          ButtonFormat(
+            formKey: _formKey,
+            label: context.l10n.comun_confirmar,
+            onConfirm: () => Navigator.pushNamed(
               context,
               AppRouter.confirmationReset,
               arguments: {"email": _emailController.text},

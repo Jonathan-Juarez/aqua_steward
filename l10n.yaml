@@ -1,0 +1,5 @@
+arb-dir: lib/l10n # Directorio que contiene los archivos ARB (definiciones de idiomas).
+template-arb-file: app_es.arb # Archivo ARB base (español).
+output-localization-file: app_localizations.dart # Nombre del archivo Dart que se generará.
+nullable-getter: false # Los getters de las traducciones no serán nulos (no se requiere "??" ni "!").
+output-dir: lib/l10n # Directorio donde se generarán los archivos de salida.

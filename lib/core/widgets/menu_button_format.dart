@@ -1,19 +1,20 @@
+import 'package:aqua_steward/core/theme/app_border.dart';
 import 'package:aqua_steward/core/theme/app_icon.dart';
 import 'package:aqua_steward/core/theme/app_sizedbox.dart';
-import 'package:aqua_steward/core/theme/app_text.dart';
+import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:flutter/material.dart';
 
 class MenuItemModel {
   final String value;
   final Widget icon;
   final String text;
-  final TextStyle? textStyle;
+  final String? textStyle;
 
   MenuItemModel({
     required this.value,
     required this.icon,
     required this.text,
-    this.textStyle = AppText.small,
+    this.textStyle,
   });
 }
 
@@ -34,7 +35,9 @@ class MenuButtonFormat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
+      offset: const Offset(0.1, 0),
       icon: child != null ? null : iconMenu,
+      borderRadius: AppBorder.all8,
       onSelected: onSelected,
       child: child,
       itemBuilder: (BuildContext context) {
@@ -46,7 +49,11 @@ class MenuButtonFormat extends StatelessWidget {
                 children: [
                   item.icon,
                   AppSizedBox.width8,
-                  Text(item.text, style: item.textStyle),
+                  TextFormat(
+                    text: item.text,
+                    context: context,
+                    type: item.textStyle ?? "body",
+                  ),
                 ],
               ),
             );

@@ -47,5 +47,7 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>NSCameraUsageDescription</key>
+		<string>AquaSteward necesita acceso a tu cámara para poder agregar imágenes de tus depósitos.</string>
 	</dict>
 </plist>

@@ -1,10 +1,14 @@
 import 'package:aqua_steward/core/router/app_router.dart';
-import 'package:aqua_steward/core/theme/app_padding.dart';
+import 'package:aqua_steward/core/theme/app_icon.dart';
 import 'package:aqua_steward/core/theme/app_sizedbox.dart';
-import 'package:aqua_steward/core/widgets/button_main.dart';
+import 'package:aqua_steward/core/widgets/button_format.dart';
 import 'package:aqua_steward/core/widgets/container_formart.dart';
+import 'package:aqua_steward/core/widgets/container_list_tile.dart';
+import 'package:aqua_steward/core/widgets/icon_format.dart';
+import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:aqua_steward/features/support/presentation/widgets/faq_item.dart';
 import 'package:aqua_steward/core/widgets/scaffold_main.dart';
+import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:flutter/material.dart';
 
 class SupportScreen extends StatelessWidget {
@@ -13,71 +17,77 @@ class SupportScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScaffoldMain(
-      titleAppBar: "Soporte",
+      titleAppBar: context.l10n.titulo_soporte,
       children: [
-        Padding(
-          padding: AppPadding.symmetric16_0,
-          child: Text(
-            "Preguntas Frecuentes",
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
+        TextFormat(
+          text: context.l10n.soporte_recursos,
+          context: context,
+          type: "subtitle",
         ),
-        const FAQItem(
-          question: "1. ¿Qué significa la turbidez del agua?",
-          answer:
-              "La turbidez indica la cantidad de partículas presentes en el agua. Un valor alto puede afectar la calidad.",
-        ),
-        const FAQItem(
-          question: "2. ¿Qué significa el pH del agua?",
-          answer:
-              "El pH indica la acidez o alcalinidad del agua. Un valor alto puede afectar la calidad.",
-        ),
-        const FAQItem(
-          question: "3. ¿Por qué recibo notificaciones de nivel de agua?",
-          answer:
-              "Se envían alertas cuando el nivel se acerca al límite establecido en la configuración.",
-        ),
-        const FAQItem(
-          question: "4. ¿Cómo ajusto los límites y umbrales?",
-          answer:
-              "Ve a la sección Ajustes, mueve los controles deslizantes y guarda los cambios.",
-        ),
-        const FAQItem(
-          question: "5. ¿Qué hago si no recibo notificaciones?",
-          answer:
-              "Verifica tu conexión y que las notificaciones estén activadas tanto en la app como en el sistema operativo.",
-        ),
-        const FAQItem(
-          question: "6. ¿Con qué frecuencia se actualizan las lecturas?",
-          answer:
-              "Los sensores envían datos en tiempo real, con un tiempo de actualización de 3 segundos.",
+        ContainerListTile(
+          title: context.l10n.soporte_manual,
+          icon: AppIcon.manual,
+          onTap: () => Navigator.pushNamed(context, AppRouter.userManual),
         ),
 
-        AppSizedBox.height16,
+        AppSizedBox.height12,
+
+        ContainerListTile(
+          title: context.l10n.soporte_acerca_de,
+          icon: AppIcon.infoOutlined,
+          onTap: () => Navigator.pushNamed(context, AppRouter.about),
+        ),
+        TextFormat(
+          text: context.l10n.soporte_preguntas_frecuentes,
+          context: context,
+          type: "subtitle",
+        ),
+        FAQItem(
+          question: context.l10n.soporte_faq_p1,
+          answer: context.l10n.soporte_faq_r1,
+        ),
+        FAQItem(
+          question: context.l10n.soporte_faq_p2,
+          answer: context.l10n.soporte_faq_r2,
+        ),
+        FAQItem(
+          question: context.l10n.soporte_faq_p3,
+          answer: context.l10n.soporte_faq_r3,
+        ),
+        FAQItem(
+          question: context.l10n.soporte_faq_p4,
+          answer: context.l10n.soporte_faq_r4,
+        ),
+        FAQItem(
+          question: context.l10n.soporte_faq_p5,
+          answer: context.l10n.soporte_faq_r5,
+        ),
+        FAQItem(
+          question: context.l10n.soporte_faq_p6,
+          answer: context.l10n.soporte_faq_r6,
+        ),
 
         // Tarjeta de Contacto
         ContainerFormat(
           children: [
-            const Icon(Icons.contact_support, color: Colors.white70, size: 40),
-            AppSizedBox.height16,
-            Text(
-              "¿Necesitas más ayuda?",
-              style: Theme.of(context).textTheme.titleMedium,
+            const IconFormat(icon: AppIcon.contact),
+            TextFormat(
+              text: context.l10n.soporte_contacto_ayuda,
+              context: context,
+              type: "titleSmall",
             ),
-            const SizedBox(height: 4),
-            Text(
-              "Nuestro equipo técnico está disponible para asistirte.",
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium,
+            TextFormat(
+              text: context.l10n.soporte_contacto_desc,
+              context: context,
+              type: "body",
+              alignCenter: true,
             ),
-            AppSizedBox.height16,
-            ButtonMain(
-              label: "Contacto técnico",
-              onPressed: () => Navigator.pushNamed(context, AppRouter.contact),
+            ButtonFormat(
+              label: context.l10n.soporte_contacto_boton,
+              onConfirm: () => Navigator.pushNamed(context, AppRouter.contact),
             ),
           ],
         ),
-        AppSizedBox.height16,
       ],
     );
   }

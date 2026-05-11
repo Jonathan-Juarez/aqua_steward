@@ -1,5 +1,5 @@
+import 'package:aqua_steward/core/error/result.dart';
 import 'package:aqua_steward/features/auth/domain/repositories/auth_repository_interface.dart';
-import 'package:flutter/material.dart';
 
 /// Caso de Uso que encapsula exclusivamente el reestablecimiento de contraseñas.
 class ResetPasswordUseCase {
@@ -8,13 +8,12 @@ class ResetPasswordUseCase {
   ResetPasswordUseCase(this.Irepository);
 
   /// Ejecuta la acción en el repositorio invocando los parámetros requeridos.
-  Future<void> call({
-    required BuildContext context,
+  Future<Result<void>> call({
     required String email,
     required String password,
   }) {
+    // Retorna el resultado del restablecimiento de contraseña desde la capa de datos.
     return Irepository.resetPassword(
-      context: context,
       email: email,
       password: password,
     );

@@ -1,7 +1,7 @@
 name: aqua_steward
-description: "A new Flutter project."
+description: "Un sistema diseñado para el monitoreo del nivel y calidad del agua en tiempo real mediante tecnología IoT, promoviendo una gestión eficiente y responsable del recurso hídrico."
 publish_to: 'none'
-version: 0.1.0
+version: 1.0.0
 
 environment:
   sdk: ^3.8.1
@@ -10,16 +10,22 @@ dependencies:
   flutter:
     sdk: flutter
   animate_do: ^4.2.0
+  firebase_messaging: ^16.2.0 # Notificaciones push de Firebase.
   fl_chart: ^1.1.1
-  google_fonts: ^7.1.0 # Fuentes
   http: ^1.6.0 # HTTP para hacer peticiones.
-  mqtt_client: ^10.11.9 # MQTT para conectar con el broker.
-  socket_io_client: ^3.1.4 # Socket para conectar en tiempo real con el socket.
-  provider: ^6.1.5+1 # Manejo de estados.
-  shared_preferences: ^2.5.4 # Persistencia de preferencias del usuario.
-  pdf: ^3.11.3 # Generar PDF.
-  printing: ^5.14.2 # Visualizar, gestionar PDF.
   intl: ^0.20.2 # Formato de fechas.
+  mobile_scanner: ^7.2.0 # Escanear QR.
+  socket_io_client: ^3.1.4 # Socket para conectar en tiempo real con el socket.
+  shared_preferences: ^2.5.4 # Persistencia de preferencias del usuario.
+  screenshot: ^3.0.0 # Captura de pantalla para colocar el gráfico en el PDF.
+  package_info_plus: ^9.0.1 # Obtener información del paquete.
+  printing: ^5.14.2 # Visualizar, gestionar PDF.
+  permission_handler: ^12.0.1 # Manejo de permisos.
+  pdf: ^3.11.3 # Generar PDF.
+  provider: ^6.1.5+1 # Manejo de estados.
+  url_launcher: ^6.3.2 # Abrir enlaces externos (Email, WA, etc).
+  flutter_localizations: # Soporte para idiomas.
+    sdk: flutter
 
 
 
@@ -32,6 +38,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  # Habilita la autogeneración de código para internacionalización (i18n).
+  generate: true
   assets:
     - assets/data/water_level.json
     - assets/data/water_turbidity.json

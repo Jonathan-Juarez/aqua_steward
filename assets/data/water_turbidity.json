@@ -1,26 +1,98 @@
 [
-  {"hora": 0, "valor": 1.2},
-  {"hora": 1, "valor": 1.5},
-  {"hora": 2, "valor": 1.8},
-  {"hora": 3, "valor": 2.1},
-  {"hora": 4, "valor": 2.3},
-  {"hora": 5, "valor": 2.8},
-  {"hora": 6, "valor": 3.0},
-  {"hora": 7, "valor": 3.4},
-  {"hora": 8, "valor": 3.1},
-  {"hora": 9, "valor": 2.7},
-  {"hora": 10, "valor": 2.5},
-  {"hora": 11, "valor": 2.2},
-  {"hora": 12, "valor": 1.9},
-  {"hora": 13, "valor": 2.0},
-  {"hora": 14, "valor": 2.3},
-  {"hora": 15, "valor": 2.6},
-  {"hora": 16, "valor": 2.9},
-  {"hora": 17, "valor": 3.2},
-  {"hora": 18, "valor": 3.5},
-  {"hora": 19, "valor": 3.1},
-  {"hora": 20, "valor": 2.8},
-  {"hora": 21, "valor": 2.3},
-  {"hora": 22, "valor": 2.0},
-  {"hora": 23, "valor": 1.7}
+  {
+    "hora": 0,
+    "valor": 1000.0
+  },
+  {
+    "hora": 1,
+    "valor": 1078.3
+  },
+  {
+    "hora": 2,
+    "valor": 1096.4
+  },
+  {
+    "hora": 3,
+    "valor": 1114.5
+  },
+  {
+    "hora": 4,
+    "valor": 1126.5
+  },
+  {
+    "hora": 5,
+    "valor": 1156.6
+  },
+  {
+    "hora": 6,
+    "valor": 2373.5
+  },
+  {
+    "hora": 7,
+    "valor": 3000.0
+  },
+  {
+    "hora": 8,
+    "valor": 2981.9
+  },
+  {
+    "hora": 9,
+    "valor": 2355.4
+  },
+  {
+    "hora": 10,
+    "valor": 2343.4
+  },
+  {
+    "hora": 11,
+    "valor": 2325.3
+  },
+  {
+    "hora": 12,
+    "valor": 2307.2
+  },
+  {
+    "hora": 13,
+    "valor": 2313.3
+  },
+  {
+    "hora": 14,
+    "valor": 2331.3
+  },
+  {
+    "hora": 15,
+    "valor": 2349.4
+  },
+  {
+    "hora": 16,
+    "valor": 2367.5
+  },
+  {
+    "hora": 17,
+    "valor": 2385.5
+  },
+  {
+    "hora": 18,
+    "valor": 2403.6
+  },
+  {
+    "hora": 19,
+    "valor": 1777.1
+  },
+  {
+    "hora": 20,
+    "valor": 1759.0
+  },
+  {
+    "hora": 21,
+    "valor": 1728.9
+  },
+  {
+    "hora": 22,
+    "valor": 1710.8
+  },
+  {
+    "hora": 23,
+    "valor": 1692.8
+  }
 ]

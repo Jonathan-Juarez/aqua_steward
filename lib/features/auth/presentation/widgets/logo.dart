@@ -1,4 +1,7 @@
+import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:aqua_steward/core/theme/app_padding.dart';
+import 'package:aqua_steward/core/theme/app_sizedbox.dart';
+import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:flutter/material.dart';
 
 class Logo extends StatelessWidget {
@@ -12,11 +15,7 @@ class Logo extends StatelessWidget {
           width: 130,
           height: 130,
           decoration: BoxDecoration(
-            border: Border.all(
-              color: Theme.of(context).colorScheme.secondary,
-              width: 0.5,
-            ),
-            color: Theme.of(context).colorScheme.primary,
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
             shape: BoxShape.circle,
           ),
           child: Padding(
@@ -24,13 +23,18 @@ class Logo extends StatelessWidget {
             child: Image.asset("assets/images/logo.png"),
           ),
         ),
-        const SizedBox(height: 20),
-        Text('AquaSteward', style: Theme.of(context).textTheme.titleMedium),
-        Text(
-          "Monitoreo inteligente del agua",
-          style: Theme.of(context).textTheme.bodyMedium,
+        AppSizedBox.height12,
+        TextFormat(
+          text: context.l10n.logo_nombre,
+          context: context,
+          type: "title",
         ),
-        const SizedBox(height: 20),
+        TextFormat(
+          text: context.l10n.logo_slogan,
+          context: context,
+          type: "body",
+        ),
+        AppSizedBox.height12,
       ],
     );
   }

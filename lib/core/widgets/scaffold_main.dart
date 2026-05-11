@@ -9,14 +9,12 @@ import 'package:flutter/material.dart';
 class ScaffoldMain extends StatefulWidget {
   final List<Widget> children;
   final String? titleAppBar;
-  final int selectedIndex;
   //Llave global para el formulario.
   final GlobalKey<FormState>? formKey;
   const ScaffoldMain({
     super.key,
     required this.children,
     this.titleAppBar,
-    this.selectedIndex = 0,
     this.formKey,
   });
 
@@ -32,7 +30,7 @@ class _ScaffoldMainState extends State<ScaffoldMain> {
         duration: const Duration(milliseconds: 500),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: [...widget.children, AppSizedBox.height16],
+          children: [...widget.children, AppSizedBox.height12],
         ),
       ),
     );
@@ -63,7 +61,7 @@ class _ScaffoldMainState extends State<ScaffoldMain> {
 
       //Barra de navegación inferior para navegar entre páginas.
       bottomNavigationBar: widget.titleAppBar == null
-          ? BottomBarFormat(selectedIndex: widget.selectedIndex)
+          ? const BottomBarFormat()
           : null,
     );
   }

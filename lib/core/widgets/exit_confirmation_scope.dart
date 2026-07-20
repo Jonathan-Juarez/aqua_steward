@@ -1,3 +1,4 @@
+import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:aqua_steward/core/widgets/dialog_emergent.dart';
 import 'package:flutter/material.dart';
@@ -17,9 +18,9 @@ class ExitConfirmationScope extends StatelessWidget {
         showDialog(
           context: context,
           builder: (context) => DialogEmergent(
-            title: "¿Salir de la app?",
+            title: context.l10n.dialogo_salida_titulo,
             content: TextFormat(
-              text: "¿Estás seguro de que quieres salir de la aplicación?",
+              text: context.l10n.dialogo_salida,
               context: context,
               type: "body",
             ),

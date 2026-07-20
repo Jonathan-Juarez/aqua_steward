@@ -29,6 +29,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get comun_cargando => 'Cargando...';
 
   @override
+  String get comun_miembros => 'Miembros';
+
+  @override
+  String get comun_deposito => 'Depósito';
+
+  @override
+  String get comun_umbrales => 'Umbrales';
+
+  @override
+  String get comun_abandonar => 'Abandonar';
+
+  @override
   String get logo_nombre => 'AquaSteward';
 
   @override
@@ -39,6 +51,20 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get button_perfil => 'Perfil';
+
+  @override
+  String get dialogo_salida =>
+      '¿Estás seguro de que quieres salir de este espacio?';
+
+  @override
+  String get dialogo_salida_titulo => '¿Salir de AquaSteward?';
+
+  @override
+  String get dialogo_eliminar =>
+      '¿Estás seguro de que deseas eliminar este depósito?';
+
+  @override
+  String get dialogo_eliminar_titulo => '¿Eliminar depósito?';
 
   @override
   String get titulo_dashboard => 'Mis Depósitos';
@@ -62,21 +88,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get titulo_reportes => 'Generar Reportes';
 
   @override
-  String get titulo_miembros => 'Gestionar Miembros';
-
-  @override
   String get titulo_alertas => 'Notificaciones';
-
-  @override
-  String get titulo_agregar_deposito => 'Agregar Depósito';
 
   @override
   String titulo_detalles_sensor(Object sensorName) {
     return 'Detalles de $sensorName';
   }
-
-  @override
-  String get titulo_configurar_umbrales => 'Configurar Umbrales';
 
   @override
   String get titulo_vista_previa_pdf => 'Vista Previa de Reporte';
@@ -188,15 +205,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get dashboard_sin_depositos => 'No hay depósitos agregados';
-
-  @override
-  String get dashboard_menu_miembros => 'Miembros';
-
-  @override
-  String get dashboard_menu_umbrales => 'Editar umbrales';
-
-  @override
-  String get dashboard_menu_editar => 'Editar depósito';
 
   @override
   String get sensor_nivel => 'Nivel';
@@ -379,6 +387,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get alertas_filtro_todos => 'Todos';
 
   @override
+  String get alertas_filtro_invitaciones => 'Equipo';
+
+  @override
   String get alertas_filtro_nivel => 'Nivel';
 
   @override
@@ -391,10 +402,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get alertas_sin_notificaciones => 'Sin notificaciones';
 
   @override
-  String get alertas_filtro_invitaciones => 'Invitaciones';
-
-  @override
-  String get alertas_sin_invitaciones => 'Sin invitaciones';
+  String get alertas_sin_invitaciones => 'Sin novedades de equipo';
 
   @override
   String get alertas_filtro_alertas => 'Alertas';
@@ -403,17 +411,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String get alertas_invitacion_titulo => 'Invitación a depósito';
 
   @override
-  String alertas_invitacion_descripcion(Object name) {
-    return 'Tienes una invitación para ser parte del depósito $name.';
+  String alertas_invitacion_descripcion(Object name, Object role) {
+    return 'Has sido invitado a colaborar en el depósito $name como $role.';
   }
 
   @override
   String alertas_rol_asignado(Object role) {
     return 'Rol asignado: $role';
   }
-
-  @override
-  String get miembros_filtro_miembros => 'Miembros';
 
   @override
   String get miembros_filtro_invitaciones => 'Invitaciones';
@@ -442,9 +447,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get umbrales_espacio_sensor => 'Espacio entre sensor y depósito';
-
-  @override
-  String get umbrales_titulo => 'Umbrales';
 
   @override
   String get umbrales_desc =>
@@ -487,6 +489,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get snackbar_invitacion_rechazada => 'Invitación rechazada';
 
   @override
+  String get snackbar_abandonar_deposito => 'Abandonó con éxito el depósito';
+
+  @override
   String get snackbar_alertas_activas => 'Recibirás lecturas y alertas';
 
   @override
@@ -521,7 +526,19 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get snackbar_error_correo =>
-      'No se pudo abrir la aplicación de correo';
+      'Error: No se pudo abrir la aplicación de correo';
+
+  @override
+  String get snackbar_csv_exportando => 'Exportando datos, por favor espera...';
+
+  @override
+  String snackbar_csv_error(String message) {
+    return 'Error: $message';
+  }
+
+  @override
+  String get snackbar_csv_sin_datos =>
+      'Error: No hay datos disponibles para el rango y sensores seleccionados.';
 
   @override
   String get snackbar_perfil_actualizado => 'Perfil actualizado';
@@ -544,9 +561,6 @@ class AppLocalizationsEs extends AppLocalizations {
       'Ingresa el nombre identificador del depósito de agua';
 
   @override
-  String get deposito_nombre_label => 'Depósito';
-
-  @override
   String get detalles_tab_registros => 'Registros';
 
   @override
@@ -554,6 +568,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get detalles_historial => 'Historial';
+
+  @override
+  String get detalles_rango_permitido => 'Rango permitido';
+
+  @override
+  String get detalles_capacidad_total => 'Capacidad total';
 
   @override
   String get detalles_diario => 'Día';
@@ -625,4 +645,83 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get acerca_software_licencias => 'Licencias de Código Abierto';
+
+  @override
+  String get tiempo_ahora => 'Ahora';
+
+  @override
+  String tiempo_hace_minutos(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Hace $count minutos',
+      one: 'Hace 1 minuto',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tiempo_hace_horas(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Hace $count horas',
+      one: 'Hace 1 hora',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tiempo_hace_dias(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Hace $count días',
+      one: 'Hace 1 día',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tiempo_hace_semanas(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Hace $count semanas',
+      one: 'Hace 1 semana',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tiempo_hace_meses(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Hace $count meses',
+      one: 'Hace 1 mes',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get csv_dialogo_titulo => 'Exportar CSV';
+
+  @override
+  String get csv_seleccionar_sensores => 'Selecciona los sensores a exportar:';
+
+  @override
+  String get csv_rango_temporal => 'Rango temporal:';
+
+  @override
+  String get csv_rango_dia => 'Hoy';
+
+  @override
+  String get csv_rango_semana => 'Semana actual';
+
+  @override
+  String get csv_rango_mes => 'Mes actual';
+
+  @override
+  String get csv_todos => 'Todos los sensores';
 }

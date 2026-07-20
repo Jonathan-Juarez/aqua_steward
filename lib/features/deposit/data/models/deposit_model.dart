@@ -24,7 +24,16 @@ class DepositModel extends Deposit {
       "fill_gap": fill_gap,
       "owner_id": owner_id,
       "role": role,
-      "sensors": sensors?.map((s) => (s as SensorModel).toMap()).toList(),
+      "sensors": sensors?.map((s) {
+        if (s is SensorModel) return s.toMap();
+        return {
+          "type": s.type,
+          "state": s.state,
+          "unit": s.unit,
+          "min_value": s.minValue,
+          "max_value": s.maxValue,
+        };
+      }).toList(),
     };
     if (id != null && id!.isNotEmpty) {
       map["_id"] = id; // Mongoose usa _id
@@ -53,4 +62,27 @@ class DepositModel extends Deposit {
 
   factory DepositModel.fromJson(String source) =>
       DepositModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  factory DepositModel.fromEntity(Deposit deposit) {
+    return DepositModel(
+      id: deposit.id,
+      name: deposit.name,
+      ip: deposit.ip,
+      capacity: deposit.capacity,
+      installation_height: deposit.installation_height,
+      fill_gap: deposit.fill_gap,
+      owner_id: deposit.owner_id,
+      role: deposit.role,
+      sensors: deposit.sensors?.map((s) {
+        if (s is SensorModel) return s;
+        return SensorModel(
+          type: s.type,
+          state: s.state,
+          unit: s.unit,
+          minValue: s.minValue,
+          maxValue: s.maxValue,
+        );
+      }).toList(),
+    );
+  }
 }

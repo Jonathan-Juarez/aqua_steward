@@ -14,25 +14,28 @@ import 'package:aqua_steward/core/error/result_handler.dart';
 import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
 import 'package:aqua_steward/features/deposit/presentation/providers/deposit_provider.dart';
+import 'package:aqua_steward/features/notification/presentation/widgets/formater_time.dart';
 import 'package:aqua_steward/features/team/presentation/providers/team_provider.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:aqua_steward/features/notification/domain/entities/notification.dart';
+import 'package:aqua_steward/features/notification/presentation/providers/notification_provider.dart';
+import 'package:flutter/material.dart'
+    hide
+        Notification; // Se oculta Notification para evitar conflictos de nombres.
 import 'package:provider/provider.dart';
 
-class AlertsScreen extends StatefulWidget {
-  const AlertsScreen({super.key});
+class NotificationScreen extends StatefulWidget {
+  const NotificationScreen({super.key});
 
   @override
-  State<AlertsScreen> createState() => _AlertsScreenState();
+  State<NotificationScreen> createState() => _NotificationScreenState();
 }
 
-class _AlertsScreenState extends State<AlertsScreen> {
+class _NotificationScreenState extends State<NotificationScreen> {
   // Estado de las pestañas (0: Alertas, 1: Invitaciones).
   int _currentTabIndex = 0;
   // Estado de los filtros (Tipos de alertas).
   late String _selectedType;
 
-  // Se inicializa el filtro con el valor localizado "Todos"
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -44,6 +47,7 @@ class _AlertsScreenState extends State<AlertsScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadInvitations();
+      _loadNotifications();
     });
   }
 
@@ -55,64 +59,68 @@ class _AlertsScreenState extends State<AlertsScreen> {
     }
   }
 
-  // Formato de fecha.
-  static final DateFormat _dateFormat = DateFormat("d MMM yyyy, h:mm a");
-
-  // Datos simulados de alertas
-  final List<Map<String, dynamic>> _notifications = [
-    {
-      "id": 1,
-      "title": "Nivel",
-      "message": "El depósito está al 75% de su capacidad. ",
-      "type": "Nivel",
-      "icon": AppIcon.waterDrop,
-      "date": DateTime.now(),
-    },
-    {
-      "id": 2,
-      "title": "Turbidez",
-      "message": "Se ha superado el límite, actual 5 NTU.",
-      "type": "Turbidez",
-      "icon": AppIcon.water,
-      "date": DateTime(2026, 3, 1, 12, 13),
-    },
-    {
-      "id": 3,
-      "title": "pH",
-      "message": "El pH actual es 6.5, dentro del rango ideal.",
-      "type": "pH",
-      "icon": AppIcon.scienceRounded,
-      "date": DateTime(2026, 2, 28, 11, 3),
-    },
-    {
-      "id": 4,
-      "title": "pH",
-      "message": "Nivel de pH bajo (5.5). Requiere revisión.",
-      "type": "pH",
-      "icon": AppIcon.scienceRounded,
-      "date": DateTime(2025, 12, 15, 10, 30),
-    },
-  ];
-
-  // Lógica para filtrar la lista de alertas.
-  List<Map<String, dynamic>> get _filteredNotifications {
-    if (_selectedType == context.l10n.alertas_filtro_todos) {
-      return _notifications;
+  void _loadNotifications() async {
+    if (_token.isNotEmpty) {
+      final provider = context.read<NotificationProvider>();
+      await provider.fetchNotifications(_token);
+      // En caso de que existan notificaciones sin leer, se marcan como leídas.
+      if (provider.hasUnreadNotifications) {
+        await provider.markNotificationsAsRead(_token);
+      }
     }
-    return _notifications
-        .where((notif) => notif['type'] == _selectedType)
+  }
+
+  Icon _getIconForType(String type) {
+    if (type == "pH") {
+      return AppIcon.scienceRounded;
+    } else if (type == "Turbidez") {
+      return AppIcon.water;
+    } else {
+      return AppIcon.waterDrop;
+    }
+  }
+
+  List<Notification> _getFilteredNotifications(
+    List<Notification> notifications,
+  ) {
+    // Excluir notificaciones de equipo en la pestaña de Alertas
+    final sensorNotifications = notifications
+        .where((n) => n.type != 'team_removed' && n.type != 'team_role_changed')
+        .toList();
+    if (_selectedType == context.l10n.alertas_filtro_todos) {
+      return sensorNotifications;
+    }
+    return sensorNotifications
+        .where((notif) => notif.type == _selectedType)
         .toList();
   }
 
-  void _deleteAll() {
-    setState(() {
-      _notifications.clear();
-    });
-    SnackBarFormat.show(context, context.l10n.snackbar_alertas_eliminadas);
+  void _deleteAll() async {
+    final result = await context
+        .read<NotificationProvider>()
+        .deleteAllNotifications(_token);
+    if (!mounted) return;
+    if (result.isSuccess) {
+      SnackBarFormat.show(context, context.l10n.snackbar_alertas_eliminadas);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final notifProvider = context.watch<NotificationProvider>();
+    final teamProvider = context.watch<TeamProvider>();
+    final filteredNotifications = _getFilteredNotifications(
+      notifProvider.notifications,
+    );
+
+    // Contar invitaciones pendientes + notificaciones de equipo activas
+    final activeTeamNotifs = notifProvider.notifications
+        .where((n) =>
+            (n.type == 'team_removed' || n.type == 'team_role_changed') &&
+            n.state == 'activa')
+        .length;
+    final totalTeamCount = teamProvider.invitations.length + activeTeamNotifs;
+
     return ScaffoldMain(
       titleAppBar: context.l10n.titulo_alertas,
       children: [
@@ -122,7 +130,9 @@ class _AlertsScreenState extends State<AlertsScreen> {
           child: TabBarFormat(
             labels: [
               context.l10n.alertas_filtro_alertas,
-              context.l10n.alertas_filtro_invitaciones,
+              totalTeamCount > 0
+                  ? "${context.l10n.alertas_filtro_invitaciones} ($totalTeamCount)"
+                  : context.l10n.alertas_filtro_invitaciones,
             ],
             selectedIndex: _currentTabIndex,
             onTabSelected: (index) => setState(() => _currentTabIndex = index),
@@ -187,10 +197,10 @@ class _AlertsScreenState extends State<AlertsScreen> {
                 AppSizedBox.width8,
                 ButtonFormat(
                   type: "icon",
-                  onConfirm: _filteredNotifications.isNotEmpty
+                  onConfirm: filteredNotifications.isNotEmpty
                       ? _deleteAll
                       : null,
-                  icon: _filteredNotifications.isNotEmpty
+                  icon: filteredNotifications.isNotEmpty
                       ? AppIcon.deleteSweep()
                       : AppIcon.deleteSweep(
                           color: Theme.of(context).colorScheme.inversePrimary,
@@ -201,12 +211,12 @@ class _AlertsScreenState extends State<AlertsScreen> {
           ),
 
         // Lista de contenido.
-        Consumer<TeamProvider>(
-          builder: (context, teamProvider, _) {
+        Consumer2<TeamProvider, NotificationProvider>(
+          builder: (context, teamProvider, notificationProvider, _) {
             if (_currentTabIndex == 1) {
-              return _buildInvitationsList(teamProvider);
+              return _buildTeamList(teamProvider, notificationProvider);
             } else {
-              return _buildAlertsList();
+              return _buildAlertsList(notificationProvider);
             }
           },
         ),
@@ -214,15 +224,21 @@ class _AlertsScreenState extends State<AlertsScreen> {
     );
   }
 
-  // Lista de Invitaciones.
-  Widget _buildInvitationsList(TeamProvider provider) {
-    if (provider.isLoadingInvitations) {
+  // Lista combinada de Invitaciones y Eventos de Equipo.
+  Widget _buildTeamList(
+    TeamProvider teamProvider,
+    NotificationProvider notifProvider,
+  ) {
+    if (teamProvider.isLoadingInvitations || notifProvider.isLoading) {
       return const Center(heightFactor: 5, child: CircularProgressIndicator());
     }
 
-    final invitations = provider.invitations;
+    final invitations = teamProvider.invitations;
+    final teamNotifications = notifProvider.notifications
+        .where((n) => n.type == 'team_removed' || n.type == 'team_role_changed')
+        .toList();
 
-    if (invitations.isEmpty) {
+    if (invitations.isEmpty && teamNotifications.isEmpty) {
       return Center(
         heightFactor: 5,
         child: Column(
@@ -243,15 +259,64 @@ class _AlertsScreenState extends State<AlertsScreen> {
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: invitations.length,
+      itemCount: invitations.length + teamNotifications.length,
       separatorBuilder: (_, _) => AppSizedBox.height12,
-      itemBuilder: (_, index) => _buildInvitationCard(invitations[index]),
+      itemBuilder: (context, index) {
+        if (index < invitations.length) {
+          return _buildInvitationCard(invitations[index]);
+        } else {
+          final notif = teamNotifications[index - invitations.length];
+          return _buildTeamNotificationCard(notif, notifProvider);
+        }
+      },
     );
   }
 
-  // Lista de Alertas.
-  Widget _buildAlertsList() {
-    if (_filteredNotifications.isEmpty) {
+  Widget _buildTeamNotificationCard(
+    Notification notif,
+    NotificationProvider provider,
+  ) {
+    return Dismissible(
+      key: Key(notif.id),
+      direction: DismissDirection.startToEnd,
+      onDismissed: (direction) {
+        provider.deleteNotification(notif.id, _token);
+      },
+      background: Container(
+        decoration: BoxDecoration(
+          borderRadius: AppBorder.all8,
+          color: AppColor.error.withOpacity(0.2),
+        ),
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.only(left: 20),
+        child: AppIcon.deleteOutline,
+      ),
+      child: ContainerListTile(
+        title: TextFormat(
+          text: notif.title,
+          context: context,
+          type: "titleSmall",
+        ),
+        subtitle: notif.message,
+        subsubtitle: FormaterTime(
+          dateTime: notif.date,
+          context: context,
+        ).format(),
+        icon: AppIcon.groups2Outlined,
+        showTrailing: false,
+      ),
+    );
+  }
+
+  // Lista de Alertas Reales.
+  Widget _buildAlertsList(NotificationProvider provider) {
+    if (provider.isLoading) {
+      return const Center(heightFactor: 5, child: CircularProgressIndicator());
+    }
+
+    final filtered = _getFilteredNotifications(provider.notifications);
+
+    if (filtered.isEmpty) {
       return Center(
         heightFactor: 5,
         child: Column(
@@ -272,17 +337,15 @@ class _AlertsScreenState extends State<AlertsScreen> {
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: _filteredNotifications.length,
+      itemCount: filtered.length,
       separatorBuilder: (context, index) => AppSizedBox.height12,
       itemBuilder: (context, index) {
-        final notif = _filteredNotifications[index];
+        final notif = filtered[index];
         return Dismissible(
-          key: Key(notif['id'].toString()),
+          key: Key(notif.id),
           direction: DismissDirection.startToEnd,
           onDismissed: (direction) {
-            setState(() {
-              _notifications.removeWhere((item) => item['id'] == notif['id']);
-            });
+            provider.deleteNotification(notif.id, _token);
           },
           background: Container(
             decoration: BoxDecoration(
@@ -295,13 +358,16 @@ class _AlertsScreenState extends State<AlertsScreen> {
           ),
           child: ContainerListTile(
             title: TextFormat(
-              text: notif['title'],
+              text: notif.title,
               context: context,
               type: "titleSmall",
             ),
-            subtitle: notif['message'],
-            subsubtitle: _dateFormat.format(notif['date']),
-            icon: notif['icon'],
+            subtitle: notif.message,
+            subsubtitle: FormaterTime(
+              dateTime: notif.date,
+              context: context,
+            ).format(),
+            icon: _getIconForType(notif.type),
             showTrailing: false,
           ),
         );
@@ -321,8 +387,10 @@ class _AlertsScreenState extends State<AlertsScreen> {
         context: context,
         type: "titleSmall",
       ),
-      subtitle:
-          "${context.l10n.alertas_invitacion_descripcion(depositName)} \n ${context.l10n.alertas_rol_asignado(filterRole(role))}",
+      subtitle: context.l10n.alertas_invitacion_descripcion(
+        depositName,
+        filterRole(role),
+      ),
       icon: AppIcon.groups2Outlined,
       showTrailing: false,
       subsubtitle: ButtonFormat(

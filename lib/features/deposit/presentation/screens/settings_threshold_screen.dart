@@ -7,8 +7,8 @@ import 'package:aqua_steward/core/widgets/snack_bar_format.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:aqua_steward/core/theme/app_sizedbox.dart';
 import 'package:aqua_steward/core/widgets/scaffold_main.dart';
-import 'package:aqua_steward/features/deposit/data/models/deposit_model.dart';
-import 'package:aqua_steward/features/deposit/data/models/sensor_model.dart';
+import 'package:aqua_steward/features/deposit/domain/entities/deposit.dart';
+import 'package:aqua_steward/features/deposit/domain/entities/sensor.dart';
 import 'package:aqua_steward/features/deposit/presentation/providers/deposit_provider.dart';
 import 'package:aqua_steward/features/deposit/presentation/widgets/slider_format.dart';
 import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
@@ -84,7 +84,7 @@ class _SettingsThresholdScreenState extends State<SettingsThresholdScreen> {
 
   // Procesa la información de los umbrales y delega la creación o actualización al proveedor.
   void _saveDeposit() async {
-    List<SensorModel> newSensors = [];
+    List<Sensor> newSensors = [];
     // Se recorren los sensores para actualizar sus valores.
     if (widget.depositData["sensors"] != null) {
       for (var sensor in widget.depositData["sensors"]) {
@@ -108,7 +108,7 @@ class _SettingsThresholdScreenState extends State<SettingsThresholdScreen> {
 
         // Se agrega el sensor a la lista de sensores.
         newSensors.add(
-          SensorModel(
+          Sensor(
             type: type,
             state: state,
             unit: unit,
@@ -128,7 +128,7 @@ class _SettingsThresholdScreenState extends State<SettingsThresholdScreen> {
     final bool isEditing = depositId != null && depositId.isNotEmpty;
 
     // Se crea el depósito con los valores completos.
-    final DepositModel newDeposit = DepositModel(
+    final Deposit newDeposit = Deposit(
       id: depositId,
       name: widget.depositData["name"],
       ip: widget.depositData["ip"],
@@ -179,7 +179,7 @@ class _SettingsThresholdScreenState extends State<SettingsThresholdScreen> {
   @override
   Widget build(BuildContext context) {
     return ScaffoldMain(
-      titleAppBar: context.l10n.titulo_configurar_umbrales,
+      titleAppBar: context.l10n.comun_umbrales,
       children: [
         TextFormat(
           text: context.l10n.umbrales_medidas_deposito,
@@ -228,7 +228,7 @@ class _SettingsThresholdScreenState extends State<SettingsThresholdScreen> {
           ],
         ),
         TextFormat(
-          text: context.l10n.umbrales_titulo,
+          text: context.l10n.comun_umbrales,
           context: context,
           type: "subtitle",
         ),

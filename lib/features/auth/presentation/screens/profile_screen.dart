@@ -1,5 +1,6 @@
 import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
 import 'package:aqua_steward/features/deposit/presentation/providers/deposit_provider.dart';
+import 'package:aqua_steward/features/notification/presentation/providers/notification_provider.dart';
 import 'package:aqua_steward/core/router/app_router.dart';
 import 'package:aqua_steward/core/theme/app_icon.dart';
 import 'package:aqua_steward/core/theme/app_sizedbox.dart';
@@ -284,15 +285,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
           AppSizedBox.height12,
 
           ContainerListTile(
-            onTap: () {
+            onTap: () async {
+              final token = provider.currentUser?.token;
+              if (token != null) {
+                // Desregistrar token FCM antes de cerrar sesión
+                await context.read<NotificationProvider>().cleanup(token);
+              }
               // Limpia los depósitos antes de cerrar sesión para evitar datos residuales.
               context.read<DepositProvider>().clearDeposits();
               provider.logout();
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                AppRouter.start,
-                (route) => false,
-              );
+              if (context.mounted) {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  AppRouter.start,
+                  (route) => false,
+                );
+              }
             },
             title: context.l10n.perfil_cerrar_sesion,
             icon: AppIcon.logoutOutlined,

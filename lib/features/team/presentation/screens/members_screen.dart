@@ -67,8 +67,10 @@ class _MembersScreenState extends State<MembersScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<TeamProvider>();
+
     return ScaffoldMain(
-      titleAppBar: context.l10n.titulo_miembros,
+      titleAppBar: context.l10n.comun_miembros,
       children: [
         // Filtros y botón de agregar miembro.
         Padding(
@@ -76,7 +78,7 @@ class _MembersScreenState extends State<MembersScreen> {
           child: Row(
             children: [
               FilterChipFormat(
-                label: context.l10n.miembros_filtro_miembros,
+                label: context.l10n.comun_miembros,
                 isSelected: _selectedIndex == 0,
                 onSelected: (_) => setState(() => _selectedIndex = 0),
               ),
@@ -103,34 +105,32 @@ class _MembersScreenState extends State<MembersScreen> {
         ),
 
         // Lista reactiva de miembros.
-        Consumer<TeamProvider>(
-          builder: (context, provider, _) {
-            if (provider.isLoading) {
-              return const Center(
-                heightFactor: 5,
-                child: CircularProgressIndicator(),
-              );
-            }
-
-            final filtered = _selectedIndex == 0
-                ? provider.members
-                      .where((m) => m.status == "accepted" || m.role == "owner")
-                      .toList()
-                : provider.members.where((m) => m.status == "pending").toList();
-
-            if (filtered.isEmpty) {
-              return const Center(heightFactor: 5, child: SizedBox.shrink());
-            }
-
-            return ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: filtered.length,
-              separatorBuilder: (_, _) => AppSizedBox.height12,
-              itemBuilder: (_, i) => containerMember(filtered[i]),
+        () {
+          if (provider.isLoading) {
+            return const Center(
+              heightFactor: 5,
+              child: CircularProgressIndicator(),
             );
-          },
-        ),
+          }
+
+          final filtered = _selectedIndex == 0
+              ? provider.members
+                    .where((m) => m.status == "accepted" || m.role == "owner")
+                    .toList()
+              : provider.members.where((m) => m.status == "pending").toList();
+
+          if (filtered.isEmpty) {
+            return const Center(heightFactor: 5, child: SizedBox.shrink());
+          }
+
+          return ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: filtered.length,
+            separatorBuilder: (_, _) => AppSizedBox.height12,
+            itemBuilder: (_, i) => containerMember(filtered[i]),
+          );
+        }(),
       ],
     );
   }
@@ -139,10 +139,13 @@ class _MembersScreenState extends State<MembersScreen> {
   Widget containerMember(Team member) {
     final name = "${member.name ?? ''} ${member.last_name ?? ''}".trim();
     final role = _labelForRole(member.role ?? "");
+    final userId = context.read<AuthProvider>().currentUser?.id;
 
-    // Los miembros sin permisos de gestión o el dueño siempre se muestran sin menú.
+    // Los miembros sin permisos de gestión, el dueño o el usuario mismo se muestran sin menú.
     if (member.role == "owner" ||
+        member.id == userId ||
         !RolePermissions.has(_currentRole, AppPermission.editMemberRole)) {
+      // Icono de persona en la tarjeta de los otros usuarios (sin menu y es la general).
       return ContainerListTile(
         title: name,
         subtitle: role,
@@ -178,6 +181,7 @@ class _MembersScreenState extends State<MembersScreen> {
           context.processResult(result);
         }
       },
+      // Icono de persona en la tarjeta del usuario que usa la cuenta.
       child: ContainerListTile(
         title: name,
         subtitle: role,
@@ -187,7 +191,6 @@ class _MembersScreenState extends State<MembersScreen> {
   }
 
   // Diálogo para invitar miembro
-
   void inviteDialog() {
     _emailController.clear();
     _selectedRole = "analyst";
@@ -197,7 +200,7 @@ class _MembersScreenState extends State<MembersScreen> {
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setDialogState) => DialogEmergent(
           formKey: _formKey,
-          title: context.l10n.titulo_miembros,
+          title: context.l10n.comun_miembros,
           onPressed: () async {
             final provider = context.read<TeamProvider>();
 

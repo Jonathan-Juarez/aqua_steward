@@ -5,6 +5,7 @@ class AppIcon {
   // Iconos de botones dela pantalla de inicio.
   static Icon notificationsOutlined({Color? color}) =>
       Icon(Icons.notifications_outlined, size: 24, color: color);
+
   static Icon supportOutline({Color? color}) =>
       Icon(Icons.help_outline, size: 24, color: color);
 
@@ -89,10 +90,7 @@ class AppIcon {
   static const Icon lineChart = Icon(Icons.line_axis_rounded, size: 24);
   static const Icon pieChartOutline = Icon(Icons.pie_chart_outline, size: 24);
   static const Icon speed = Icon(Icons.speed, size: 24);
-  static const Icon notificationsActiveOutlined = Icon(
-    Icons.notifications_active_outlined,
-    size: 24,
-  );
+
   static const Icon tableChartOutlined = Icon(
     Icons.table_chart_outlined,
     size: 24,
@@ -100,11 +98,7 @@ class AppIcon {
 
   // Iconos de en la sección de reporte.
   static const Icon addChart = Icon(Icons.add_chart, size: 24);
-  static const Icon pdf = Icon(
-    Icons.picture_as_pdf,
-    size: 24,
-    color: AppColor.error,
-  );
+  static const Icon pdf = Icon(Icons.picture_as_pdf, size: 24);
   static const Icon download = Icon(Icons.file_download_outlined, size: 24);
 
   // Icono de contenedor list tile.

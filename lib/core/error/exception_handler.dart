@@ -12,9 +12,9 @@ Result<T> handleException<T>(Object e) {
       errorString.contains("TimeoutException") ||
       errorString.contains("Failed host lookup")) {
     return Result.failure(
-      "No hay conexión a internet o el servidor no está disponible. Por favor, revisa tu red e inténtalo de nuevo.",
+      "Error de conexión. Por favor, revisa tu red e inténtalo de nuevo.",
     );
   }
 
-  return Result.failure("Ocurrió un error inesperado: $errorString");
+  return Result.failure("Error: $errorString");
 }

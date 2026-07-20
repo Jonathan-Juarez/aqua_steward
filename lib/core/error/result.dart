@@ -1,4 +1,3 @@
-// Representa el resultado de una operación (exitosa o fallida).
 class Result<T> {
   // Contiene los datos resultantes en caso de éxito.
   final T? data;

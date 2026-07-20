@@ -134,6 +134,30 @@ abstract class AppLocalizations {
   /// **'Cargando...'**
   String get comun_cargando;
 
+  /// No description provided for @comun_miembros.
+  ///
+  /// In es, this message translates to:
+  /// **'Miembros'**
+  String get comun_miembros;
+
+  /// No description provided for @comun_deposito.
+  ///
+  /// In es, this message translates to:
+  /// **'Depósito'**
+  String get comun_deposito;
+
+  /// No description provided for @comun_umbrales.
+  ///
+  /// In es, this message translates to:
+  /// **'Umbrales'**
+  String get comun_umbrales;
+
+  /// No description provided for @comun_abandonar.
+  ///
+  /// In es, this message translates to:
+  /// **'Abandonar'**
+  String get comun_abandonar;
+
   /// No description provided for @logo_nombre.
   ///
   /// In es, this message translates to:
@@ -157,6 +181,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Perfil'**
   String get button_perfil;
+
+  /// No description provided for @dialogo_salida.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de que quieres salir de este espacio?'**
+  String get dialogo_salida;
+
+  /// No description provided for @dialogo_salida_titulo.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Salir de AquaSteward?'**
+  String get dialogo_salida_titulo;
+
+  /// No description provided for @dialogo_eliminar.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de que deseas eliminar este depósito?'**
+  String get dialogo_eliminar;
+
+  /// No description provided for @dialogo_eliminar_titulo.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar depósito?'**
+  String get dialogo_eliminar_titulo;
 
   /// No description provided for @titulo_dashboard.
   ///
@@ -200,35 +248,17 @@ abstract class AppLocalizations {
   /// **'Generar Reportes'**
   String get titulo_reportes;
 
-  /// No description provided for @titulo_miembros.
-  ///
-  /// In es, this message translates to:
-  /// **'Gestionar Miembros'**
-  String get titulo_miembros;
-
   /// No description provided for @titulo_alertas.
   ///
   /// In es, this message translates to:
   /// **'Notificaciones'**
   String get titulo_alertas;
 
-  /// No description provided for @titulo_agregar_deposito.
-  ///
-  /// In es, this message translates to:
-  /// **'Agregar Depósito'**
-  String get titulo_agregar_deposito;
-
   /// No description provided for @titulo_detalles_sensor.
   ///
   /// In es, this message translates to:
   /// **'Detalles de {sensorName}'**
   String titulo_detalles_sensor(Object sensorName);
-
-  /// No description provided for @titulo_configurar_umbrales.
-  ///
-  /// In es, this message translates to:
-  /// **'Configurar Umbrales'**
-  String get titulo_configurar_umbrales;
 
   /// No description provided for @titulo_vista_previa_pdf.
   ///
@@ -445,24 +475,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No hay depósitos agregados'**
   String get dashboard_sin_depositos;
-
-  /// No description provided for @dashboard_menu_miembros.
-  ///
-  /// In es, this message translates to:
-  /// **'Miembros'**
-  String get dashboard_menu_miembros;
-
-  /// No description provided for @dashboard_menu_umbrales.
-  ///
-  /// In es, this message translates to:
-  /// **'Editar umbrales'**
-  String get dashboard_menu_umbrales;
-
-  /// No description provided for @dashboard_menu_editar.
-  ///
-  /// In es, this message translates to:
-  /// **'Editar depósito'**
-  String get dashboard_menu_editar;
 
   /// No description provided for @sensor_nivel.
   ///
@@ -794,6 +806,12 @@ abstract class AppLocalizations {
   /// **'Todos'**
   String get alertas_filtro_todos;
 
+  /// No description provided for @alertas_filtro_invitaciones.
+  ///
+  /// In es, this message translates to:
+  /// **'Equipo'**
+  String get alertas_filtro_invitaciones;
+
   /// No description provided for @alertas_filtro_nivel.
   ///
   /// In es, this message translates to:
@@ -818,16 +836,10 @@ abstract class AppLocalizations {
   /// **'Sin notificaciones'**
   String get alertas_sin_notificaciones;
 
-  /// No description provided for @alertas_filtro_invitaciones.
-  ///
-  /// In es, this message translates to:
-  /// **'Invitaciones'**
-  String get alertas_filtro_invitaciones;
-
   /// No description provided for @alertas_sin_invitaciones.
   ///
   /// In es, this message translates to:
-  /// **'Sin invitaciones'**
+  /// **'Sin novedades de equipo'**
   String get alertas_sin_invitaciones;
 
   /// No description provided for @alertas_filtro_alertas.
@@ -845,20 +857,14 @@ abstract class AppLocalizations {
   /// No description provided for @alertas_invitacion_descripcion.
   ///
   /// In es, this message translates to:
-  /// **'Tienes una invitación para ser parte del depósito {name}.'**
-  String alertas_invitacion_descripcion(Object name);
+  /// **'Has sido invitado a colaborar en el depósito {name} como {role}.'**
+  String alertas_invitacion_descripcion(Object name, Object role);
 
   /// No description provided for @alertas_rol_asignado.
   ///
   /// In es, this message translates to:
   /// **'Rol asignado: {role}'**
   String alertas_rol_asignado(Object role);
-
-  /// No description provided for @miembros_filtro_miembros.
-  ///
-  /// In es, this message translates to:
-  /// **'Miembros'**
-  String get miembros_filtro_miembros;
 
   /// No description provided for @miembros_filtro_invitaciones.
   ///
@@ -913,12 +919,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Espacio entre sensor y depósito'**
   String get umbrales_espacio_sensor;
-
-  /// No description provided for @umbrales_titulo.
-  ///
-  /// In es, this message translates to:
-  /// **'Umbrales'**
-  String get umbrales_titulo;
 
   /// No description provided for @umbrales_desc.
   ///
@@ -998,6 +998,12 @@ abstract class AppLocalizations {
   /// **'Invitación rechazada'**
   String get snackbar_invitacion_rechazada;
 
+  /// No description provided for @snackbar_abandonar_deposito.
+  ///
+  /// In es, this message translates to:
+  /// **'Abandonó con éxito el depósito'**
+  String get snackbar_abandonar_deposito;
+
   /// No description provided for @snackbar_alertas_activas.
   ///
   /// In es, this message translates to:
@@ -1061,8 +1067,26 @@ abstract class AppLocalizations {
   /// No description provided for @snackbar_error_correo.
   ///
   /// In es, this message translates to:
-  /// **'No se pudo abrir la aplicación de correo'**
+  /// **'Error: No se pudo abrir la aplicación de correo'**
   String get snackbar_error_correo;
+
+  /// No description provided for @snackbar_csv_exportando.
+  ///
+  /// In es, this message translates to:
+  /// **'Exportando datos, por favor espera...'**
+  String get snackbar_csv_exportando;
+
+  /// No description provided for @snackbar_csv_error.
+  ///
+  /// In es, this message translates to:
+  /// **'Error: {message}'**
+  String snackbar_csv_error(String message);
+
+  /// No description provided for @snackbar_csv_sin_datos.
+  ///
+  /// In es, this message translates to:
+  /// **'Error: No hay datos disponibles para el rango y sensores seleccionados.'**
+  String get snackbar_csv_sin_datos;
 
   /// No description provided for @snackbar_perfil_actualizado.
   ///
@@ -1100,12 +1124,6 @@ abstract class AppLocalizations {
   /// **'Ingresa el nombre identificador del depósito de agua'**
   String get deposito_ingresa_nombre;
 
-  /// No description provided for @deposito_nombre_label.
-  ///
-  /// In es, this message translates to:
-  /// **'Depósito'**
-  String get deposito_nombre_label;
-
   /// No description provided for @detalles_tab_registros.
   ///
   /// In es, this message translates to:
@@ -1123,6 +1141,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Historial'**
   String get detalles_historial;
+
+  /// No description provided for @detalles_rango_permitido.
+  ///
+  /// In es, this message translates to:
+  /// **'Rango permitido'**
+  String get detalles_rango_permitido;
+
+  /// No description provided for @detalles_capacidad_total.
+  ///
+  /// In es, this message translates to:
+  /// **'Capacidad total'**
+  String get detalles_capacidad_total;
 
   /// No description provided for @detalles_diario.
   ///
@@ -1255,6 +1285,84 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Licencias de Código Abierto'**
   String get acerca_software_licencias;
+
+  /// No description provided for @tiempo_ahora.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora'**
+  String get tiempo_ahora;
+
+  /// No description provided for @tiempo_hace_minutos.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{Hace 1 minuto} other{Hace {count} minutos}}'**
+  String tiempo_hace_minutos(int count);
+
+  /// No description provided for @tiempo_hace_horas.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{Hace 1 hora} other{Hace {count} horas}}'**
+  String tiempo_hace_horas(int count);
+
+  /// No description provided for @tiempo_hace_dias.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{Hace 1 día} other{Hace {count} días}}'**
+  String tiempo_hace_dias(int count);
+
+  /// No description provided for @tiempo_hace_semanas.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{Hace 1 semana} other{Hace {count} semanas}}'**
+  String tiempo_hace_semanas(int count);
+
+  /// No description provided for @tiempo_hace_meses.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{Hace 1 mes} other{Hace {count} meses}}'**
+  String tiempo_hace_meses(int count);
+
+  /// No description provided for @csv_dialogo_titulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Exportar CSV'**
+  String get csv_dialogo_titulo;
+
+  /// No description provided for @csv_seleccionar_sensores.
+  ///
+  /// In es, this message translates to:
+  /// **'Selecciona los sensores a exportar:'**
+  String get csv_seleccionar_sensores;
+
+  /// No description provided for @csv_rango_temporal.
+  ///
+  /// In es, this message translates to:
+  /// **'Rango temporal:'**
+  String get csv_rango_temporal;
+
+  /// No description provided for @csv_rango_dia.
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy'**
+  String get csv_rango_dia;
+
+  /// No description provided for @csv_rango_semana.
+  ///
+  /// In es, this message translates to:
+  /// **'Semana actual'**
+  String get csv_rango_semana;
+
+  /// No description provided for @csv_rango_mes.
+  ///
+  /// In es, this message translates to:
+  /// **'Mes actual'**
+  String get csv_rango_mes;
+
+  /// No description provided for @csv_todos.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos los sensores'**
+  String get csv_todos;
 }
 
 class _AppLocalizationsDelegate

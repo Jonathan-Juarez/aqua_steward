@@ -1,6 +1,5 @@
 import 'package:aqua_steward/core/error/result.dart';
 import 'package:aqua_steward/features/deposit/domain/entities/deposit.dart';
-import 'package:aqua_steward/features/deposit/data/models/deposit_model.dart';
 
 abstract class IDepositRepository {
   // Contrato para obtener la lista de depósitos del servidor.
@@ -8,7 +7,7 @@ abstract class IDepositRepository {
 
   // Contrato para crear un nuevo depósito en el sistema.
   Future<Result<void>> createDeposit({
-    required DepositModel deposit,
+    required Deposit deposit,
     required String token,
   });
 
@@ -21,6 +20,6 @@ abstract class IDepositRepository {
   Future<Result<void>> updateDeposit({
     required String depositId,
     required String token,
-    required DepositModel deposit,
+    required Deposit deposit,
   });
 }

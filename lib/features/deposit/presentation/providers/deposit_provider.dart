@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:aqua_steward/core/error/result.dart';
-import 'package:aqua_steward/features/deposit/data/models/deposit_model.dart';
 import 'package:aqua_steward/features/deposit/domain/usecases/create_deposit_usecase.dart';
 import 'package:aqua_steward/features/deposit/domain/usecases/delete_deposit_usecase.dart';
 import 'package:aqua_steward/features/deposit/domain/usecases/get_deposits_usecase.dart';
@@ -106,7 +105,7 @@ class DepositProvider extends ChangeNotifier {
 
   // Ejecuta la creación de un nuevo depósito y sincroniza la lista local.
   Future<Result<void>> createDeposit({
-    required DepositModel deposit,
+    required Deposit deposit,
     required String token,
   }) async {
     // Inicia el spinner de carga para la acción de guardado.
@@ -167,7 +166,7 @@ class DepositProvider extends ChangeNotifier {
   // Actualiza un depósito existente y sincroniza la lista local.
   Future<Result<void>> updateDeposit({
     required String depositId,
-    required DepositModel deposit,
+    required Deposit deposit,
     required String token,
   }) async {
     // Activa el indicador de carga para la operación de actualización.

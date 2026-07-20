@@ -18,4 +18,26 @@ class User {
     this.depositID,
     this.token,
   });
+
+  User copyWith({
+    String? id,
+    String? name,
+    String? last_name,
+    String? email,
+    String? password,
+    String? role,
+    String? depositID,
+    String? token,
+  }) {
+    return User(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      last_name: last_name ?? this.last_name,
+      email: email ?? this.email,
+      password: password ?? this.password,
+      role: role ?? this.role,
+      depositID: depositID ?? this.depositID,
+      token: token ?? this.token,
+    );
+  }
 }

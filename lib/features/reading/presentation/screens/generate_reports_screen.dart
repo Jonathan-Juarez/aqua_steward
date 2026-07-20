@@ -120,7 +120,9 @@ class _GenerateReportsScreenState extends State<GenerateReportsScreen> {
               title: context.l10n.reporte_total_alertas,
               subtitle: context.l10n.reporte_resumen_numerico,
               value: _includeAlerts,
-              icon: AppIcon.notificationsActiveOutlined,
+              icon: AppIcon.notificationsOutlined(
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
               onChanged: (val) => setState(() => _includeAlerts = val),
             ),
 

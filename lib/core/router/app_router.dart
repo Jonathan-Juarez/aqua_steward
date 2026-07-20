@@ -1,4 +1,3 @@
-import "dart:typed_data";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "package:aqua_steward/core/router/imports.dart";
@@ -83,14 +82,14 @@ class AppRouter {
     //     depositData: args["depositData"] as Map<String, dynamic>,
     //   );
     // },
-    registers: (context) {
-      final args =
-          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-      return RegistersScreen(
-        initialParameter: args["initialParameter"] as String,
-        depositData: args["depositData"] as Map<String, dynamic>,
-      );
-    },
+    // registers: (context) {
+    //   final args =
+    //       ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    //   return RegistersScreen(
+    //     initialParameter: args["initialParameter"] as String,
+    //     depositData: args["depositData"] as Map<String, dynamic>,
+    //   );
+    // },
 
     // Gestión de usuarios
     profile: (context) => const ProfileScreen(),
@@ -119,13 +118,10 @@ class AppRouter {
     scanner: (context) => const ScannerScreen(),
 
     // Alertas
-    alerts: (context) => const AlertsScreen(),
+    alerts: (context) => const NotificationScreen(),
 
     // Reportes
-    generateReports: (context) {
-      final args = ModalRoute.of(context)!.settings.arguments as Uint8List?;
-      return GenerateReportsScreen(chartImage: args);
-    },
+    generateReports: (context) => const GenerateReportsScreen(),
     pdfPreview: (context) {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;

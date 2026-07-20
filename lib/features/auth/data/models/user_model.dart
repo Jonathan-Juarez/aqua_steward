@@ -14,6 +14,7 @@ class UserModel extends User {
   });
 
   // El método copyWith crea una copia del usuario, permitiendo actualizar campos específicos sin perder el resto de datos.
+  @override
   UserModel copyWith({
     String? id,
     String? name,

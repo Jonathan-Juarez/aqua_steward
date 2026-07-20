@@ -1,18 +1,22 @@
+import "dart:async";
 import "package:aqua_steward/core/permissions/app_permission.dart";
 import "package:aqua_steward/core/router/app_router.dart";
-import "package:aqua_steward/core/theme/app_border.dart";
-import "package:aqua_steward/core/theme/app_padding.dart";
+import "package:aqua_steward/core/error/result_handler.dart";
+import "package:aqua_steward/core/theme/app_color.dart";
 import "package:aqua_steward/core/widgets/button_format.dart";
+import "package:aqua_steward/core/widgets/dialog_emergent.dart";
 import "package:aqua_steward/core/widgets/snack_bar_format.dart";
 import "package:aqua_steward/core/widgets/text_format.dart";
-import "package:aqua_steward/core/theme/app_divider.dart";
 import "package:aqua_steward/core/theme/app_icon.dart";
 import "package:aqua_steward/core/theme/app_sizedbox.dart";
-import "package:aqua_steward/core/widgets/container_formart.dart";
 import "package:aqua_steward/core/widgets/scaffold_main.dart";
 import "package:aqua_steward/features/auth/presentation/providers/auth_provider.dart";
 import "package:aqua_steward/features/deposit/presentation/providers/deposit_provider.dart";
-import "package:aqua_steward/features/reading/presentation/widgets/circular_progress_parameters.dart";
+import "package:aqua_steward/features/notification/presentation/providers/notification_provider.dart";
+import "package:aqua_steward/features/reading/presentation/widgets/deposit_card.dart";
+import "package:aqua_steward/features/reading/presentation/widgets/dialog_export_csv.dart";
+import "package:aqua_steward/features/team/presentation/providers/team_provider.dart";
+import "package:aqua_steward/core/services/notification_service.dart";
 import "package:aqua_steward/core/widgets/menu_button_format.dart";
 import "package:aqua_steward/core/widgets/exit_confirmation_scope.dart";
 import "package:flutter/material.dart";
@@ -26,20 +30,74 @@ class DashboardScreen extends StatefulWidget {
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
+class _DashboardScreenState extends State<DashboardScreen>
+    with WidgetsBindingObserver {
+  StreamSubscription? _dashboardMessageSubscription;
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     // addPostFrameCallback sirve para ejecutar código después de que el widget se ha construido. permite que aparezca el loading.
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authProvider = context.read<AuthProvider>();
+      final token = authProvider.currentUser?.token ?? "";
+
+      if (token.isNotEmpty) {
+        // Inicializar notificaciones con el token del usuario actual
+        context.read<NotificationProvider>().init(token);
+        // Cargar invitaciones de equipo al inicio
+        context.read<TeamProvider>().getInvitations(token: token);
+        // Solicitar permisos de notificación
+        NotificationService.instance.requestPermissions();
+      }
+
       final provider = context.read<DepositProvider>();
       // Se verifica si la lista de depósitos está vacía y si no se está cargando. Es decir, que no se está obteniendo los depósitos.
       if (provider.deposits.isEmpty && !provider.isLoading) {
-        final authProvider = context.read<AuthProvider>();
-        final token = authProvider.currentUser?.token ?? "";
         if (token.isNotEmpty) provider.getDeposits(token: token);
       }
+
+      // Escucha mensajes entrantes en tiempo real para refrescar invitaciones y depósitos
+      _dashboardMessageSubscription = NotificationService
+          .instance
+          .onMessageReceived
+          .listen((message) {
+            final currentToken =
+                context.read<AuthProvider>().currentUser?.token ?? "";
+            if (currentToken.isNotEmpty) {
+              // Refrescar invitaciones de equipo
+              context.read<TeamProvider>().getInvitations(token: currentToken);
+              // Refrescar depósitos si el push es de tipo equipo (expulsión o cambio de rol)
+              final type = message.data["type"] ?? "";
+              if (type == "team_removed" || type == "team_role_changed") {
+                context.read<DepositProvider>().getDeposits(
+                  token: currentToken,
+                );
+              }
+            }
+          });
     });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _dashboardMessageSubscription?.cancel();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      final authProvider = context.read<AuthProvider>();
+      final token = authProvider.currentUser?.token ?? "";
+      if (token.isNotEmpty) {
+        // Refrescar depósitos e invitaciones cuando la app vuelve al primer plano
+        context.read<DepositProvider>().getDeposits(token: token);
+        context.read<TeamProvider>().getInvitations(token: token);
+      }
+    }
   }
 
   void _deleteDeposit(String depositId) async {
@@ -80,19 +138,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     type: "title",
                   ),
                 ),
-                buttonIconNavigation(
-                  context,
-                  AppRouter.alerts,
-                  AppIcon.notificationsOutlined(
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
+                Consumer2<NotificationProvider, TeamProvider>(
+                  builder: (context, notifProvider, teamProvider, _) {
+                    // Guarda la cantidad total de notificaciones pendientes (alertas sin leer + invitaciones)
+                    final unreadCount =
+                        notifProvider.unreadCount +
+                        teamProvider.invitations.length;
+                    return Badge.count(
+                      count: unreadCount,
+                      // Solo se muestra si hay notificaciones sin leer o invitaciones pendientes.
+                      isLabelVisible: unreadCount > 0,
+                      backgroundColor: AppColor.error,
+                      child: ButtonFormat(
+                        type: "icon",
+                        icon: AppIcon.notificationsOutlined(
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                        onConfirm: () =>
+                            Navigator.pushNamed(context, AppRouter.alerts),
+                      ),
+                    );
+                  },
                 ),
-                buttonIconNavigation(
-                  context,
-                  AppRouter.support,
-                  AppIcon.supportOutline(
+                ButtonFormat(
+                  type: "icon",
+                  icon: AppIcon.supportOutline(
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
+                  onConfirm: () =>
+                      Navigator.pushNamed(context, AppRouter.support),
                 ),
               ],
             ),
@@ -182,78 +256,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     BuildContext context,
     Map<String, dynamic> depositData,
   ) {
-    // Parseo seguro de datos a double para usarlos en pantallas y gráficas
-    double peakLevel = (depositData["peakLevel"] as num).toDouble();
-    double peakPh = (depositData["peakPh"] as num).toDouble();
-    double peakTurbidity = (depositData["peakTurbidity"] as num).toDouble();
-
-    double inputLevel = (depositData["inputLevel"] as num).toDouble();
-    double inputPh = (depositData["inputPh"] as num).toDouble();
-    double inputTurbidity = (depositData["inputTurbidity"] as num).toDouble();
-
-    // Nivel, pH y Turbidez.
-    List<String> parametersLabel = [
-      context.l10n.sensor_nivel,
-      context.l10n.sensor_ph,
-      context.l10n.sensor_turbidez,
-    ];
-
-    // Listas para el dashboard (barras de progreso)
-    List<double> peakParameters = [peakLevel, peakPh, peakTurbidity];
-    List<double> imputParameters = [inputLevel, inputPh, inputTurbidity];
-    List<String> unitParameters = ["%", "pH", "NTU"];
-
-    return ContainerFormat(
-      children: [
-        Padding(
-          padding: AppPadding.symmetric0_8,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header de tarjeta
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextFormat(
-                    text: depositData["name"],
-                    context: context,
-                    type: "titleSmall",
-                  ),
-                  menuDeposit(context, depositData),
-                ],
-              ),
-              AppDivider.dv8,
-
-              // Barras de progreso de los parámetros.
-              Row(
-                children: List.generate(parametersLabel.length, (index) {
-                  return Expanded(
-                    child: InkWell(
-                      borderRadius: AppBorder.all8,
-                      onTap: () => Navigator.pushNamed(
-                        context,
-                        AppRouter.registers,
-                        arguments: {
-                          "initialParameter": parametersLabel[index],
-                          "depositData": depositData,
-                        },
-                      ),
-                      child: CircularProgressParameters(
-                        index: index,
-                        peakParameters: peakParameters,
-                        imputParameters: imputParameters,
-                        parametersLabel: parametersLabel,
-                        unit: unitParameters,
-                        depositData: depositData,
-                      ),
-                    ),
-                  );
-                }),
-              ),
-            ],
-          ),
-        ),
-      ],
+    return DepositCard(
+      key: ValueKey(depositData["id"]),
+      depositData: depositData,
+      menuWidget: menuDeposit(context, depositData),
     );
   }
 
@@ -265,25 +271,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
       MenuItemModel(
         value: "members",
         icon: AppIcon.groups2Outlined,
-        text: context.l10n.dashboard_menu_miembros,
+        text: context.l10n.comun_miembros,
       ),
       if (RolePermissions.has(role, AppPermission.editThresholds))
         MenuItemModel(
           value: "thresholds",
           icon: AppIcon.dataThresholdingOutlined,
-          text: context.l10n.dashboard_menu_umbrales,
+          text: context.l10n.comun_umbrales,
         ),
       if (RolePermissions.has(role, AppPermission.editDeposit))
         MenuItemModel(
           value: "edit",
           icon: AppIcon.edit(context: context),
-          text: context.l10n.dashboard_menu_editar,
+          text: context.l10n.comun_deposito,
         ),
+      MenuItemModel(
+        value: "exportCsv",
+        icon: AppIcon.download,
+        text: context.l10n.reporte_exportar_csv,
+      ),
+      MenuItemModel(
+        value: "generatePdf",
+        icon: AppIcon.pdf,
+        text: context.l10n.reporte_generar_pdf,
+      ),
       if (RolePermissions.has(role, AppPermission.deleteDeposit))
         MenuItemModel(
           value: "delete",
           icon: AppIcon.deleteOutline,
           text: context.l10n.comun_eliminar,
+          textStyle: "bodyRed",
+        ),
+      if (role != "owner")
+        MenuItemModel(
+          value: "leave",
+          icon: AppIcon.deleteOutline,
+          text: context.l10n.comun_abandonar,
           textStyle: "bodyRed",
         ),
     ];
@@ -293,6 +316,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
       onSelected: (value) {
         // Mapa donde la clave es un String y el valor es una función.
         final Map<String, VoidCallback> action = {
+          "exportCsv": () {
+            DialogExportCsv.show(context: context, depositData: depositData);
+          },
+          "generatePdf": () {
+            Navigator.pushNamed(context, AppRouter.generateReports);
+          },
           "members": () {
             Navigator.pushNamed(
               context,
@@ -316,22 +345,51 @@ class _DashboardScreenState extends State<DashboardScreen> {
           },
           "delete": () {
             setState(() {
-              _deleteDeposit(depositData["id"]);
+              showDialog(
+                context: context,
+                builder: (context) => DialogEmergent(
+                  title: context.l10n.dialogo_eliminar_titulo,
+                  content: TextFormat(
+                    text: context.l10n.dialogo_eliminar,
+                    context: context,
+                    type: "body",
+                  ),
+                  onPressed: () {
+                    _deleteDeposit(depositData["id"]);
+                    Navigator.pop(context);
+                  },
+                  formKey: null,
+                  isLoading: false,
+                ),
+              );
             });
+          },
+          "leave": () async {
+            final userId = context.read<AuthProvider>().currentUser?.id;
+            final token = context.read<AuthProvider>().currentUser?.token ?? "";
+            if (userId != null && token.isNotEmpty) {
+              final result = await context.read<TeamProvider>().deleteMember(
+                depositId: depositData["id"],
+                userId: userId,
+                token: token,
+              );
+              if (context.mounted) {
+                context.processResult(
+                  result,
+                  successMessage: context.l10n.snackbar_abandonar_deposito,
+                );
+                if (result.isSuccess) {
+                  // Refrescar depósitos
+                  context.read<DepositProvider>().getDeposits(token: token);
+                }
+              }
+            }
           },
         };
 
         // Si el value (string) se recibe en el mapa, se llama la función.
         action[value]?.call();
       },
-    );
-  }
-
-  Widget buttonIconNavigation(BuildContext context, String screen, Icon icon) {
-    return ButtonFormat(
-      type: "icon",
-      onConfirm: () => Navigator.pushNamed(context, screen),
-      icon: icon,
     );
   }
 }

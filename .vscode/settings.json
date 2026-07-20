@@ -1,5 +1,10 @@
 {
     "java.project.sourcePaths": [
         "android"
-    ]
+    ],
+    // Forzar JDK 17 para el servidor Gradle de VS Code (JDK 24 es incompatible con Gradle 8.13)
+    "java.jdt.ls.java.home": "C:\\Users\\jonhy\\java\\17.0.13+11",
+    "gradle.javaHome": "C:\\Users\\jonhy\\java\\17.0.13+11",
+    // Desactivar auto-detección del plugin Gradle para no interferir con Flutter
+    "gradle.autoDetect": "off"
 }

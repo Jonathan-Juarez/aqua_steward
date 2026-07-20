@@ -4,12 +4,20 @@ import 'package:aqua_steward/core/network/global_variable.dart';
 import 'package:aqua_steward/core/network/manage_http_response.dart';
 import 'package:aqua_steward/core/error/exception_handler.dart';
 import 'package:aqua_steward/features/reading/data/models/reading_model.dart';
+import 'package:aqua_steward/features/reading/data/models/export_reading_model.dart';
 import 'package:http/http.dart' as http;
 
 abstract class IReadingDataSource {
   Future<Result<List<ReadingModel>>> getReadings({
     required String depositId,
     required String sensorType,
+    required String token,
+    required String filter,
+  });
+
+  Future<Result<List<ExportReadingModel>>> exportReadings({
+    required String depositId,
+    required List<String> sensorTypes,
     required String token,
     required String filter,
   });
@@ -49,4 +57,38 @@ class ReadingDataSourceImpl implements IReadingDataSource {
       return handleException(e);
     }
   }
+
+  @override
+  Future<Result<List<ExportReadingModel>>> exportReadings({
+    required String depositId,
+    required List<String> sensorTypes,
+    required String token,
+    required String filter,
+  }) async {
+    try {
+      final sensorsQuery = sensorTypes.join(',');
+      final http.Response response = await http.get(
+        Uri.parse(
+          "$uri/api/reading/$depositId/export?sensors=$sensorsQuery&filter=$filter",
+        ),
+        headers: <String, String>{
+          "Content-Type": "application/json; charset=utf-8",
+          "x-auth-token": token,
+        },
+      );
+      final result = manageHttpResponse(response: response);
+      if (result.isSuccess) {
+        final List<dynamic> data = json.decode(response.body);
+        final list = data
+            .map((readingMap) => ExportReadingModel.fromJson(readingMap))
+            .toList();
+        return Result.success(list);
+      } else {
+        return Result.failure(result.error);
+      }
+    } catch (e) {
+      return handleException(e);
+    }
+  }
 }
+

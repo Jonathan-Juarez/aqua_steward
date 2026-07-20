@@ -17,7 +17,8 @@ class DepositRepositoryImpl implements IDepositRepository {
     if (result.isSuccess) {
       // Procesa y transforma la lista de mapas genéricos en modelos DepositModel.
       final List<dynamic> data = result.data!;
-      final deposits = data.map((e) => DepositModel.fromMap(e)).toList();
+      final List<Deposit> deposits =
+          data.map<Deposit>((e) => DepositModel.fromMap(e)).toList();
       // Retorna éxito con la lista final de objetos de la entidad.
       return Result.success(deposits);
     } else {
@@ -29,11 +30,14 @@ class DepositRepositoryImpl implements IDepositRepository {
   @override
   // Delega la creación de un nuevo depósito al repositorio de datos.
   Future<Result<void>> createDeposit({
-    required DepositModel deposit,
+    required Deposit deposit,
     required String token,
   }) {
+    final model = deposit is DepositModel
+        ? deposit
+        : DepositModel.fromEntity(deposit);
     // Retorna directamente el resultado procesado por el DataSource inyectado.
-    return dataSource.create(deposit: deposit, token: token);
+    return dataSource.create(deposit: model, token: token);
   }
 
   @override
@@ -50,12 +54,15 @@ class DepositRepositoryImpl implements IDepositRepository {
   Future<Result<void>> updateDeposit({
     required String depositId,
     required String token,
-    required DepositModel deposit,
+    required Deposit deposit,
   }) {
+    final model = deposit is DepositModel
+        ? deposit
+        : DepositModel.fromEntity(deposit);
     return dataSource.update(
       depositId: depositId,
       token: token,
-      deposit: deposit,
+      deposit: model,
     );
   }
 }

@@ -10,8 +10,10 @@ dependencies:
   flutter:
     sdk: flutter
   animate_do: ^4.2.0
+  firebase_core: ^4.10.0
   firebase_messaging: ^16.2.0 # Notificaciones push de Firebase.
-  fl_chart: ^1.1.1
+  flutter_local_notifications: ^22.0.0 # Notificaciones locales.
+  fl_chart: ^1.1.1 # Gráficos.
   http: ^1.6.0 # HTTP para hacer peticiones.
   intl: ^0.20.2 # Formato de fechas.
   mobile_scanner: ^7.2.0 # Escanear QR.
@@ -26,6 +28,9 @@ dependencies:
   url_launcher: ^6.3.2 # Abrir enlaces externos (Email, WA, etc).
   flutter_localizations: # Soporte para idiomas.
     sdk: flutter
+  flutter_secure_storage: ^10.3.1 # Persistencia de datos sensibles.
+  share_plus: ^12.0.2 # Compartir archivos.
+  path_provider: ^2.1.6 # Obtener rutas temporales para guardar archivos.
 
 
 
@@ -41,13 +46,8 @@ flutter:
   # Habilita la autogeneración de código para internacionalización (i18n).
   generate: true
   assets:
-    - assets/data/water_level.json
-    - assets/data/water_turbidity.json
-    - assets/data/water_ph.json
-    - assets/images/gota.png
     - assets/images/logo_AquaSteward.png
     - assets/images/logo_transparente_AquaSteward.png
-    - assets/images/logo.png
     - assets/images/deposit.png
     - assets/images/branding.png
     - assets/images/branding_dark.png
@@ -57,6 +57,9 @@ flutter_launcher_icons:
   android: true
   ios: true
   image_path: "assets/images/logo_AquaSteward.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/images/logo_transparente_AquaSteward.png"
+  adaptive_icon_monochrome: "assets/images/logo_transparente_AquaSteward_monochrome.png"
 
 # Ejecutar dart run flutter_native_splash:create para configurar el splash screen de la app
 flutter_native_splash:

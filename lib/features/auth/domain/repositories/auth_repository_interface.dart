@@ -1,5 +1,5 @@
 import 'package:aqua_steward/core/error/result.dart';
-import 'package:aqua_steward/features/auth/data/models/user_model.dart';
+import 'package:aqua_steward/features/auth/domain/entities/user.dart';
 
 abstract class IAuthRepository {
   // Contrato para registrar un nuevo usuario.
@@ -11,7 +11,7 @@ abstract class IAuthRepository {
   });
 
   // Contrato para iniciar sesión. Retorna el usuario autenticado envuelto en un Result.
-  Future<Result<UserModel>> signinUser({
+  Future<Result<User>> signinUser({
     required String email,
     required String password,
   });

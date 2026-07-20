@@ -9,6 +9,20 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:aqua_steward/l10n/app_localizations.dart';
 import "package:aqua_steward/core/router/imports.dart";
 
+// Firebase y Notificaciones
+import 'package:firebase_core/firebase_core.dart';
+import 'package:aqua_steward/firebase_options.dart';
+import 'package:aqua_steward/core/services/notification_service.dart';
+import 'package:aqua_steward/features/notification/data/sources/notification_remote_data_source.dart';
+import 'package:aqua_steward/features/notification/data/repositories/notification_repository_impl.dart';
+import 'package:aqua_steward/features/notification/domain/usecases/register_fcm_token_usecase.dart';
+import 'package:aqua_steward/features/notification/domain/usecases/unregister_fcm_token_usecase.dart';
+import 'package:aqua_steward/features/notification/domain/usecases/get_notifications_usecase.dart';
+import 'package:aqua_steward/features/notification/domain/usecases/delete_notification_usecase.dart';
+import 'package:aqua_steward/features/notification/domain/usecases/delete_all_notifications_usecase.dart';
+import 'package:aqua_steward/features/notification/domain/usecases/mark_notifications_as_read_usecase.dart';
+import 'package:aqua_steward/features/notification/presentation/providers/notification_provider.dart';
+
 // Variables globales para almacenar la información del paquete.
 late PackageInfo packageInfo;
 
@@ -16,21 +30,53 @@ Future<void> main() async {
   // Se inicializa Flutter antes de acceder a plugins nativos.
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Inicializar Firebase
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Inicializar Notificaciones
+  await NotificationService.instance.initialize();
+
   packageInfo = await PackageInfo.fromPlatform();
   final (theme, language) = await (
     ThemeProvider.load(),
     LanguageProvider.load(),
   ).wait;
-  runApp(MainApp(savedTheme: theme, savedLanguage: language));
+
+  // Verificación de sesión previa antes de lanzar la interfaz
+  final authDataSource = AuthDataSource();
+  final authRepository = AuthRepositoryImpl(authDataSource);
+  final authProvider = AuthProvider(
+    signinUseCase: SigninUseCase(authRepository),
+    signupUseCase: SignupUseCase(authRepository),
+    updateUserUseCase: UpdateUserUseCase(authRepository),
+    resetPasswordUseCase: ResetPasswordUseCase(authRepository),
+  );
+
+  final isLoggedIn = await authProvider.tryAutoLogin();
+  final initialRoute = isLoggedIn ? AppRouter.dashboard : AppRouter.start;
+
+  runApp(
+    MainApp(
+      savedTheme: theme,
+      savedLanguage: language,
+      savedAuthProvider: authProvider,
+      initialRoute: initialRoute,
+    ),
+  );
 }
 
 class MainApp extends StatelessWidget {
   final ThemeProvider savedTheme;
   final LanguageProvider savedLanguage;
+  final AuthProvider savedAuthProvider;
+  final String initialRoute;
+
   const MainApp({
     super.key,
     required this.savedTheme,
     required this.savedLanguage,
+    required this.savedAuthProvider,
+    required this.initialRoute,
   });
 
   @override
@@ -39,17 +85,23 @@ class MainApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider.value(value: savedTheme),
         ChangeNotifierProvider.value(value: savedLanguage),
-        // AuthProvider ahora gestiona tanto la sesión como el perfil del usuario (AuthProvider unificado).
+        ChangeNotifierProvider.value(value: savedAuthProvider),
+        // NotificationProvider para notificaciones push
         ChangeNotifierProvider(
           create: (_) {
-            final authDataSource = AuthDataSource();
-            final authRepository = AuthRepositoryImpl(authDataSource);
-
-            return AuthProvider(
-              signinUseCase: SigninUseCase(authRepository),
-              signupUseCase: SignupUseCase(authRepository),
-              updateUserUseCase: UpdateUserUseCase(authRepository),
-              resetPasswordUseCase: ResetPasswordUseCase(authRepository),
+            final remoteDataSource = NotificationRemoteDataSource();
+            final repository = NotificationRepositoryImpl(remoteDataSource);
+            return NotificationProvider(
+              registerFCMTokenUseCase: RegisterFCMTokenUseCase(repository),
+              unregisterFCMTokenUseCase: UnregisterFCMTokenUseCase(repository),
+              getNotificationsUseCase: GetNotificationsUseCase(repository),
+              deleteNotificationUseCase: DeleteNotificationUseCase(repository),
+              deleteAllNotificationsUseCase: DeleteAllNotificationsUseCase(
+                repository,
+              ),
+              markNotificationsAsReadUseCase: MarkNotificationsAsReadUseCase(
+                repository,
+              ),
             );
           },
         ),
@@ -73,6 +125,7 @@ class MainApp extends StatelessWidget {
             final repository = ReadingRepositoryImpl(dataSource);
             return ReadingProvider(
               getReadingsUseCase: GetReadingsUseCase(repository),
+              exportReadingsUseCase: ExportReadingsUseCase(repository),
             );
           },
         ),
@@ -115,7 +168,7 @@ class MainApp extends StatelessWidget {
           ],
           supportedLocales: AppLocalizations.supportedLocales,
 
-          initialRoute: '/',
+          initialRoute: initialRoute,
           routes: AppRouter.routes,
           // Se limita el escalado de texto globalmente sin reconstruir MaterialApp al abrir teclado.
           builder: (context, child) {

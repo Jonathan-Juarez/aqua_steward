@@ -40,6 +40,7 @@ Result<void> manageHttpResponse({required http.Response response}) {
       try {
         final body = json.decode(response.body);
         return Result.failure(
+          // Extrae el mensaje de error del cuerpo de la respuesta para el fallo del Result. [0] significa el primer error.
           body["errors"]?[0]["message"] ??
               body["error"] ??
               "Error interno del servidor",

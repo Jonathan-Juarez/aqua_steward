@@ -6,13 +6,13 @@ import 'package:flutter/material.dart';
 
 class MenuItemModel {
   final String value;
-  final Widget icon;
+  final Widget? icon;
   final String text;
   final String? textStyle;
 
   MenuItemModel({
     required this.value,
-    required this.icon,
+    this.icon,
     required this.text,
     this.textStyle,
   });
@@ -47,8 +47,7 @@ class MenuButtonFormat extends StatelessWidget {
               value: item.value,
               child: Row(
                 children: [
-                  item.icon,
-                  AppSizedBox.width8,
+                  if (item.icon != null) ...{item.icon!, AppSizedBox.width8},
                   TextFormat(
                     text: item.text,
                     context: context,

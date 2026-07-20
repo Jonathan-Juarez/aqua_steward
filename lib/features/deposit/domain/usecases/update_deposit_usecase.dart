@@ -1,5 +1,5 @@
 import 'package:aqua_steward/core/error/result.dart';
-import 'package:aqua_steward/features/deposit/data/models/deposit_model.dart';
+import 'package:aqua_steward/features/deposit/domain/entities/deposit.dart';
 import 'package:aqua_steward/features/deposit/domain/repositories/deposit_repository_interface.dart';
 
 class UpdateDepositUsecase {
@@ -10,7 +10,7 @@ class UpdateDepositUsecase {
   Future<Result<void>> updateDeposit({
     required String depositId,
     required String token,
-    required DepositModel deposit,
+    required Deposit deposit,
   }) {
     return repository.updateDeposit(
       depositId: depositId,

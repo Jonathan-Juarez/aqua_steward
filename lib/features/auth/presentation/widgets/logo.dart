@@ -20,7 +20,9 @@ class Logo extends StatelessWidget {
           ),
           child: Padding(
             padding: AppPadding.all8,
-            child: Image.asset("assets/images/logo.png"),
+            child: Image.asset(
+              "assets/images/logo_transparente_AquaSteward.png",
+            ),
           ),
         ),
         AppSizedBox.height12,

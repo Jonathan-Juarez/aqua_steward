@@ -1,5 +1,5 @@
 import 'package:aqua_steward/core/error/result.dart';
-import 'package:aqua_steward/features/auth/data/models/user_model.dart';
+import 'package:aqua_steward/features/auth/domain/entities/user.dart';
 import 'package:aqua_steward/features/auth/data/sources/auth_data_source.dart';
 import 'package:aqua_steward/features/auth/domain/repositories/auth_repository_interface.dart';
 
@@ -26,7 +26,7 @@ class AuthRepositoryImpl implements IAuthRepository {
 
   @override
   // Delega el inicio de sesión al DataSource y propaga el UserModel envuelto en Result.
-  Future<Result<UserModel>> signinUser({
+  Future<Result<User>> signinUser({
     required String email,
     required String password,
   }) {

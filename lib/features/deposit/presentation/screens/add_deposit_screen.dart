@@ -13,8 +13,8 @@ import 'package:aqua_steward/core/widgets/scaffold_main.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
-import 'package:aqua_steward/features/deposit/data/models/deposit_model.dart';
-import 'package:aqua_steward/features/deposit/data/models/sensor_model.dart';
+import 'package:aqua_steward/features/deposit/domain/entities/deposit.dart';
+import 'package:aqua_steward/features/deposit/domain/entities/sensor.dart';
 import 'package:aqua_steward/features/deposit/presentation/providers/deposit_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -99,7 +99,7 @@ class _AddDepositScreenState extends State<AddDepositScreen> {
     final sensors = data["sensors"] as List?;
 
     // Construye los sensores con los estados actualizados y los umbrales originales.
-    List<SensorModel> newSensors = [];
+    List<Sensor> newSensors = [];
     if (sensors != null) {
       for (int i = 0; i < sensors.length; i++) {
         final sensor = sensors[i];
@@ -116,7 +116,7 @@ class _AddDepositScreenState extends State<AddDepositScreen> {
         bool updatedState = _switchValues[i];
 
         newSensors.add(
-          SensorModel(
+          Sensor(
             type: type,
             state: updatedState,
             unit: unit,
@@ -131,7 +131,7 @@ class _AddDepositScreenState extends State<AddDepositScreen> {
     final currentUser = authProvider.currentUser;
     final token = currentUser?.token ?? "";
 
-    final DepositModel updatedDeposit = DepositModel(
+    final Deposit updatedDeposit = Deposit(
       name: _nameController.text,
       ip: _ipController.text,
       capacity: (data["capacity"] as num?)?.toDouble(),
@@ -195,7 +195,7 @@ class _AddDepositScreenState extends State<AddDepositScreen> {
   Widget build(BuildContext context) {
     return ScaffoldMain(
       formKey: _formKey,
-      titleAppBar: context.l10n.titulo_agregar_deposito,
+      titleAppBar: context.l10n.comun_deposito,
       children: [
         TextFormat(
           text: context.l10n.deposito_sensores_instalados,
@@ -298,7 +298,7 @@ class _AddDepositScreenState extends State<AddDepositScreen> {
                     type: "body",
                   ),
                   TextFieldFormat(
-                    labelText: context.l10n.deposito_nombre_label,
+                    labelText: context.l10n.comun_deposito,
                     icon: AppIcon.waterDamageOutlined,
                     controller: _nameController,
                     maxLength: 20,

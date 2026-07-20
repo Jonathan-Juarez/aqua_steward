@@ -6,13 +6,18 @@
   "comun_confirmar": "Confirm",
   "comun_error": "An error occurred: {message}",
   "comun_cargando": "Loading...",
-
+  "comun_miembros": "Members",
+  "comun_deposito": "Deposit",
+  "comun_umbrales": "Thresholds",
+  "comun_abandonar": "Leave",
   "logo_nombre": "AquaSteward",
   "logo_slogan": "Smart Water Monitoring",
-
   "button_inicio": "Home",
   "button_perfil": "Profile",
-
+  "dialogo_salida": "Are you sure you want to leave this space?",
+  "dialogo_salida_titulo": "Leave AquaSteward?",
+  "dialogo_eliminar": "Are you sure you want to delete this deposit?",
+  "dialogo_eliminar_titulo": "Delete deposit?",
   "titulo_dashboard": "My Deposits",
   "titulo_soporte": "Support",
   "titulo_acerca_de": "About",
@@ -20,15 +25,11 @@
   "titulo_manual_usuario": "User manual",
   "titulo_contactar_soporte": "Contact Support",
   "titulo_reportes": "Generate Reports",
-  "titulo_miembros": "Manage Members",
   "titulo_alertas": "Notifications",
-  "titulo_agregar_deposito": "Add Deposit",
   "titulo_detalles_sensor": "{sensorName} Details",
-  "titulo_configurar_umbrales": "Configure Thresholds",
   "titulo_vista_previa_pdf": "Report Preview",
   "titulo_reporte_pdf": "AquaSteward Report",
   "titulo_qr": "Scan QR Code",
-
   "auth_iniciar_sesion": "Sign In",
   "auth_registrarse": "Sign Up",
   "auth_correo": "Email",
@@ -43,7 +44,6 @@
   "auth_no_recibiste": "Didn't receive it?",
   "auth_reenviar": "Resend",
   "auth_cambiar_contrasena": "Change password",
-
   "perfil_titulo": "My profile",
   "perfil_info_personal": "Personal Information",
   "perfil_nombre": "Name",
@@ -61,18 +61,12 @@
   "perfil_idioma": "Language",
   "perfil_espanol": "Spanish",
   "perfil_ingles": "English",
-
   "dashboard_titulo": "My Deposits",
   "dashboard_sin_depositos": "No deposits added",
-  "dashboard_menu_miembros": "Members",
-  "dashboard_menu_umbrales": "Edit thresholds",
-  "dashboard_menu_editar": "Edit deposit",
-
   "sensor_nivel": "Level",
   "sensor_ph": "pH",
   "sensor_turbidez": "Turbidity",
   "sensor_valor_pantalla": "The value of {sensorName} is {value}",
-
   "soporte_titulo": "Support",
   "soporte_recursos": "Resources and information",
   "soporte_manual": "User manual",
@@ -93,7 +87,6 @@
   "soporte_contacto_ayuda": "Need more help?",
   "soporte_contacto_desc": "If you didn't find what you were looking for, our technical support team is ready to help.",
   "soporte_contacto_boton": "Contact Support",
-
   "manual_guia_basica": "Basic guide",
   "manual_roles_titulo": "1. Roles and Collaboration",
   "manual_roles_desc": "AquaSteward allows several people to monitor the same deposits. Depending on your role, you will have different permissions:\n\n• Owner: Total control of the space. They are the only ones who can assign ownership to another person or delete the entire environment.\n• Admin: Can add, configure and delete deposits. They also have permission to invite new members, assign roles or remove them from the group.\n• Analyst: Their role is active monitoring. They can view readings, alerts and generate reports, but they cannot modify the configuration of the deposits or manage users.",
@@ -103,13 +96,11 @@
   "manual_invitaciones_desc": "To work together and monitor the same deposits, the Owner or the Admin must invite the new members:\n\nSend invitation: From the users section, enter the email address of the person you want to add and assign them a role (Analyst or Admin).\n\nRegistration: The guest will receive an email with a secure link. They just have to follow that link to create their account and automatically join your environment.\n\nAccess control: As an Admin or Owner, you can remove access from any user or modify their role at any time from this same section.",
   "manual_monitoreo_titulo": "4. Intelligent Monitoring",
   "manual_monitoreo_desc": "Once configured, the Control Panel will show you the health status of the water:\n\n• Readings: Updated sensor values.\n• Alerts: If a value exceeds the configured ranges, you will see a critical notification in the alert bell.\n• Reports: You can check the history of previous days and export it in digital format if you need to share it or perform an external analysis.",
-
   "contacto_titulo": "Contact",
   "contacto_formulario": "Contact Form",
   "contacto_asunto": "Subject",
   "contacto_mensaje": "Message",
   "contacto_enviar": "Send Message",
-
   "reporte_periodo": "Report period",
   "reporte_seleccionar_fechas": "Select dates",
   "reporte_abrir_calendario": "Tap to open calendar",
@@ -125,39 +116,31 @@
   "reporte_eventos_criticos": "Critical Events",
   "reporte_tabla_logs": "Detailed logs table",
   "reporte_generar_pdf": "Generate PDF",
-  "reporte_exportar_csv": "Export CSV",
-
   "alertas_filtro_todos": "All",
+  "alertas_filtro_invitaciones": "Team",
+  "reporte_exportar_csv": "Export CSV",
   "alertas_filtro_nivel": "Level",
   "alertas_filtro_ph": "pH",
   "alertas_filtro_turbidez": "Turbidity",
   "alertas_sin_notificaciones": "No notifications",
-
-  "alertas_filtro_invitaciones": "Invitations",
-  "alertas_sin_invitaciones": "No invitations",
+  "alertas_sin_invitaciones": "No team updates",
   "alertas_filtro_alertas": "Alerts",
   "alertas_invitacion_titulo": "Invitation to deposit",
-  "alertas_invitacion_descripcion": "You have an invitation to join this deposit {name}.",
+  "alertas_invitacion_descripcion": "You have been invited to collaborate in the deposit {name} as {role}.",
   "alertas_rol_asignado": "Assigned role: {role}",
-
-
-  "miembros_filtro_miembros": "Members",
   "miembros_filtro_invitaciones": "Invitations",
   "miembros_rol_admin": "Admin",
   "miembros_rol_propietario": "Owner",
   "miembros_rol_analista": "Analyst",
-
   "umbrales_medidas_deposito": "Deposit measurements",
   "umbrales_medidas_desc": "Values needed to calculate the deposit level.",
   "umbrales_capacidad": "Deposit capacity",
   "umbrales_altura": "Deposit height",
   "umbrales_espacio_sensor": "Space between sensor and deposit",
-  "umbrales_titulo": "Thresholds",
   "umbrales_desc": "If values are exceeded, a notification will be sent.",
   "umbrales_nivel_permitido": "Allowed level",
   "umbrales_ph_optimo": "Optimal pH",
   "umbrales_turbidez_maxima": "Maximum turbidity",
-
   "deposito_sensores_instalados": "Installed sensors",
   "deposito_sensor_nivel_nombre": "Level sensor",
   "deposito_sensor_turbidez_nombre": "Turbidity sensor",
@@ -165,9 +148,9 @@
   "deposito_sensor_nivel_desc": "HC-SR04 Sensor",
   "deposito_sensor_turbidez_desc": "TS300B Sensor",
   "deposito_sensor_ph_desc": "PH-4502C Sensor",
-  
   "snackbar_invitacion_aceptada": "Invitation accepted successfully",
   "snackbar_invitacion_rechazada": "Invitation rejected",
+  "snackbar_abandonar_deposito": "Successfully left the deposit",
   "snackbar_alertas_activas": "You will receive readings and alerts",
   "snackbar_alertas_inactivas": "You will not receive readings and alerts",
   "snackbar_deposito_creado": "Deposit successfully created",
@@ -178,23 +161,31 @@
   "snackbar_contrasena_restablecida": "Password successfully reset",
   "snackbar_usuario_registrado": "User successfully registered",
   "snackbar_inicio_sesion_exitoso": "Login successful",
-  "snackbar_error_correo": "Could not open email application",
+  "snackbar_error_correo": "Error: Could not open email application",
+  "snackbar_csv_exportando": "Exporting data, please wait...",
+  "snackbar_csv_error": "Error: {message}",
+  "@snackbar_csv_error": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "snackbar_csv_sin_datos": "Error: No data available for the selected range and sensors.",
   "snackbar_perfil_actualizado": "Profile successfully updated",
   "snackbar_miembro_invitado_exitoso": "Member successfully invited",
-
   "deposito_info_kit": "Kit information",
   "deposito_ingresa_ip": "Enter the water kit IP",
   "deposito_ip_label": "IP",
   "deposito_ingresa_nombre": "Enter the identifier name of the water deposit",
-  "deposito_nombre_label": "Deposit",
-
   "detalles_tab_registros": "Records",
   "detalles_tab_reportes": "Reports",
   "detalles_historial": "History",
+  "detalles_rango_permitido": "Allowed range",
+  "detalles_capacidad_total": "Total capacity",
   "detalles_diario": "Day",
   "detalles_semanal": "Week",
   "detalles_mensual": "Month",
-
   "validar_campo_requerido": "Field required",
   "validar_numero_invalido": "Invalid number",
   "validar_correo_invalido": "Invalid email",
@@ -203,8 +194,12 @@
   "acerca_version": "Version {version} (Build {build})",
   "@acerca_version": {
     "placeholders": {
-      "version": { "type": "String" },
-      "build": { "type": "String" }
+      "version": {
+        "type": "String"
+      },
+      "build": {
+        "type": "String"
+      }
     }
   },
   "acerca_proposito_titulo": "Purpose",
@@ -219,5 +214,53 @@
   "acerca_legal_terminos": "Terms and Conditions",
   "acerca_legal_privacidad": "Privacy Policy",
   "acerca_software_titulo": "Open Source Licenses",
-  "acerca_software_licencias": "Open Source Licenses"
+  "acerca_software_licencias": "Open Source Licenses",
+  "tiempo_ahora": "Just now",
+  "tiempo_hace_minutos": "{count, plural, =1{1 minute ago} other{{count} minutes ago}}",
+  "@tiempo_hace_minutos": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tiempo_hace_horas": "{count, plural, =1{1 hour ago} other{{count} hours ago}}",
+  "@tiempo_hace_horas": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tiempo_hace_dias": "{count, plural, =1{1 day ago} other{{count} days ago}}",
+  "@tiempo_hace_dias": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tiempo_hace_semanas": "{count, plural, =1{1 week ago} other{{count} weeks ago}}",
+  "@tiempo_hace_semanas": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tiempo_hace_meses": "{count, plural, =1{1 month ago} other{{count} months ago}}",
+  "@tiempo_hace_meses": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "csv_dialogo_titulo": "Export CSV",
+  "csv_seleccionar_sensores": "Select sensors to export:",
+  "csv_rango_temporal": "Time range:",
+  "csv_rango_dia": "Today",
+  "csv_rango_semana": "Current week",
+  "csv_rango_mes": "Current month",
+  "csv_todos": "All sensors"
 }

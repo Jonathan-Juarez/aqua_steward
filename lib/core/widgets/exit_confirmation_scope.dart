@@ -1,34 +1,49 @@
 import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
-import 'package:aqua_steward/core/widgets/text_format.dart';
-import 'package:aqua_steward/core/widgets/dialog_emergent.dart';
+import 'package:aqua_steward/core/widgets/snack_bar_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class ExitConfirmationScope extends StatelessWidget {
+class ExitConfirmationScope extends StatefulWidget {
   final Widget child;
 
   const ExitConfirmationScope({super.key, required this.child});
 
   @override
+  State<ExitConfirmationScope> createState() => _ExitConfirmationScopeState();
+}
+
+class _ExitConfirmationScopeState extends State<ExitConfirmationScope> {
+  static const _channel = MethodChannel('aqua_steward/app');
+  DateTime? _lastPressedAt;
+
+  Future<void> _moveToBackground() async {
+    try {
+      await _channel.invokeMethod('moveToBackground');
+    } catch (_) {
+      SystemNavigator.pop();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (bool didPop) {
+      onPopInvokedWithResult: (bool didPop, dynamic result) {
         if (didPop) return;
-        showDialog(
-          context: context,
-          builder: (context) => DialogEmergent(
-            title: context.l10n.dialogo_salida_titulo,
-            content: TextFormat(
-              text: context.l10n.dialogo_salida,
-              context: context,
-              type: "body",
-            ),
-            onPressed: () => SystemNavigator.pop(),
-          ),
-        );
+
+        final now = DateTime.now();
+        if (_lastPressedAt == null ||
+            now.difference(_lastPressedAt!) > const Duration(seconds: 2)) {
+          _lastPressedAt = now;
+          SnackBarFormat.show(
+            context,
+            context.l10n.dialogo_presiona_nuevamente_salir,
+          );
+        } else {
+          _moveToBackground();
+        }
       },
-      child: child,
+      child: widget.child,
     );
   }
 }

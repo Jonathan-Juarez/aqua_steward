@@ -76,7 +76,7 @@ class _SignupScreenState extends State<SignupScreen> {
           TextFormat(
             text: context.l10n.auth_registrarse,
             context: context,
-            type: "title",
+            type: "subtitle",
           ),
           Row(
             children: [

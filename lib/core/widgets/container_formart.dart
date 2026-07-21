@@ -23,9 +23,9 @@ class ContainerFormat extends StatelessWidget {
         borderRadius: AppBorder.all8,
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
             blurRadius: 0.5,
-            offset: const Offset(0, 0.5),
+            offset: const Offset(0, 0.1),
           ),
         ],
       ),

@@ -16,7 +16,6 @@ export "package:aqua_steward/features/support/presentation/screens/about_screen.
 export "package:aqua_steward/features/support/presentation/screens/contact_screen.dart";
 export "package:aqua_steward/features/support/presentation/screens/support_screen.dart";
 export "package:aqua_steward/features/reading/presentation/screens/dashborad_screen.dart";
-export "package:aqua_steward/features/reading/presentation/screens/registers_screen.dart";
 export "package:aqua_steward/features/auth/presentation/screens/profile_screen.dart";
 export "package:aqua_steward/features/support/presentation/screens/user_manual.dart";
 

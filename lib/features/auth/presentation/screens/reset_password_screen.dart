@@ -41,7 +41,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           TextFormat(
             text: context.l10n.auth_cambiar_contrasena,
             context: context,
-            type: "title",
+            type: "subtitle",
           ),
           TextFieldFormat(
             labelText: context.l10n.auth_contrasena,

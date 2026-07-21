@@ -3,37 +3,40 @@ import 'package:aqua_steward/core/theme/app_color.dart';
 import 'package:aqua_steward/core/theme/app_border.dart';
 import 'package:aqua_steward/core/theme/app_text.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 // Buscar todos los colores para el modo claro.
 class AppTheme {
   static ThemeData lightTheme = ThemeData(
-    textTheme: const TextTheme(
-      // Usado para las iniciales del perfil y la cantidad de recurso en los detalles de cada parámetro.
-      titleLarge: TextStyle(
-        fontSize: 32,
-        fontWeight: FontWeight.bold,
-        color: AppColor.black,
+    textTheme: GoogleFonts.publicSansTextTheme(
+      const TextTheme(
+        // Usado para las iniciales del perfil y la cantidad de recurso en los detalles de cada parámetro.
+        titleLarge: TextStyle(
+          fontSize: 32,
+          fontWeight: FontWeight.bold,
+          color: AppColor.black,
+        ),
+        // Usado para los títulos principales de las secciones.
+        titleMedium: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: AppColor.black,
+        ),
+        // Usado para los subtítulos de las secciones.
+        titleSmall: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: AppColor.black,
+        ),
+        // Usado para el el cuerpo del texto.
+        bodyLarge: TextStyle(fontSize: 16, color: AppColor.black),
+        // Usado para el cuerpo del texto secundario (usado en FAQ).
+        bodyMedium: TextStyle(fontSize: 16, color: AppColor.blackSecondary),
+        // Usado para textos debajo del cuerpo.
+        bodySmall: TextStyle(fontSize: 14, color: AppColor.blackSecondary),
+        // Usado para las etiquetas de los gráficos.
+        labelMedium: TextStyle(fontSize: 10, color: AppColor.black),
       ),
-      // Usado para los títulos principales de las secciones.
-      titleMedium: TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-        color: AppColor.black,
-      ),
-      // Usado para los subtítulos de las secciones.
-      titleSmall: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.bold,
-        color: AppColor.black,
-      ),
-      // Usado para el el cuerpo del texto.
-      bodyLarge: TextStyle(fontSize: 16, color: AppColor.black),
-      // Usado para el cuerpo del texto secundario (usado en FAQ).
-      bodyMedium: TextStyle(fontSize: 16, color: AppColor.blackSecondary),
-      // Usado para textos debajo del cuerpo.
-      bodySmall: TextStyle(fontSize: 14, color: AppColor.blackSecondary),
-      // Usado para las etiquetas de los gráficos.
-      labelMedium: TextStyle(fontSize: 10, color: AppColor.black),
     ),
 
     colorScheme: const ColorScheme.light(
@@ -206,8 +209,9 @@ class AppTheme {
       color: AppColor.white,
       shape: RoundedRectangleBorder(borderRadius: AppBorder.all8),
     ),
-
+    // Color de divisor general.
     dividerTheme: const DividerThemeData(color: Colors.black12),
+    // Color de divisor de QA.
     dividerColor: Colors.transparent,
 
     textSelectionTheme: TextSelectionThemeData(
@@ -221,33 +225,35 @@ class AppTheme {
 
   // Tema oscuro para la app.
   static ThemeData darkTheme = ThemeData(
-    textTheme: const TextTheme(
-      // Usado para las iniciales del perfil y la cantidad de recurso en los detalles de cada parámetro.
-      titleLarge: TextStyle(
-        fontSize: 32,
-        fontWeight: FontWeight.bold,
-        color: AppColor.white,
+    textTheme: GoogleFonts.publicSansTextTheme(
+      const TextTheme(
+        // Usado para las iniciales del perfil y la cantidad de recurso en los detalles de cada parámetro.
+        titleLarge: TextStyle(
+          fontSize: 32,
+          fontWeight: FontWeight.bold,
+          color: AppColor.white,
+        ),
+        // Usado para los títulos principales de las secciones.
+        titleMedium: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: AppColor.white,
+        ),
+        // Usado para los subtítulos de las secciones.
+        titleSmall: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: AppColor.white,
+        ),
+        // Usado para el el cuerpo del texto.
+        bodyLarge: TextStyle(fontSize: 16, color: AppColor.white),
+        // Usado para el cuerpo del texto secundario.
+        bodyMedium: TextStyle(fontSize: 16, color: AppColor.whiteSecondary),
+        // Usado para textos debajo del cuerpo.
+        bodySmall: TextStyle(fontSize: 14, color: AppColor.whiteSecondary),
+        // Usado para las etiquetas de los gráficos.
+        labelMedium: TextStyle(fontSize: 10, color: AppColor.white),
       ),
-      // Usado para los títulos principales de las secciones.
-      titleMedium: TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-        color: AppColor.white,
-      ),
-      // Usado para los subtítulos de las secciones.
-      titleSmall: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.bold,
-        color: AppColor.white,
-      ),
-      // Usado para el el cuerpo del texto.
-      bodyLarge: TextStyle(fontSize: 16, color: AppColor.white),
-      // Usado para el cuerpo del texto secundario.
-      bodyMedium: TextStyle(fontSize: 16, color: AppColor.whiteSecondary),
-      // Usado para textos debajo del cuerpo.
-      bodySmall: TextStyle(fontSize: 14, color: AppColor.whiteSecondary),
-      // Usado para las etiquetas de los gráficos.
-      labelMedium: TextStyle(fontSize: 10, color: AppColor.white),
     ),
 
     colorScheme: const ColorScheme.dark(

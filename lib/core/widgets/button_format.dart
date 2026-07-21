@@ -15,6 +15,7 @@ class ButtonFormat extends StatelessWidget {
   final String? type;
   final bool isLoading;
   final EdgeInsetsGeometry? padding;
+  final bool? isSelected;
 
   const ButtonFormat({
     super.key,
@@ -26,6 +27,7 @@ class ButtonFormat extends StatelessWidget {
     this.type,
     this.isLoading = false,
     this.padding,
+    this.isSelected,
   });
 
   @override
@@ -64,41 +66,67 @@ class ButtonFormat extends StatelessWidget {
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
-              onPressed: onCancel,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColor.error,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: AppBorder.all8,
+            Expanded(
+              child: ElevatedButton(
+                onPressed: onCancel,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColor.error,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: AppBorder.all8,
+                  ),
+                  minimumSize: const Size(0, 35),
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
                 ),
-                minimumSize: const Size(0, 35),
-              ),
-              child: TextFormat(
-                text: context.l10n.comun_cancelar,
-                type: "bodySmallWhite",
-                context: context,
+                // FittedBox posiciona a su widget hijo para que quepa exactamente dentro del espacio disponible.
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: TextFormat(
+                    text: context.l10n.comun_cancelar,
+                    type: "bodySmallWhite",
+                    context: context,
+                  ),
+                ),
               ),
             ),
             AppSizedBox.width8,
-            ElevatedButton(
-              onPressed: onConfirm,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColor.success,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: AppBorder.all8,
+            Expanded(
+              child: ElevatedButton(
+                onPressed: onConfirm,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColor.success,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: AppBorder.all8,
+                  ),
+                  minimumSize: const Size(0, 35),
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
                 ),
-                minimumSize: const Size(0, 35),
-              ),
-              child: TextFormat(
-                text: context.l10n.comun_confirmar,
-                type: "bodySmallWhite",
-                context: context,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: TextFormat(
+                    text: context.l10n.comun_confirmar,
+                    type: "bodySmallWhite",
+                    context: context,
+                  ),
+                ),
               ),
             ),
           ],
         );
       case "icon":
-        return IconButton(onPressed: onConfirm, icon: icon!);
+        return isSelected ?? false
+            ? Container(
+                decoration: const BoxDecoration(
+                  color: AppColor.containerContrast,
+
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  onPressed: onConfirm,
+                  icon: icon!,
+                  color: AppColor.white,
+                ),
+              )
+            : IconButton(onPressed: onConfirm, icon: icon!);
       default:
         return Padding(
           padding: padding ?? AppPadding.symmetric16_0,

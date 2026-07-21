@@ -115,9 +115,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
     // Contar invitaciones pendientes + notificaciones de equipo activas
     final activeTeamNotifs = notifProvider.notifications
-        .where((n) =>
-            (n.type == 'team_removed' || n.type == 'team_role_changed') &&
-            n.state == 'activa')
+        .where(
+          (n) =>
+              (n.type == 'team_removed' || n.type == 'team_role_changed') &&
+              n.state == 'activa',
+        )
         .length;
     final totalTeamCount = teamProvider.invitations.length + activeTeamNotifs;
 
@@ -139,7 +141,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
             activeColor: AppColor.containerContrast,
           ),
         ),
-        AppSizedBox.height8,
         // Filtros (Chips) y botón de eliminar (Solo visibles en la pestaña de Alertas).
         if (_currentTabIndex == 0)
           Padding(

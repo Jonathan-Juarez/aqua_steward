@@ -37,7 +37,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           TextFormat(
             text: context.l10n.auth_olvido_contrasena,
             context: context,
-            type: "title",
+            type: "subtitle",
           ),
           TextFieldFormat(
             labelText: context.l10n.auth_correo,

@@ -132,6 +132,7 @@ class AppIcon {
     Icons.color_lens_outlined,
     size: 20,
   );
+  static const Icon systemMode = Icon(Icons.settings_display);
   static const Icon lightMode = Icon(Icons.light_mode, size: 20);
   static const Icon darkMode = Icon(Icons.dark_mode, size: 20);
 

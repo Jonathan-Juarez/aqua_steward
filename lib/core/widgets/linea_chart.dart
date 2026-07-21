@@ -1,5 +1,4 @@
 import "package:aqua_steward/core/theme/app_padding.dart";
-import "package:aqua_steward/core/widgets/container_formart.dart";
 import "package:aqua_steward/core/widgets/text_format.dart";
 import "package:fl_chart/fl_chart.dart";
 import "package:flutter/material.dart";
@@ -92,22 +91,18 @@ class _LineaChartState extends State<LineaChart> {
   Widget build(BuildContext context) {
     bool isVolume = widget.unit == "%";
 
-    return ContainerFormat(
-      children: [
-        isLoading
-            ? const SizedBox(
-                height: 220,
-                child: Center(child: CircularProgressIndicator()),
-              )
-            : Padding(
-                padding: AppPadding.all8,
-                child: SizedBox(
-                  height: 220,
-                  child: LineChart(_lineChartData(isVolume)),
-                ),
-              ),
-      ],
-    );
+    return isLoading
+        ? const SizedBox(
+            height: 170,
+            child: Center(child: CircularProgressIndicator()),
+          )
+        : SizedBox(
+            height: 170,
+            child: Padding(
+              padding: AppPadding.all8,
+              child: LineChart(_lineChartData(isVolume)),
+            ),
+          );
   }
 
   // Grafico de linea.
@@ -214,9 +209,14 @@ class _LineaChartState extends State<LineaChart> {
 
       // Eje x (horas/días)
       bottomTitles: AxisTitles(
+        axisNameWidget: TextFormat(
+          text: widget.selectedFilter == "Dia" ? "Horas" : "Días",
+          context: context,
+          type: "label",
+        ),
         sideTitles: SideTitles(
           showTitles: true,
-          reservedSize: 30,
+          reservedSize: 20,
           interval: 1,
           getTitlesWidget: (value, meta) {
             final val = value.toInt();
@@ -226,7 +226,7 @@ class _LineaChartState extends State<LineaChart> {
             if (widget.selectedFilter == "Dia") {
               // Pares hasta el 20 (0, 2, 4... 20, 23).
               mostrar = (val % 2 == 0 && val <= 20) || val == 23;
-              text = "${val}h";
+              text = val.toString();
             } else if (widget.selectedFilter == "Semana") {
               // Todos los días de la semana (0 a 6)
               mostrar = true;
@@ -235,14 +235,15 @@ class _LineaChartState extends State<LineaChart> {
                 text = dias[val];
               }
             } else if (widget.selectedFilter == "Mes") {
-              // Días del mes, ej: 1, 5, 10, 15, 20, 25, 30 (índices 0, 4, 9...)
+              // Días del mes, ej: 1, 5, 10, 15, 20, 25, 29 (por si es febrero)
               mostrar =
                   val == 0 ||
-                  val == 4 ||
-                  val == 9 ||
-                  val == 14 ||
+                  val == 3 ||
+                  val == 7 ||
+                  val == 11 ||
+                  val == 15 ||
                   val == 19 ||
-                  val == 24 ||
+                  val == 23 ||
                   val == 28;
               text = "${val + 1}";
             }
@@ -256,6 +257,11 @@ class _LineaChartState extends State<LineaChart> {
 
       // Eje y (valores o porcentajes)
       leftTitles: AxisTitles(
+        axisNameWidget: TextFormat(
+          text: widget.unit,
+          context: context,
+          type: "label",
+        ),
         sideTitles: SideTitles(
           showTitles: true,
           interval: widget.maxY / 4,
@@ -263,13 +269,11 @@ class _LineaChartState extends State<LineaChart> {
           getTitlesWidget: (value, meta) {
             if (value > widget.maxY) return const SizedBox.shrink();
 
-            String text;
-            if (isVolume) {
-              final percent = (value / widget.maxY * 100).round();
-              text = "$percent%";
-            } else {
-              text = value.toString();
-            }
+            String text = isVolume
+                ? (value / widget.maxY * 100).round().toString()
+                : widget.unit == "pH"
+                ? value.toStringAsFixed(1)
+                : value.toStringAsFixed(0);
 
             return TextFormat(text: text, context: context, type: "label");
           },

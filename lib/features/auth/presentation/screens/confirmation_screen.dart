@@ -46,7 +46,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
           TextFormat(
             text: context.l10n.auth_confirmar_codigo,
             context: context,
-            type: "title",
+            type: "subtitle",
           ),
           TextFormat(
             text: context.l10n.auth_ingresa_codigo,

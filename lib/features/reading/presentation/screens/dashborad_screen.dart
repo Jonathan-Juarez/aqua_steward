@@ -138,6 +138,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                     type: "title",
                   ),
                 ),
+                // Se consume el provider de notificaciones y de invitaciones para mostrar el número total de notificaciones pendientes.
                 Consumer2<NotificationProvider, TeamProvider>(
                   builder: (context, notifProvider, teamProvider, _) {
                     // Guarda la cantidad total de notificaciones pendientes (alertas sin leer + invitaciones)
@@ -207,7 +208,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: deposits.length,
                 separatorBuilder: (context, index) => AppSizedBox.height12,
-                itemBuilder: (context, index) {
+                itemBuilder: (indexContext, index) {
                   // Mapeamos el objeto Deposit a la estructura que espera containerDeposit.
                   final deposit = deposits[index];
                   final ip = deposit.ip ?? "";
@@ -240,7 +241,11 @@ class _DashboardScreenState extends State<DashboardScreen>
                     "inputTurbidity": currentTurbidity,
                     "role": deposit.role,
                   };
-                  return containerDeposit(context, depositDataMap);
+                  return DepositCard(
+                    depositData: depositDataMap,
+                    key: ValueKey(deposit.id),
+                    menuWidget: menuDeposit(context, depositDataMap),
+                  );
                 },
               );
             },
@@ -248,18 +253,6 @@ class _DashboardScreenState extends State<DashboardScreen>
           AppSizedBox.height12,
         ],
       ),
-    );
-  }
-
-  // Contenedor de depósito con los tres parámetros.
-  Widget containerDeposit(
-    BuildContext context,
-    Map<String, dynamic> depositData,
-  ) {
-    return DepositCard(
-      key: ValueKey(depositData["id"]),
-      depositData: depositData,
-      menuWidget: menuDeposit(context, depositData),
     );
   }
 

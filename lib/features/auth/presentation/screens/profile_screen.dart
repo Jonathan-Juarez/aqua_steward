@@ -1,23 +1,22 @@
-import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
-import 'package:aqua_steward/features/deposit/presentation/providers/deposit_provider.dart';
-import 'package:aqua_steward/features/notification/presentation/providers/notification_provider.dart';
+import 'package:aqua_steward/core/error/result_handler.dart';
+import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:aqua_steward/core/router/app_router.dart';
 import 'package:aqua_steward/core/theme/app_icon.dart';
 import 'package:aqua_steward/core/theme/app_sizedbox.dart';
 import 'package:aqua_steward/core/utils/app_validators.dart';
 import 'package:aqua_steward/core/widgets/container_list_tile.dart';
-import 'package:aqua_steward/core/providers/theme_provider.dart';
-import 'package:aqua_steward/core/widgets/text_field_format.dart';
-import 'package:aqua_steward/core/widgets/text_format.dart';
-import 'package:provider/provider.dart';
-import 'package:aqua_steward/core/providers/language_provider.dart';
-import 'package:aqua_steward/core/widgets/filter_chip_format.dart';
-import 'package:aqua_steward/core/widgets/scaffold_main.dart';
 import 'package:aqua_steward/core/widgets/dialog_emergent.dart';
 import 'package:aqua_steward/core/widgets/exit_confirmation_scope.dart';
-import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
-import 'package:aqua_steward/core/error/result_handler.dart';
+import 'package:aqua_steward/core/widgets/scaffold_main.dart';
+import 'package:aqua_steward/core/widgets/text_field_format.dart';
+import 'package:aqua_steward/core/widgets/text_format.dart';
+import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
+import 'package:aqua_steward/features/auth/presentation/widgets/dialog_profile.dart';
+import 'package:aqua_steward/features/auth/presentation/widgets/dialog_settings.dart';
+import 'package:aqua_steward/features/deposit/presentation/providers/deposit_provider.dart';
+import 'package:aqua_steward/features/notification/presentation/providers/notification_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -47,135 +46,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _nameController.dispose();
     _lastNameController.dispose();
     super.dispose();
-  }
-
-  // Diálogo para cambiar el nombre o apellido del usuario.
-  Future<dynamic> _dialogProfile({
-    required BuildContext context,
-    required String title,
-    required Widget content,
-    required TextEditingController controller,
-    required Future<bool> Function() onConfirm,
-  }) async {
-    await showDialog<String>(
-      context: context,
-      builder: (dialogContext) {
-        // Se pasa el proveedor existente al diálogo mediante .value, ya que showDialog crea una nueva ruta.
-        return ChangeNotifierProvider.value(
-          value: context.read<AuthProvider>(),
-          child: Consumer<AuthProvider>(
-            builder: (providerContext, provider, _) {
-              return DialogEmergent(
-                title: context.l10n.perfil_cambiar_dialogo_titulo(
-                  title.toLowerCase(),
-                ),
-                content: content,
-                formKey: _formkey,
-                isLoading: provider.isLoading,
-                onPressed: () async {
-                  Navigator.of(providerContext).pop();
-                  // Si el proceso de actualización es exitoso, se cierra el diálogo.
-                  await onConfirm();
-                },
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
-
-  // Diálogo para cambiar el tema y el idioma de la aplicación.
-  Future<void> _dialogSettings(BuildContext context) async {
-    final themeProvider = context.read<ThemeProvider>();
-    final languageProvider = context.read<LanguageProvider>();
-
-    // Obtiene los valores actuales para el estado local del diálogo.
-    String pendingTheme = themeProvider.themeMode == ThemeMode.system
-        ? "system"
-        : themeProvider.themeMode == ThemeMode.light
-        ? "light"
-        : "dark";
-    String pendingLanguage = languageProvider.locale.languageCode;
-
-    await showDialog(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setDialogState) {
-            return DialogEmergent(
-              title: context.l10n.perfil_personalizacion,
-              onPressed: () {
-                // Aplica los cambios de tema e idioma al confirmar.
-                themeProvider.setTheme(pendingTheme);
-                languageProvider.setLanguage(pendingLanguage);
-                Navigator.of(context).pop();
-              },
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextFormat(
-                    text: context.l10n.perfil_tema,
-                    context: context,
-                    type: "body",
-                  ),
-                  AppSizedBox.height12,
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        FilterChipFormat(
-                          label: context.l10n.perfil_tema_sistema,
-                          isSelected: pendingTheme == "system",
-                          onSelected: (_) =>
-                              setDialogState(() => pendingTheme = "system"),
-                        ),
-                        FilterChipFormat(
-                          label: context.l10n.perfil_tema_claro,
-                          isSelected: pendingTheme == "light",
-                          onSelected: (_) =>
-                              setDialogState(() => pendingTheme = "light"),
-                        ),
-                        FilterChipFormat(
-                          label: context.l10n.perfil_tema_oscuro,
-                          isSelected: pendingTheme == "dark",
-                          onSelected: (_) =>
-                              setDialogState(() => pendingTheme = "dark"),
-                        ),
-                      ],
-                    ),
-                  ),
-                  AppSizedBox.height12,
-                  TextFormat(
-                    text: context.l10n.perfil_idioma,
-                    context: context,
-                    type: "body",
-                  ),
-                  AppSizedBox.height12,
-                  Row(
-                    children: [
-                      FilterChipFormat(
-                        label: context.l10n.perfil_espanol,
-                        isSelected: pendingLanguage == 'es',
-                        onSelected: (_) =>
-                            setDialogState(() => pendingLanguage = "es"),
-                      ),
-                      FilterChipFormat(
-                        label: context.l10n.perfil_ingles,
-                        isSelected: pendingLanguage == 'en',
-                        onSelected: (_) =>
-                            setDialogState(() => pendingLanguage = "en"),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
   }
 
   @override
@@ -219,9 +89,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           // Opción para editar el nombre del usuario.
           ContainerListTile(
-            onTap: () => _dialogProfile(
+            onTap: () => DialogProfile.show(
               context: context,
               title: context.l10n.perfil_nombre,
+              formkey: _formkey,
               controller: _nameController,
               content: Form(
                 key: _formkey,
@@ -242,9 +113,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           AppSizedBox.height12,
           ContainerListTile(
-            onTap: () => _dialogProfile(
+            onTap: () => DialogProfile.show(
               context: context,
               title: context.l10n.perfil_apellido,
+              formkey: _formkey,
               controller: _lastNameController,
               content: Form(
                 key: _formkey,
@@ -270,7 +142,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             type: "subtitle",
           ),
           ContainerListTile(
-            onTap: () => _dialogSettings(context),
+            onTap: () => DialogSettings.show(context),
             title: context.l10n.perfil_personalizacion,
             subtitle: context.l10n.perfil_tema_idioma,
             icon: AppIcon.colorLensOutlined,
@@ -285,24 +157,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
           AppSizedBox.height12,
 
           ContainerListTile(
-            onTap: () async {
-              final token = provider.currentUser?.token;
-              if (token != null) {
-                // Desregistrar token FCM antes de cerrar sesión
-                await context.read<NotificationProvider>().cleanup(token);
-              }
-              // Limpia los depósitos antes de cerrar sesión para evitar datos residuales.
-              context.read<DepositProvider>().clearDeposits();
-              provider.logout();
-              if (context.mounted) {
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  AppRouter.start,
-                  (route) => false,
-                );
-              }
-            },
-            title: context.l10n.perfil_cerrar_sesion,
+            onTap: () => showDialog(
+              context: context,
+              builder: (context) => DialogEmergent(
+                title: context.l10n.dialogo_cerrar_sesion_titulo,
+                content: TextFormat(
+                  text: context.l10n.dialogo_cerrar_sesion,
+                  context: context,
+                  type: "body",
+                ),
+                onPressed: () async {
+                  final token = provider.currentUser?.token;
+                  if (token != null) {
+                    // Desregistrar token FCM antes de cerrar sesión
+                    await context.read<NotificationProvider>().cleanup(token);
+                  }
+                  // Limpia los depósitos antes de cerrar sesión para evitar datos residuales.
+                  context.read<DepositProvider>().clearDeposits();
+                  provider.logout();
+                  if (context.mounted) {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      AppRouter.start,
+                      (route) => false,
+                    );
+                  }
+                },
+              ),
+            ),
+            title: context.l10n.dialogo_cerrar_sesion_titulo,
             icon: AppIcon.logoutOutlined,
           ),
           const SizedBox(height: 76),

@@ -42,7 +42,8 @@ class _ContainerListTileState extends State<ContainerListTile> {
               : TextFormat(
                   text: widget.title,
                   context: context,
-                  type: widget.title == context.l10n.perfil_cerrar_sesion
+                  type:
+                      widget.title == context.l10n.dialogo_cerrar_sesion_titulo
                       ? "bodyRed"
                       : "body",
                 ),
@@ -76,7 +77,7 @@ class _ContainerListTileState extends State<ContainerListTile> {
           contentPadding: AppPadding.symmetric0_8,
           trailing: widget.showTrailing
               ? (widget.trailing ??
-                    (widget.title == context.l10n.perfil_cerrar_sesion
+                    (widget.title == context.l10n.dialogo_cerrar_sesion_titulo
                         ? AppIcon.arrowRight()
                         : AppIcon.arrowRight(
                             color: Theme.of(context).colorScheme.onSurface,

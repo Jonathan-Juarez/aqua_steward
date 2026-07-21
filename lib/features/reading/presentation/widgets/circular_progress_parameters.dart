@@ -66,7 +66,7 @@ class CircularProgressParameters extends StatelessWidget {
                   strokeWidth: 5,
                   valueColor: AlwaysStoppedAnimation(
                     hasError
-                        ? AppColor.error
+                        ? AppColor.warning
                         : index == 0
                         ? AppColor.parameterAqua
                         : index == 1

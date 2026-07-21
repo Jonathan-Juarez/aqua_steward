@@ -1,31 +1,27 @@
+import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
+import 'package:flutter/material.dart';
+
 class StateParameters {
-  static String getBodyText(double inputValue, String unit) {
+  static String show(BuildContext context, double inputValue, String unit) {
     if (unit == "pH") {
-      if (inputValue >= 0 && inputValue < 2) {
-        return "Muy ácido";
-      } else if (inputValue >= 2 && inputValue < 6.5) {
-        return "Ácido";
-      } else if (inputValue >= 6.5 && inputValue <= 8.5) {
-        return "Óptimo";
-      } else if (inputValue > 8.5 && inputValue <= 12) {
-        return "Alcalino";
-      } else {
-        return "Muy alcalino";
-      }
+      if (inputValue < 0 || inputValue > 14)
+        // ignore: curly_braces_in_flow_control_structures
+        return context.l10n.estado_error_lectura;
+      if (inputValue < 6.0) return context.l10n.estado_muy_acido;
+      if (inputValue < 6.5) return context.l10n.estado_acido;
+      if (inputValue <= 8.5) return context.l10n.estado_optimo;
+      if (inputValue <= 10.0) return context.l10n.estado_alcalino;
+      return context.l10n.estado_muy_alcalino;
     }
+
     if (unit == "NTU") {
-      if (inputValue <= 1) {
-        return "Ideal";
-      } else if (inputValue <= 5) {
-        return "Aceptable";
-      } else if (inputValue <= 30) {
-        return "Ligeramente turbio";
-      } else if (inputValue <= 100) {
-        return "Turbio";
-      } else {
-        return "Muy turbio";
-      }
+      if (inputValue < 0) return context.l10n.estado_error_lectura;
+      if (inputValue <= 1.0) return context.l10n.estado_ideal;
+      if (inputValue <= 5.0) return context.l10n.estado_aceptable;
+      if (inputValue <= 20.0) return context.l10n.estado_turbio;
+      return context.l10n.estado_muy_turbio;
     }
+
     return "";
   }
 }

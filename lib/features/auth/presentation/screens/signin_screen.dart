@@ -43,7 +43,7 @@ class _SigninScreenState extends State<SigninScreen> {
           TextFormat(
             text: context.l10n.auth_iniciar_sesion,
             context: context,
-            type: "title",
+            type: "subtitle",
           ),
           TextFieldFormat(
             labelText: context.l10n.auth_correo,

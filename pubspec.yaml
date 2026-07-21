@@ -31,6 +31,7 @@ dependencies:
   flutter_secure_storage: ^10.3.1 # Persistencia de datos sensibles.
   share_plus: ^12.0.2 # Compartir archivos.
   path_provider: ^2.1.6 # Obtener rutas temporales para guardar archivos.
+  google_fonts: ^8.2.0
 
 
 

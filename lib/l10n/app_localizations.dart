@@ -191,7 +191,7 @@ abstract class AppLocalizations {
   /// No description provided for @dialogo_salida_titulo.
   ///
   /// In es, this message translates to:
-  /// **'¿Salir de AquaSteward?'**
+  /// **'Salir de AquaSteward'**
   String get dialogo_salida_titulo;
 
   /// No description provided for @dialogo_eliminar.
@@ -203,8 +203,26 @@ abstract class AppLocalizations {
   /// No description provided for @dialogo_eliminar_titulo.
   ///
   /// In es, this message translates to:
-  /// **'¿Eliminar depósito?'**
+  /// **'Eliminar depósito'**
   String get dialogo_eliminar_titulo;
+
+  /// No description provided for @dialogo_cerrar_sesion.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de que quieres cerrar sesión?'**
+  String get dialogo_cerrar_sesion;
+
+  /// No description provided for @dialogo_cerrar_sesion_titulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar sesión'**
+  String get dialogo_cerrar_sesion_titulo;
+
+  /// No description provided for @dialogo_presiona_nuevamente_salir.
+  ///
+  /// In es, this message translates to:
+  /// **'Presiona de nuevo para salir'**
+  String get dialogo_presiona_nuevamente_salir;
 
   /// No description provided for @titulo_dashboard.
   ///
@@ -410,12 +428,6 @@ abstract class AppLocalizations {
   /// **'Cambiar contraseña'**
   String get perfil_cambiar_contrasenia;
 
-  /// No description provided for @perfil_cerrar_sesion.
-  ///
-  /// In es, this message translates to:
-  /// **'Cerrar sesión'**
-  String get perfil_cerrar_sesion;
-
   /// No description provided for @perfil_cambiar_dialogo_titulo.
   ///
   /// In es, this message translates to:
@@ -469,6 +481,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Mis Depósitos'**
   String get dashboard_titulo;
+
+  /// No description provided for @dashboard_estado.
+  ///
+  /// In es, this message translates to:
+  /// **'Estado:'**
+  String get dashboard_estado;
 
   /// No description provided for @dashboard_sin_depositos.
   ///
@@ -1142,17 +1160,11 @@ abstract class AppLocalizations {
   /// **'Historial'**
   String get detalles_historial;
 
-  /// No description provided for @detalles_rango_permitido.
+  /// No description provided for @detalles_capacidad.
   ///
   /// In es, this message translates to:
-  /// **'Rango permitido'**
-  String get detalles_rango_permitido;
-
-  /// No description provided for @detalles_capacidad_total.
-  ///
-  /// In es, this message translates to:
-  /// **'Capacidad total'**
-  String get detalles_capacidad_total;
+  /// **'Capacidad'**
+  String get detalles_capacidad;
 
   /// No description provided for @detalles_diario.
   ///
@@ -1363,6 +1375,66 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Todos los sensores'**
   String get csv_todos;
+
+  /// No description provided for @estado_error_lectura.
+  ///
+  /// In es, this message translates to:
+  /// **'Error de lectura'**
+  String get estado_error_lectura;
+
+  /// No description provided for @estado_muy_acido.
+  ///
+  /// In es, this message translates to:
+  /// **'Muy ácido'**
+  String get estado_muy_acido;
+
+  /// No description provided for @estado_acido.
+  ///
+  /// In es, this message translates to:
+  /// **'Ácido'**
+  String get estado_acido;
+
+  /// No description provided for @estado_optimo.
+  ///
+  /// In es, this message translates to:
+  /// **'Óptimo'**
+  String get estado_optimo;
+
+  /// No description provided for @estado_alcalino.
+  ///
+  /// In es, this message translates to:
+  /// **'Alcalino'**
+  String get estado_alcalino;
+
+  /// No description provided for @estado_muy_alcalino.
+  ///
+  /// In es, this message translates to:
+  /// **'Muy alcalino'**
+  String get estado_muy_alcalino;
+
+  /// No description provided for @estado_ideal.
+  ///
+  /// In es, this message translates to:
+  /// **'Ideal'**
+  String get estado_ideal;
+
+  /// No description provided for @estado_aceptable.
+  ///
+  /// In es, this message translates to:
+  /// **'Aceptable'**
+  String get estado_aceptable;
+
+  /// No description provided for @estado_turbio.
+  ///
+  /// In es, this message translates to:
+  /// **'Turbio'**
+  String get estado_turbio;
+
+  /// No description provided for @estado_muy_turbio.
+  ///
+  /// In es, this message translates to:
+  /// **'Muy turbio'**
+  String get estado_muy_turbio;
 }
 
 class _AppLocalizationsDelegate

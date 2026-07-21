@@ -57,14 +57,25 @@ class AppLocalizationsEs extends AppLocalizations {
       '¿Estás seguro de que quieres salir de este espacio?';
 
   @override
-  String get dialogo_salida_titulo => '¿Salir de AquaSteward?';
+  String get dialogo_salida_titulo => 'Salir de AquaSteward';
 
   @override
   String get dialogo_eliminar =>
       '¿Estás seguro de que deseas eliminar este depósito?';
 
   @override
-  String get dialogo_eliminar_titulo => '¿Eliminar depósito?';
+  String get dialogo_eliminar_titulo => 'Eliminar depósito';
+
+  @override
+  String get dialogo_cerrar_sesion =>
+      '¿Estás seguro de que quieres cerrar sesión?';
+
+  @override
+  String get dialogo_cerrar_sesion_titulo => 'Cerrar sesión';
+
+  @override
+  String get dialogo_presiona_nuevamente_salir =>
+      'Presiona de nuevo para salir';
 
   @override
   String get titulo_dashboard => 'Mis Depósitos';
@@ -172,9 +183,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get perfil_cambiar_contrasenia => 'Cambiar contraseña';
 
   @override
-  String get perfil_cerrar_sesion => 'Cerrar sesión';
-
-  @override
   String perfil_cambiar_dialogo_titulo(Object field) {
     return 'Cambiar $field';
   }
@@ -202,6 +210,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get dashboard_titulo => 'Mis Depósitos';
+
+  @override
+  String get dashboard_estado => 'Estado:';
 
   @override
   String get dashboard_sin_depositos => 'No hay depósitos agregados';
@@ -570,10 +581,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get detalles_historial => 'Historial';
 
   @override
-  String get detalles_rango_permitido => 'Rango permitido';
-
-  @override
-  String get detalles_capacidad_total => 'Capacidad total';
+  String get detalles_capacidad => 'Capacidad';
 
   @override
   String get detalles_diario => 'Día';
@@ -724,4 +732,34 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get csv_todos => 'Todos los sensores';
+
+  @override
+  String get estado_error_lectura => 'Error de lectura';
+
+  @override
+  String get estado_muy_acido => 'Muy ácido';
+
+  @override
+  String get estado_acido => 'Ácido';
+
+  @override
+  String get estado_optimo => 'Óptimo';
+
+  @override
+  String get estado_alcalino => 'Alcalino';
+
+  @override
+  String get estado_muy_alcalino => 'Muy alcalino';
+
+  @override
+  String get estado_ideal => 'Ideal';
+
+  @override
+  String get estado_aceptable => 'Aceptable';
+
+  @override
+  String get estado_turbio => 'Turbio';
+
+  @override
+  String get estado_muy_turbio => 'Muy turbio';
 }

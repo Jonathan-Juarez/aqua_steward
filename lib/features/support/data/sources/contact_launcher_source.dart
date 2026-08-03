@@ -3,7 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 class ContactLauncherSource {
   static const String _supportEmail = "jonathan.juarez@ulv.edu.mx";
 
-  /// Lanza la aplicación de correo con el asunto y mensaje proporcionados.
+  // Lanza la aplicación de correo con el asunto y mensaje proporcionados.
   Future<void> sendSupportEmail({
     required String subject,
     required String message,
@@ -20,7 +20,7 @@ class ContactLauncherSource {
     await launchUrl(emailUri, mode: LaunchMode.externalApplication);
   }
 
-  /// Codifica los parámetros de consulta para una URI.
+  // Codifica los parámetros de consulta para una URI.
   String? _encodeQueryParameters(Map<String, String> params) {
     return params.entries
         .map(

@@ -16,6 +16,7 @@ class AboutScreen extends StatelessWidget {
     String appName = packageInfo.appName;
     String version = packageInfo.version;
     String buildNumber = packageInfo.buildNumber;
+    String packageName = packageInfo.packageName;
 
     return ScaffoldMain(
       titleAppBar: context.l10n.titulo_acerca_de,
@@ -32,6 +33,11 @@ class AboutScreen extends StatelessWidget {
               TextFormat(text: appName, context: context, type: "title"),
               TextFormat(
                 text: context.l10n.acerca_version(version, buildNumber),
+                context: context,
+                type: "bodySmall",
+              ),
+              TextFormat(
+                text: packageName,
                 context: context,
                 type: "bodySmall",
               ),
@@ -101,28 +107,6 @@ class AboutScreen extends StatelessWidget {
               alignCenter: true,
             ),
           ],
-        ),
-
-        // Enlaces Legales y de Privacidad
-        TextFormat(
-          text: context.l10n.acerca_legal_titulo,
-          context: context,
-          type: "subtitle",
-        ),
-        ContainerListTile(
-          title: context.l10n.acerca_legal_terminos,
-          icon: const Icon(Icons.description_outlined),
-          onTap: () {
-            // Acción para abrir términos
-          },
-        ),
-        AppSizedBox.height12,
-        ContainerListTile(
-          title: context.l10n.acerca_legal_privacidad,
-          icon: AppIcon.lockOutline,
-          onTap: () {
-            // Acción para abrir privacidad
-          },
         ),
 
         // 5. Licencias de Código Abierto

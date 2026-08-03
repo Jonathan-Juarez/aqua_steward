@@ -33,6 +33,8 @@ abstract class IAuthDataSource {
     String? name,
     String? lastName,
   });
+
+  Future<Result<void>> delete({required String email});
 }
 
 class AuthDataSource implements IAuthDataSource {
@@ -164,6 +166,23 @@ class AuthDataSource implements IAuthDataSource {
       return manageHttpResponse(response: response);
     } catch (e) {
       // Captura y retorna cualquier error ocurrido durante la actualización de perfil.
+      return handleException(e);
+    }
+  }
+
+  @override
+  Future<Result<void>> delete({required String email}) async {
+    try {
+      final http.Response response = await http.delete(
+        Uri.parse("$uri/api/auth/delete-user"),
+        body: json.encode({"email": email}),
+        headers: <String, String>{
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      );
+
+      return manageHttpResponse(response: response);
+    } catch (e) {
       return handleException(e);
     }
   }

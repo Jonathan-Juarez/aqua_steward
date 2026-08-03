@@ -3,14 +3,11 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/foundation.dart';
 
-/// Handler de mensajes en segundo plano. Debe ser una función global y estar anotada con @pragma('vm:entry-point').
+// Handler de mensajes en segundo plano. Debe ser una función global y estar anotada con @pragma('vm:entry-point').
 @pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  if (kDebugMode) {
-    print("Mensaje recibido en segundo plano: ${message.messageId}");
-  }
-}
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {}
 
+// Servicio singleton para gestionar notificaciones push (FCM) y notificaciones locales.
 class NotificationService {
   // Constructor privado del patrón Singleton para evitar instanciaciones externas.
   NotificationService._internal();
@@ -29,7 +26,7 @@ class NotificationService {
   final StreamController<RemoteMessage> _messageStreamController =
       StreamController<RemoteMessage>.broadcast();
 
-  // Stream público expuesto para escuchar la llegada de notificaciones en primer plano.
+  // Stream público para escuchar la llegada de notificaciones en primer plano.
   Stream<RemoteMessage> get onMessageReceived =>
       _messageStreamController.stream;
 
@@ -38,11 +35,11 @@ class NotificationService {
     'high_importance_channel', // id
     'Notificaciones de Alta Importancia', // title
     description:
-        'Este canal se usa para notificaciones importantes del sistema.', // description
+        'Este canal se usa para notificaciones importantes del sistema.',
     importance: Importance.max,
   );
 
-  /// Inicializa los servicios de notificaciones (Firebase Messaging y Notificaciones Locales).
+  // Inicializa los servicios de notificaciones (Firebase Messaging y Notificaciones Locales).
   Future<void> initialize() async {
     // Configura el handler de segundo plano
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -89,7 +86,7 @@ class NotificationService {
     }
   }
 
-  /// Solicita de forma activa los permisos de notificación.
+  // Solicita permisos de notificación al usuario.
   Future<bool> requestPermissions() async {
     final NotificationSettings settings = await _fcm.requestPermission(
       alert: true,
@@ -101,22 +98,19 @@ class NotificationService {
     return settings.authorizationStatus == AuthorizationStatus.authorized;
   }
 
-  /// Obtiene el token de FCM del dispositivo.
+  // Obtiene el token FCM único del dispositivo.
   Future<String?> getToken() async {
     try {
       return await _fcm.getToken();
-    } catch (e) {
-      if (kDebugMode) {
-        print("Error obteniendo el token de FCM: $e");
-      }
+    } catch (_) {
       return null;
     }
   }
 
-  /// Stream para escuchar el refresco del FCM Token.
+  // Stream para escuchar cambios o actualizaciones del token FCM.
   Stream<String> get onTokenRefresh => _fcm.onTokenRefresh;
 
-  /// Maneja los mensajes recibidos en primer plano (Foreground).
+  // Maneja notificaciones recibidas con la app abierta (Foreground).
   void _onForegroundMessage(RemoteMessage message) {
     _messageStreamController.add(message);
     final RemoteNotification? notification = message.notification;
@@ -145,22 +139,14 @@ class NotificationService {
     }
   }
 
-  /// Maneja el evento de click en una notificación push de FCM.
+  // Maneja el clic en notificaciones cuando la app estaba en segundo plano.
   void _onMessageOpenedApp(RemoteMessage message) {
     _handleNotificationClick(message.data);
   }
 
-  /// Maneja el click en una notificación local.
-  void _onDidReceiveNotificationResponse(NotificationResponse details) {
-    if (details.payload != null) {
-      // Aquí se puede procesar el payload de la notificación local.
-    }
-  }
+  // Maneja el clic en una notificación local flotante producida en primer plano.
+  void _onDidReceiveNotificationResponse(NotificationResponse details) {}
 
-  /// Redirige o realiza acciones en base a los datos adjuntos de la notificación.
-  void _handleNotificationClick(Map<String, dynamic> data) {
-    if (kDebugMode) {
-      print("Notificación cliqueada con datos: $data");
-    }
-  }
+  // Procesa los datos adjuntos de la notificación cliqueada.
+  void _handleNotificationClick(Map<String, dynamic> data) {}
 }

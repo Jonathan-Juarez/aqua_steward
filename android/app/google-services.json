@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:413114762545:android:150ef74fdea060c237dc10",
+        "mobilesdk_app_id": "1:413114762545:android:4ec73cd115c6bc9237dc10",
         "android_client_info": {
-          "package_name": "com.example.aqua_steward"
+          "package_name": "com.aquasteward.app"
         }
       },
       "oauth_client": [],

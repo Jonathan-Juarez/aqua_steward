@@ -151,6 +151,7 @@ class DepositProvider extends ChangeNotifier {
       if (result.isSuccess) {
         // Elimina el depósito de la lista local inmediatamente para fluidez visual.
         _deposits.removeWhere((deposit) => deposit.id == depositId);
+        await getDeposits(token: token);
       }
       return result;
     } catch (e) {

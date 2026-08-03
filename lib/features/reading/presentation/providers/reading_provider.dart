@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:aqua_steward/core/error/result.dart';
 import 'package:aqua_steward/features/reading/domain/entities/reading.dart';
+import 'package:aqua_steward/features/reading/domain/entities/report_stats.dart';
 import 'package:aqua_steward/features/reading/domain/usecases/get_daily_readings_usecase.dart';
 import 'package:aqua_steward/features/reading/domain/usecases/export_readings_usecase.dart';
+import 'package:aqua_steward/features/reading/domain/usecases/get_reading_report_stats_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -12,10 +14,12 @@ import 'package:share_plus/share_plus.dart';
 class ReadingProvider extends ChangeNotifier {
   final GetReadingsUseCase getReadingsUseCase;
   final ExportReadingsUseCase exportReadingsUseCase;
+  final GetReadingReportStatsUseCase getReportStatsUseCase;
 
   ReadingProvider({
     required this.getReadingsUseCase,
     required this.exportReadingsUseCase,
+    required this.getReportStatsUseCase,
   });
 
   bool _isLoading = false;
@@ -99,6 +103,29 @@ class ReadingProvider extends ChangeNotifier {
       } else {
         return Result.failure(result.error);
       }
+    } catch (e) {
+      return Result.failure(e.toString());
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<Result<ReportStats>> getReportStats({
+    required String depositId,
+    required String token,
+    required String filter,
+  }) async {
+    _isLoading = true;
+    Future.microtask(() => notifyListeners());
+
+    try {
+      final result = await getReportStatsUseCase.call(
+        depositId: depositId,
+        token: token,
+        filter: filter,
+      );
+      return result;
     } catch (e) {
       return Result.failure(e.toString());
     } finally {

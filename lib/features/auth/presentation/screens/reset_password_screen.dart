@@ -9,6 +9,7 @@ import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:aqua_steward/core/router/app_router.dart';
 import 'package:aqua_steward/features/auth/presentation/widgets/scaffold_account.dart';
 import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
+import 'package:aqua_steward/features/auth/presentation/widgets/password_requirements_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -26,8 +27,21 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    // Registra el oyente del controlador de contraseña para reconstruir los requisitos.
+    _passwordController.addListener(_onPasswordChanged);
+  }
+
+  // Notifica los cambios de texto para actualizar la interfaz.
+  void _onPasswordChanged() {
+    setState(() {});
+  }
+
+  @override
   void dispose() {
-    // Se liberan los controladores al destruir el widget.
+    _passwordController.removeListener(_onPasswordChanged);
+    // Libera los controladores locales al destruir el widget.
     _passwordController.dispose();
     super.dispose();
   }
@@ -51,6 +65,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             maxLength: 30,
             validator: (val) => AppValidators.validatePassword(context, val),
           ),
+          if (_passwordController.text.isNotEmpty)
+            PasswordRequirementsWidget(password: _passwordController.text),
+
           Consumer<AuthProvider>(
             builder: (context, authProvider, _) => ButtonFormat(
               formKey: _formKey,

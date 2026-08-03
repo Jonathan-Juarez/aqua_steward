@@ -11,6 +11,7 @@ import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:aqua_steward/features/auth/presentation/widgets/scaffold_account.dart';
 import 'package:aqua_steward/core/widgets/text_field_format.dart';
 import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
+import 'package:aqua_steward/features/auth/presentation/widgets/password_requirements_widget.dart';
 import 'package:flutter/material.dart';
 
 // Pantalla de registro de usuario con gestión de controllers y formKey locales.
@@ -30,8 +31,21 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    // Registra el oyente del controlador de contraseña para reconstruir los requisitos.
+    _passwordController.addListener(_onPasswordChanged);
+  }
+
+  // Notifica los cambios de texto para actualizar la interfaz.
+  void _onPasswordChanged() {
+    setState(() {});
+  }
+
+  @override
   void dispose() {
-    // Liberación de recursos locales de la vista.
+    _passwordController.removeListener(_onPasswordChanged);
+    // Libera los recursos locales de la vista.
     _nameController.dispose();
     _lastNameController.dispose();
     _emailController.dispose();
@@ -54,17 +68,21 @@ class _SignupScreenState extends State<SignupScreen> {
 
       if (mounted) {
         if (result.isSuccess) {
-          SnackBarFormat.show(
-            context,
-            context.l10n.snackbar_usuario_registrado,
-          );
+          SnackBarFormat(
+            context: context,
+            message: context.l10n.snackbar_usuario_registrado,
+          ).show();
           Navigator.pushNamed(
             context,
             AppRouter.confirmationSignup,
             arguments: {"email": _emailController.text},
           );
         } else {
-          SnackBarFormat.show(context, result.error ?? "Error");
+          SnackBarFormat(
+            context: context,
+            message: result.error ?? "Error",
+            isError: true,
+          ).show();
         }
       }
     }
@@ -121,6 +139,9 @@ class _SignupScreenState extends State<SignupScreen> {
             maxLength: 30,
             validator: (val) => AppValidators.validatePassword(context, val),
           ),
+          if (_passwordController.text.isNotEmpty)
+            PasswordRequirementsWidget(password: _passwordController.text),
+
           // Observa el estado de carga mediante Consumer.
           Consumer<AuthProvider>(
             builder: (context, provider, _) => ButtonFormat(

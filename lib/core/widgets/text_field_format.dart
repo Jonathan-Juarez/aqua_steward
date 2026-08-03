@@ -15,6 +15,7 @@ class TextFieldFormat extends StatefulWidget {
   final int maxLength;
   final int? maxLines;
   final int? minLines;
+  final List<TextInputFormatter>? inputFormatters;
 
   const TextFieldFormat({
     this.focusNode,
@@ -28,6 +29,7 @@ class TextFieldFormat extends StatefulWidget {
     required this.maxLength,
     this.maxLines = 1,
     this.minLines,
+    this.inputFormatters,
   });
 
   @override
@@ -52,8 +54,11 @@ class _TextFieldFormatState extends State<TextFieldFormat> {
             FocusScope.of(context).nextFocus();
           }
         },
-        // Limita la longitud del texto.
-        inputFormatters: [LengthLimitingTextInputFormatter(widget.maxLength)],
+        // Limita la longitud del texto y aplica formateadores adicionales si se especifican.
+        inputFormatters: [
+          LengthLimitingTextInputFormatter(widget.maxLength),
+          ...?widget.inputFormatters,
+        ],
         // Centra el texto si no tiene ícono.
         textAlign: widget.maxLength == 1 ? TextAlign.center : TextAlign.start,
 

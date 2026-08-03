@@ -51,4 +51,9 @@ class AuthRepositoryImpl implements IAuthRepository {
   }) {
     return dataSource.update(id: id, name: name, lastName: lastName);
   }
+
+  @override
+  Future<Result<void>> deleteUser({required String email}) {
+    return dataSource.delete(email: email);
+  }
 }

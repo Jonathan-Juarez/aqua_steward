@@ -16,6 +16,7 @@ class _ExitConfirmationScopeState extends State<ExitConfirmationScope> {
   static const _channel = MethodChannel('aqua_steward/app');
   DateTime? _lastPressedAt;
 
+  // Envía el evento al canal para mover la app a segundo plano, y si falla, cierra la app.
   Future<void> _moveToBackground() async {
     try {
       await _channel.invokeMethod('moveToBackground');
@@ -35,10 +36,10 @@ class _ExitConfirmationScopeState extends State<ExitConfirmationScope> {
         if (_lastPressedAt == null ||
             now.difference(_lastPressedAt!) > const Duration(seconds: 2)) {
           _lastPressedAt = now;
-          SnackBarFormat.show(
-            context,
-            context.l10n.dialogo_presiona_nuevamente_salir,
-          );
+          SnackBarFormat(
+            context: context,
+            message: context.l10n.dialogo_presiona_nuevamente_salir,
+          ).show();
         } else {
           _moveToBackground();
         }

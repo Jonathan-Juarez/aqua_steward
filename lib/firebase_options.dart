@@ -4,16 +4,16 @@ import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
-/// Default [FirebaseOptions] for use with your Firebase apps.
-///
-/// Example:
-/// ```dart
-/// import 'firebase_options.dart';
-/// // ...
-/// await Firebase.initializeApp(
-///   options: DefaultFirebaseOptions.currentPlatform,
-/// );
-/// ```
+// Default [FirebaseOptions] for use with your Firebase apps.
+//
+// Example:
+// ```dart
+// import 'firebase_options.dart';
+// // ...
+// await Firebase.initializeApp(
+//   options: DefaultFirebaseOptions.currentPlatform,
+// );
+// ```
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDeNxtSygQFQaoT1VSg9saZx9RlvY8LEa0',
-    appId: '1:413114762545:android:150ef74fdea060c237dc10',
+    appId: '1:413114762545:android:4ec73cd115c6bc9237dc10',
     messagingSenderId: '413114762545',
     projectId: 'aquasteward-edb59',
     storageBucket: 'aquasteward-edb59.firebasestorage.app',
@@ -59,10 +59,10 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyB0U1kOxZWB5uIvC4ZoZdnwl0Bmu4u7pIs',
-    appId: '1:413114762545:ios:8b86f24283778f3237dc10',
+    appId: '1:413114762545:ios:23b916ce5b15ed1e37dc10',
     messagingSenderId: '413114762545',
     projectId: 'aquasteward-edb59',
     storageBucket: 'aquasteward-edb59.firebasestorage.app',
-    iosBundleId: 'com.example.aquaSteward',
+    iosBundleId: 'com.aquasteward.app',
   );
 }

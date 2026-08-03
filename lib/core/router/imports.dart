@@ -7,17 +7,17 @@ export "package:aqua_steward/features/auth/presentation/screens/start_screen.dar
 export "package:aqua_steward/features/auth/presentation/screens/signin_screen.dart";
 export "package:aqua_steward/features/auth/presentation/screens/signup_screen.dart";
 export "package:aqua_steward/features/team/presentation/screens/members_screen.dart";
-export "package:aqua_steward/features/deposit/presentation/screens/add_deposit_screen.dart";
+export "package:aqua_steward/features/deposit/presentation/screens/deposit_screen.dart";
 export "package:aqua_steward/features/deposit/presentation/screens/scanner_screen.dart";
-export "package:aqua_steward/features/reading/presentation/screens/generate_reports_screen.dart";
+export "package:aqua_steward/features/reading/presentation/screens/reports_screen.dart";
 export "package:aqua_steward/features/reading/presentation/screens/pdf_screen.dart";
-export "package:aqua_steward/features/deposit/presentation/screens/settings_threshold_screen.dart";
 export "package:aqua_steward/features/support/presentation/screens/about_screen.dart";
 export "package:aqua_steward/features/support/presentation/screens/contact_screen.dart";
 export "package:aqua_steward/features/support/presentation/screens/support_screen.dart";
 export "package:aqua_steward/features/reading/presentation/screens/dashborad_screen.dart";
 export "package:aqua_steward/features/auth/presentation/screens/profile_screen.dart";
 export "package:aqua_steward/features/support/presentation/screens/user_manual.dart";
+export "package:aqua_steward/features/reading/presentation/screens/main_navigation_screen.dart";
 
 // Providers
 export "package:aqua_steward/features/auth/presentation/providers/auth_provider.dart";
@@ -52,6 +52,7 @@ export "package:aqua_steward/features/deposit/domain/usecases/get_deposits_useca
 export "package:aqua_steward/features/deposit/domain/usecases/update_deposit_usecase.dart";
 export "package:aqua_steward/features/reading/domain/usecases/get_daily_readings_usecase.dart";
 export "package:aqua_steward/features/reading/domain/usecases/export_readings_usecase.dart";
+export "package:aqua_steward/features/reading/domain/usecases/get_reading_report_stats_usecase.dart";
 export "package:aqua_steward/features/team/domain/usecases/get_members_usecase.dart";
 export "package:aqua_steward/features/team/domain/usecases/invite_member_usecase.dart";
 export "package:aqua_steward/features/team/domain/usecases/delete_member_usecase.dart";

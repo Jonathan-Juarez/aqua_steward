@@ -1,7 +1,7 @@
 import "package:http/http.dart" as http;
 import "package:aqua_steward/core/error/result.dart";
 
-/// Manejador global para las excepciones que ocurren durante las peticiones HTTP.
+// Manejador global para las excepciones que ocurren durante las peticiones HTTP.
 Result<T> handleException<T>(Object e) {
   final errorString = e.toString();
 

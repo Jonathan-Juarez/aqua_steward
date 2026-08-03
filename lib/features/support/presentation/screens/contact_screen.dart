@@ -21,7 +21,10 @@ class ContactScreen extends StatelessWidget {
       );
     } catch (e) {
       if (context.mounted) {
-        SnackBarFormat.show(context, context.l10n.snackbar_error_correo);
+        SnackBarFormat(
+          context: context,
+          message: context.l10n.snackbar_error_correo,
+        ).show();
       }
     }
   }

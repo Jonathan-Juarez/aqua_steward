@@ -59,11 +59,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialogo_salida_titulo => 'Leave AquaSteward';
 
   @override
-  String get dialogo_eliminar =>
+  String get dialogo_eliminar_deposito =>
       'Are you sure you want to delete this deposit?';
 
   @override
-  String get dialogo_eliminar_titulo => 'Delete deposit';
+  String get dialogo_eliminar_deposito_titulo => 'Delete deposit';
+
+  @override
+  String get dialogo_eliminar_cuenta =>
+      'Are you sure you want to delete your account?';
+
+  @override
+  String get dialogo_eliminar_cuenta_titulo => 'Delete account';
 
   @override
   String get dialogo_cerrar_sesion => 'Are you sure you want to log out?';
@@ -72,7 +79,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialogo_cerrar_sesion_titulo => 'Logout';
 
   @override
-  String get dialogo_presiona_nuevamente_salir => 'Press back again to exit';
+  String get dialogo_presiona_nuevamente_salir => 'Swipe again to exit';
 
   @override
   String get titulo_dashboard => 'My Deposits';
@@ -93,7 +100,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get titulo_contactar_soporte => 'Contact Support';
 
   @override
-  String get titulo_reportes => 'Generate Reports';
+  String get titulo_reportes => 'Reports';
 
   @override
   String get titulo_alertas => 'Notifications';
@@ -159,9 +166,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get perfil_titulo => 'My profile';
 
   @override
-  String get perfil_info_personal => 'Personal Information';
-
-  @override
   String get perfil_nombre => 'Name';
 
   @override
@@ -183,6 +187,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String perfil_cambiar_dialogo_titulo(Object field) {
     return 'Change $field';
   }
+
+  @override
+  String get perfil_editar_titulo => 'Edit profile';
 
   @override
   String get perfil_tema => 'Theme';
@@ -230,9 +237,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get soporte_titulo => 'Support';
-
-  @override
-  String get soporte_recursos => 'Resources and information';
 
   @override
   String get soporte_manual => 'User manual';
@@ -345,7 +349,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reporte_periodo => 'Report period';
 
   @override
-  String get reporte_seleccionar_fechas => 'Select dates';
+  String get reporte_filtro_dia => 'Day';
+
+  @override
+  String get reporte_filtro_semana => 'Week';
+
+  @override
+  String get reporte_filtro_mes => 'Month';
+
+  @override
+  String get reporte_seleccionar_fecha => 'Select date';
 
   @override
   String get reporte_abrir_calendario => 'Tap to open calendar';
@@ -354,7 +367,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reporte_metricas => 'Metrics and Visualization';
 
   @override
-  String get reporte_estadisticas => 'Statistics (Min, Max, Avg)';
+  String get reporte_estadisticas => 'Average statistics';
 
   @override
   String get reporte_tendencias => 'Trend visualization';
@@ -390,6 +403,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reporte_exportar_csv => 'Export CSV';
 
   @override
+  String get cantidad_eventos_criticos => 'Number of critical events';
+
+  @override
+  String get reporte_nota_tema =>
+      'Note: The color of the graphics will adapt to the theme selected within the PDF.';
+
+  @override
   String get alertas_filtro_todos => 'All';
 
   @override
@@ -412,6 +432,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get alertas_filtro_alertas => 'Alerts';
+
+  @override
+  String get alertas_marcar_leidas => 'Mark all as read';
+
+  @override
+  String get alertas_eliminar_todas => 'Delete all';
 
   @override
   String get alertas_invitacion_titulo => 'Invitation to deposit';
@@ -536,6 +562,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get snackbar_csv_exportando => 'Exporting data, please wait...';
 
   @override
+  String get snackbar_usuario_eliminado => 'User successfully deleted';
+
+  @override
   String snackbar_csv_error(String message) {
     return 'Error: $message';
   }
@@ -595,7 +624,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get validar_contrasena_invalida =>
-      'Password must have at least 8 characters, one uppercase, one lowercase, one number and one special character';
+      'Password does not meet requirements';
 
   @override
   String get validar_ip_invalida => 'Invalid IP';
@@ -632,16 +661,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Software Development Engineering';
 
   @override
-  String get acerca_legal_titulo => 'Legal and Privacy';
-
-  @override
-  String get acerca_legal_terminos => 'Terms and Conditions';
-
-  @override
-  String get acerca_legal_privacidad => 'Privacy Policy';
-
-  @override
-  String get acerca_software_titulo => 'Open Source Licenses';
+  String get acerca_software_titulo => 'Licenses';
 
   @override
   String get acerca_software_licencias => 'Open Source Licenses';

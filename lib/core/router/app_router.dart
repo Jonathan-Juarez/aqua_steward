@@ -13,17 +13,15 @@ class AppRouter {
   static const String confirmationReset = "/confirmation_reset";
   static const String confirmationSignup = "/confirmation_signup";
 
-  // Monitoreo
-  static const String dashboard = "/dashboard";
-  static const String parametersDetails = "/parameters-details";
-  static const String registers = "/registers";
+  // Navegación entre dashboard y perfil.
+  static const String mainNavigation = "/main_navigation";
 
   // Gestión de usuarios
-  static const String profile = "/profile";
   static const String members = "/members";
 
   // Depósitos
   static const String addDeposit = "/add_deposit";
+  static const String depositScreen = "/deposit_screen";
   static const String settingsThreshold = "/settings_threshold";
   static const String scanner = "/scanner";
 
@@ -52,7 +50,11 @@ class AppRouter {
       return ResetPasswordScreen(email: args["email"] as String);
     },
 
-    forgotPassword: (context) => const ForgotPassword(),
+    forgotPassword: (context) {
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      return ForgotPassword(email: args["email"] as String);
+    },
     confirmationReset: (context) {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
@@ -70,29 +72,16 @@ class AppRouter {
       );
     },
 
-    // Monitoring (Dashboard y Detalles)
-    dashboard: (context) => const DashboardScreen(),
-    //Parameters Details es la fusión de Registers y Reports.
-    // parametersDetails: (context) {
-    //   // Recibe como argumentos los datos del depósito y el parámetro inicial.
-    //   final args =
-    //       ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    //   return ParametersDetailsScreen(
-    //     initialParameter: args["initialParameter"] as String,
-    //     depositData: args["depositData"] as Map<String, dynamic>,
-    //   );
-    // },
-    // registers: (context) {
-    //   final args =
-    //       ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    //   return RegistersScreen(
-    //     initialParameter: args["initialParameter"] as String,
-    //     depositData: args["depositData"] as Map<String, dynamic>,
-    //   );
-    // },
+    // Navegación Principal
+    mainNavigation: (context) {
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+      return MainNavigationScreen(
+        switchValues: args?["switchValues"] as Map<String, dynamic>?,
+      );
+    },
 
     // Gestión de usuarios
-    profile: (context) => const ProfileScreen(),
     members: (context) {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
@@ -100,19 +89,11 @@ class AppRouter {
     },
 
     // Depósitos
-    addDeposit: (context) {
-      // Soporta crear (sin args) y editar (con args).
+    depositScreen: (context) {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
-      return AddDepositScreen(
+      return DepositScreen(
         depositData: args?["depositData"] as Map<String, dynamic>?,
-      );
-    },
-    settingsThreshold: (context) {
-      final args =
-          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-      return SettingsThresholdScreen(
-        depositData: args["depositData"] as Map<String, dynamic>,
       );
     },
     scanner: (context) => const ScannerScreen(),
@@ -121,13 +102,18 @@ class AppRouter {
     alerts: (context) => const NotificationScreen(),
 
     // Reportes
-    generateReports: (context) => const GenerateReportsScreen(),
+    generateReports: (context) {
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+      return ReportsScreen(
+        depositData: args?["depositData"] as Map<String, dynamic>?,
+      );
+    },
     pdfPreview: (context) {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
       return PdfScreen(dataPdf: args);
     },
-    // Manejar CalendarStartEnd como un showDatePicker o un Dialog Modal.
 
     // Soporte
     support: (context) => const SupportScreen(),

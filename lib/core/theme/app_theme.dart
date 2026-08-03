@@ -40,6 +40,7 @@ class AppTheme {
     ),
 
     colorScheme: const ColorScheme.light(
+      background: AppColor.backgroundLight,
       // Para los contendores.
       primary: AppColor.white,
       // Para textos principales.
@@ -257,6 +258,7 @@ class AppTheme {
     ),
 
     colorScheme: const ColorScheme.dark(
+      background: AppColor.background,
       // Para los contenedores.
       primary: AppColor.container,
       // Para textos principales.

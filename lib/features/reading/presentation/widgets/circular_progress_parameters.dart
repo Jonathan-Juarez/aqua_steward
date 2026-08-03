@@ -30,17 +30,21 @@ class CircularProgressParameters extends StatelessWidget {
     // Determinamos si el valor está fuera de los umbrales definidos en depositData.
     bool hasError = false;
     final sensors = depositData["sensors"];
-    final sensorType = ["HC-SR04", "PH-4502C", "TS300B"][index];
-    final sensor = sensors.firstWhere(
-      (sensor) => (sensor is Map ? sensor["type"] : sensor.type) == sensorType,
-    );
+    final sensor =
+        (sensors != null && sensors is List && index < sensors.length)
+        ? sensors[index]
+        : null;
 
-    minValue = sensor is Map
-        ? (sensor["min_value"] as num?)?.toDouble()
-        : sensor.minValue;
-    maxValue = sensor is Map
-        ? (sensor["max_value"] as num?)?.toDouble()
-        : sensor.maxValue;
+    minValue = sensor != null
+        ? (sensor is Map
+              ? (sensor["min_value"] as num?)?.toDouble()
+              : sensor.minValue)
+        : null;
+    maxValue = sensor != null
+        ? (sensor is Map
+              ? (sensor["max_value"] as num?)?.toDouble()
+              : sensor.maxValue)
+        : null;
     currentValue = imputParameters[index];
 
     if ((minValue != null && currentValue < minValue) ||

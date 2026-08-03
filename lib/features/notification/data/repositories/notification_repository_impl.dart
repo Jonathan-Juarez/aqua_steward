@@ -40,7 +40,7 @@ class NotificationRepositoryImpl implements NotificationRepositoryInterface {
   }
 
   @override
-  Future<Result<void>> markNotificationsAsRead({required String token}) {
-    return _remoteDataSource.markNotificationsAsRead(token: token);
+  Future<Result<void>> markNotificationsAsRead({required String token, String? notificationId}) {
+    return _remoteDataSource.markNotificationsAsRead(token: token, notificationId: notificationId);
   }
 }

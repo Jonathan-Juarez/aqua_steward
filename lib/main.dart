@@ -1,7 +1,9 @@
 import 'package:aqua_steward/core/router/app_router.dart';
+import 'package:aqua_steward/core/services/session_service.dart';
 import 'package:aqua_steward/core/theme/app_theme.dart';
 import 'package:aqua_steward/core/providers/language_provider.dart';
 import 'package:aqua_steward/core/providers/theme_provider.dart';
+import 'package:aqua_steward/features/auth/domain/usecases/delete_user_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -50,10 +52,11 @@ Future<void> main() async {
     signupUseCase: SignupUseCase(authRepository),
     updateUserUseCase: UpdateUserUseCase(authRepository),
     resetPasswordUseCase: ResetPasswordUseCase(authRepository),
+    deleteUserUseCase: DeleteUserUseCase(authRepository),
   );
 
   final isLoggedIn = await authProvider.tryAutoLogin();
-  final initialRoute = isLoggedIn ? AppRouter.dashboard : AppRouter.start;
+  final initialRoute = isLoggedIn ? AppRouter.mainNavigation : AppRouter.start;
 
   runApp(
     MainApp(
@@ -126,6 +129,7 @@ class MainApp extends StatelessWidget {
             return ReadingProvider(
               getReadingsUseCase: GetReadingsUseCase(repository),
               exportReadingsUseCase: ExportReadingsUseCase(repository),
+              getReportStatsUseCase: GetReadingReportStatsUseCase(repository),
             );
           },
         ),
@@ -148,6 +152,8 @@ class MainApp extends StatelessWidget {
       // Se consume el tema y el idioma para configurar la app.
       child: Consumer2<ThemeProvider, LanguageProvider>(
         builder: (context, themeProvider, languageProvider, _) => MaterialApp(
+          // Permite controlar naveación desde cualquier parte sin BuildContext.
+          navigatorKey: SessionService.navigatorKey,
           // Define el nombre de la app al abrir aplicaciones recientes.
           title: "AquaSteward",
           //Desactiva el banner de depuración.

@@ -1,4 +1,3 @@
-import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:aqua_steward/core/theme/app_icon.dart';
 import 'package:aqua_steward/core/theme/app_padding.dart';
 import 'package:aqua_steward/core/widgets/container_formart.dart';
@@ -10,6 +9,7 @@ class ContainerListTile extends StatefulWidget {
   final Function()? onTap;
   final dynamic title;
   final Icon? icon;
+  final Widget? leading;
   final String? subtitle;
   final dynamic subsubtitle;
   final Widget? trailing;
@@ -19,6 +19,7 @@ class ContainerListTile extends StatefulWidget {
     this.onTap,
     required this.title,
     this.icon,
+    this.leading,
     this.subtitle,
     this.subsubtitle,
     this.trailing,
@@ -36,16 +37,15 @@ class _ContainerListTileState extends State<ContainerListTile> {
       onTap: widget.onTap,
       children: [
         ListTile(
-          leading: widget.icon != null ? IconFormat(icon: widget.icon!) : null,
-          title: widget.title is TextFormat
+          leading:
+              widget.leading ??
+              (widget.icon != null ? IconFormat(icon: widget.icon!) : null),
+          title: widget.title is Widget
               ? widget.title
               : TextFormat(
                   text: widget.title,
                   context: context,
-                  type:
-                      widget.title == context.l10n.dialogo_cerrar_sesion_titulo
-                      ? "bodyRed"
-                      : "body",
+                  type: "body",
                 ),
           subtitle: widget.subsubtitle != null
               ? Column(
@@ -77,11 +77,9 @@ class _ContainerListTileState extends State<ContainerListTile> {
           contentPadding: AppPadding.symmetric0_8,
           trailing: widget.showTrailing
               ? (widget.trailing ??
-                    (widget.title == context.l10n.dialogo_cerrar_sesion_titulo
-                        ? AppIcon.arrowRight()
-                        : AppIcon.arrowRight(
-                            color: Theme.of(context).colorScheme.onSurface,
-                          )))
+                    AppIcon.arrowRight(
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ))
               : null,
         ),
       ],

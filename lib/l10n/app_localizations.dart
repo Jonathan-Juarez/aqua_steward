@@ -194,17 +194,29 @@ abstract class AppLocalizations {
   /// **'Salir de AquaSteward'**
   String get dialogo_salida_titulo;
 
-  /// No description provided for @dialogo_eliminar.
+  /// No description provided for @dialogo_eliminar_deposito.
   ///
   /// In es, this message translates to:
   /// **'¿Estás seguro de que deseas eliminar este depósito?'**
-  String get dialogo_eliminar;
+  String get dialogo_eliminar_deposito;
 
-  /// No description provided for @dialogo_eliminar_titulo.
+  /// No description provided for @dialogo_eliminar_deposito_titulo.
   ///
   /// In es, this message translates to:
   /// **'Eliminar depósito'**
-  String get dialogo_eliminar_titulo;
+  String get dialogo_eliminar_deposito_titulo;
+
+  /// No description provided for @dialogo_eliminar_cuenta.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de que deseas eliminar tu cuenta?'**
+  String get dialogo_eliminar_cuenta;
+
+  /// No description provided for @dialogo_eliminar_cuenta_titulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar cuenta'**
+  String get dialogo_eliminar_cuenta_titulo;
 
   /// No description provided for @dialogo_cerrar_sesion.
   ///
@@ -221,7 +233,7 @@ abstract class AppLocalizations {
   /// No description provided for @dialogo_presiona_nuevamente_salir.
   ///
   /// In es, this message translates to:
-  /// **'Presiona de nuevo para salir'**
+  /// **'Desliza de nuevo para salir'**
   String get dialogo_presiona_nuevamente_salir;
 
   /// No description provided for @titulo_dashboard.
@@ -263,7 +275,7 @@ abstract class AppLocalizations {
   /// No description provided for @titulo_reportes.
   ///
   /// In es, this message translates to:
-  /// **'Generar Reportes'**
+  /// **'Reportes'**
   String get titulo_reportes;
 
   /// No description provided for @titulo_alertas.
@@ -386,12 +398,6 @@ abstract class AppLocalizations {
   /// **'Mi perfil'**
   String get perfil_titulo;
 
-  /// No description provided for @perfil_info_personal.
-  ///
-  /// In es, this message translates to:
-  /// **'Información Personal'**
-  String get perfil_info_personal;
-
   /// No description provided for @perfil_nombre.
   ///
   /// In es, this message translates to:
@@ -433,6 +439,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Cambiar {field}'**
   String perfil_cambiar_dialogo_titulo(Object field);
+
+  /// No description provided for @perfil_editar_titulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar perfil'**
+  String get perfil_editar_titulo;
 
   /// No description provided for @perfil_tema.
   ///
@@ -523,12 +535,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Soporte'**
   String get soporte_titulo;
-
-  /// No description provided for @soporte_recursos.
-  ///
-  /// In es, this message translates to:
-  /// **'Recursos e información'**
-  String get soporte_recursos;
 
   /// No description provided for @soporte_manual.
   ///
@@ -728,11 +734,29 @@ abstract class AppLocalizations {
   /// **'Periodo del reporte'**
   String get reporte_periodo;
 
-  /// No description provided for @reporte_seleccionar_fechas.
+  /// No description provided for @reporte_filtro_dia.
   ///
   /// In es, this message translates to:
-  /// **'Seleccionar fechas'**
-  String get reporte_seleccionar_fechas;
+  /// **'Día'**
+  String get reporte_filtro_dia;
+
+  /// No description provided for @reporte_filtro_semana.
+  ///
+  /// In es, this message translates to:
+  /// **'Semana'**
+  String get reporte_filtro_semana;
+
+  /// No description provided for @reporte_filtro_mes.
+  ///
+  /// In es, this message translates to:
+  /// **'Mes'**
+  String get reporte_filtro_mes;
+
+  /// No description provided for @reporte_seleccionar_fecha.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar fecha'**
+  String get reporte_seleccionar_fecha;
 
   /// No description provided for @reporte_abrir_calendario.
   ///
@@ -749,7 +773,7 @@ abstract class AppLocalizations {
   /// No description provided for @reporte_estadisticas.
   ///
   /// In es, this message translates to:
-  /// **'Estadísticas (Min, Max, Prom)'**
+  /// **'Estadísticas promedio'**
   String get reporte_estadisticas;
 
   /// No description provided for @reporte_tendencias.
@@ -818,6 +842,18 @@ abstract class AppLocalizations {
   /// **'Exportar CSV'**
   String get reporte_exportar_csv;
 
+  /// No description provided for @cantidad_eventos_criticos.
+  ///
+  /// In es, this message translates to:
+  /// **'Cantidad de eventos críticos'**
+  String get cantidad_eventos_criticos;
+
+  /// No description provided for @reporte_nota_tema.
+  ///
+  /// In es, this message translates to:
+  /// **'Nota: El color de las gráficas se adaptarán al tema seleccionado dentro del PDF.'**
+  String get reporte_nota_tema;
+
   /// No description provided for @alertas_filtro_todos.
   ///
   /// In es, this message translates to:
@@ -865,6 +901,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Alertas'**
   String get alertas_filtro_alertas;
+
+  /// No description provided for @alertas_marcar_leidas.
+  ///
+  /// In es, this message translates to:
+  /// **'Marcar todas como leídas'**
+  String get alertas_marcar_leidas;
+
+  /// No description provided for @alertas_eliminar_todas.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar todas'**
+  String get alertas_eliminar_todas;
 
   /// No description provided for @alertas_invitacion_titulo.
   ///
@@ -1094,6 +1142,12 @@ abstract class AppLocalizations {
   /// **'Exportando datos, por favor espera...'**
   String get snackbar_csv_exportando;
 
+  /// No description provided for @snackbar_usuario_eliminado.
+  ///
+  /// In es, this message translates to:
+  /// **'Usuario eliminado exitosamente'**
+  String get snackbar_usuario_eliminado;
+
   /// No description provided for @snackbar_csv_error.
   ///
   /// In es, this message translates to:
@@ -1205,7 +1259,7 @@ abstract class AppLocalizations {
   /// No description provided for @validar_contrasena_invalida.
   ///
   /// In es, this message translates to:
-  /// **'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial'**
+  /// **'Contraseña no cumple los requisitos'**
   String get validar_contrasena_invalida;
 
   /// No description provided for @validar_ip_invalida.
@@ -1268,28 +1322,10 @@ abstract class AppLocalizations {
   /// **'Ingeniería en Desarollo de Software'**
   String get acerca_creditos_facultad_nombre;
 
-  /// No description provided for @acerca_legal_titulo.
-  ///
-  /// In es, this message translates to:
-  /// **'Legales y Privacidad'**
-  String get acerca_legal_titulo;
-
-  /// No description provided for @acerca_legal_terminos.
-  ///
-  /// In es, this message translates to:
-  /// **'Términos y Condiciones'**
-  String get acerca_legal_terminos;
-
-  /// No description provided for @acerca_legal_privacidad.
-  ///
-  /// In es, this message translates to:
-  /// **'Política de Privacidad'**
-  String get acerca_legal_privacidad;
-
   /// No description provided for @acerca_software_titulo.
   ///
   /// In es, this message translates to:
-  /// **'Licencias de Código Abierto'**
+  /// **'Licencias'**
   String get acerca_software_titulo;
 
   /// No description provided for @acerca_software_licencias.

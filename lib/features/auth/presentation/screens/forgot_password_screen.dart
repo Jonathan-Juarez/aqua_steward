@@ -11,7 +11,8 @@ import 'package:flutter/material.dart';
 
 // Pantalla de recuperación de contraseña con gestión local de estado para UI.
 class ForgotPassword extends StatefulWidget {
-  const ForgotPassword({super.key});
+  final String? email;
+  const ForgotPassword({super.key, this.email});
 
   @override
   State<ForgotPassword> createState() => _ForgotPasswordState();
@@ -19,7 +20,9 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
+  late final TextEditingController _emailController = TextEditingController(
+    text: widget.email,
+  );
 
   @override
   void dispose() {

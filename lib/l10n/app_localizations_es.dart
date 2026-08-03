@@ -60,11 +60,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get dialogo_salida_titulo => 'Salir de AquaSteward';
 
   @override
-  String get dialogo_eliminar =>
+  String get dialogo_eliminar_deposito =>
       '¿Estás seguro de que deseas eliminar este depósito?';
 
   @override
-  String get dialogo_eliminar_titulo => 'Eliminar depósito';
+  String get dialogo_eliminar_deposito_titulo => 'Eliminar depósito';
+
+  @override
+  String get dialogo_eliminar_cuenta =>
+      '¿Estás seguro de que deseas eliminar tu cuenta?';
+
+  @override
+  String get dialogo_eliminar_cuenta_titulo => 'Eliminar cuenta';
 
   @override
   String get dialogo_cerrar_sesion =>
@@ -74,8 +81,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get dialogo_cerrar_sesion_titulo => 'Cerrar sesión';
 
   @override
-  String get dialogo_presiona_nuevamente_salir =>
-      'Presiona de nuevo para salir';
+  String get dialogo_presiona_nuevamente_salir => 'Desliza de nuevo para salir';
 
   @override
   String get titulo_dashboard => 'Mis Depósitos';
@@ -96,7 +102,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get titulo_contactar_soporte => 'Contactar Soporte';
 
   @override
-  String get titulo_reportes => 'Generar Reportes';
+  String get titulo_reportes => 'Reportes';
 
   @override
   String get titulo_alertas => 'Notificaciones';
@@ -162,9 +168,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get perfil_titulo => 'Mi perfil';
 
   @override
-  String get perfil_info_personal => 'Información Personal';
-
-  @override
   String get perfil_nombre => 'Nombre';
 
   @override
@@ -186,6 +189,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String perfil_cambiar_dialogo_titulo(Object field) {
     return 'Cambiar $field';
   }
+
+  @override
+  String get perfil_editar_titulo => 'Editar perfil';
 
   @override
   String get perfil_tema => 'Tema';
@@ -233,9 +239,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get soporte_titulo => 'Soporte';
-
-  @override
-  String get soporte_recursos => 'Recursos e información';
 
   @override
   String get soporte_manual => 'Manual de usuario';
@@ -350,7 +353,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get reporte_periodo => 'Periodo del reporte';
 
   @override
-  String get reporte_seleccionar_fechas => 'Seleccionar fechas';
+  String get reporte_filtro_dia => 'Día';
+
+  @override
+  String get reporte_filtro_semana => 'Semana';
+
+  @override
+  String get reporte_filtro_mes => 'Mes';
+
+  @override
+  String get reporte_seleccionar_fecha => 'Seleccionar fecha';
 
   @override
   String get reporte_abrir_calendario => 'Toque para abrir calendario';
@@ -359,7 +371,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get reporte_metricas => 'Métricas y Visualización';
 
   @override
-  String get reporte_estadisticas => 'Estadísticas (Min, Max, Prom)';
+  String get reporte_estadisticas => 'Estadísticas promedio';
 
   @override
   String get reporte_tendencias => 'Visualización de tendencias';
@@ -395,6 +407,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get reporte_exportar_csv => 'Exportar CSV';
 
   @override
+  String get cantidad_eventos_criticos => 'Cantidad de eventos críticos';
+
+  @override
+  String get reporte_nota_tema =>
+      'Nota: El color de las gráficas se adaptarán al tema seleccionado dentro del PDF.';
+
+  @override
   String get alertas_filtro_todos => 'Todos';
 
   @override
@@ -417,6 +436,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get alertas_filtro_alertas => 'Alertas';
+
+  @override
+  String get alertas_marcar_leidas => 'Marcar todas como leídas';
+
+  @override
+  String get alertas_eliminar_todas => 'Eliminar todas';
 
   @override
   String get alertas_invitacion_titulo => 'Invitación a depósito';
@@ -543,6 +568,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get snackbar_csv_exportando => 'Exportando datos, por favor espera...';
 
   @override
+  String get snackbar_usuario_eliminado => 'Usuario eliminado exitosamente';
+
+  @override
   String snackbar_csv_error(String message) {
     return 'Error: $message';
   }
@@ -603,7 +631,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get validar_contrasena_invalida =>
-      'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial';
+      'Contraseña no cumple los requisitos';
 
   @override
   String get validar_ip_invalida => 'IP inválida';
@@ -640,16 +668,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Ingeniería en Desarollo de Software';
 
   @override
-  String get acerca_legal_titulo => 'Legales y Privacidad';
-
-  @override
-  String get acerca_legal_terminos => 'Términos y Condiciones';
-
-  @override
-  String get acerca_legal_privacidad => 'Política de Privacidad';
-
-  @override
-  String get acerca_software_titulo => 'Licencias de Código Abierto';
+  String get acerca_software_titulo => 'Licencias';
 
   @override
   String get acerca_software_licencias => 'Licencias de Código Abierto';

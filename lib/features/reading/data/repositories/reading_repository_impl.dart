@@ -4,6 +4,8 @@ import 'package:aqua_steward/features/reading/domain/entities/reading.dart';
 import 'package:aqua_steward/features/reading/domain/entities/export_reading.dart';
 import 'package:aqua_steward/features/reading/domain/repositories/reading_repository_interface.dart';
 
+import 'package:aqua_steward/features/reading/domain/entities/report_stats.dart';
+
 class ReadingRepositoryImpl implements IReadingRepository {
   final IReadingDataSource dataSource;
 
@@ -34,6 +36,19 @@ class ReadingRepositoryImpl implements IReadingRepository {
     return await dataSource.exportReadings(
       depositId: depositId,
       sensorTypes: sensorTypes,
+      token: token,
+      filter: filter,
+    );
+  }
+
+  @override
+  Future<Result<ReportStats>> getReportStats({
+    required String depositId,
+    required String token,
+    required String filter,
+  }) async {
+    return await dataSource.getReportStats(
+      depositId: depositId,
       token: token,
       filter: filter,
     );

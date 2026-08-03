@@ -2,6 +2,7 @@ import 'package:aqua_steward/core/permissions/app_permission.dart';
 import 'package:aqua_steward/core/theme/app_icon.dart';
 import 'package:aqua_steward/core/theme/app_padding.dart';
 import 'package:aqua_steward/core/theme/app_sizedbox.dart';
+import 'package:aqua_steward/core/widgets/list_view_format.dart';
 import 'package:aqua_steward/core/utils/app_validators.dart';
 import 'package:aqua_steward/core/widgets/button_format.dart';
 import 'package:aqua_steward/core/widgets/container_list_tile.dart';
@@ -89,17 +90,14 @@ class _MembersScreenState extends State<MembersScreen> {
               ),
               const Spacer(),
               // Solo los roles con permiso de invitar ven el botón.
-              PermissionActions(
-                role: _currentRole,
-                permission: AppPermission.inviteMember,
-                child: ButtonFormat(
+              if (RolePermissions.has(_currentRole, AppPermission.inviteMember))
+                ButtonFormat(
                   type: "icon",
                   icon: AppIcon.personAdd(
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
                   onConfirm: inviteDialog,
                 ),
-              ),
             ],
           ),
         ),
@@ -123,11 +121,8 @@ class _MembersScreenState extends State<MembersScreen> {
             return const Center(heightFactor: 5, child: SizedBox.shrink());
           }
 
-          return ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
+          return ListViewFormat(
             itemCount: filtered.length,
-            separatorBuilder: (_, _) => AppSizedBox.height12,
             itemBuilder: (_, i) => containerMember(filtered[i]),
           );
         }(),

@@ -1,4 +1,4 @@
-package com.example.aqua_steward
+package com.aquasteward.app
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine

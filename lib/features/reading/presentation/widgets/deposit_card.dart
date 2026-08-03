@@ -9,6 +9,7 @@ import 'package:aqua_steward/core/widgets/linea_chart.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:aqua_steward/features/reading/presentation/widgets/circular_progress_parameters.dart';
 import 'package:aqua_steward/features/reading/presentation/widgets/state_parameters.dart';
+import 'package:aqua_steward/core/extensions/to_clean_string.dart';
 import 'package:flutter/material.dart';
 
 class DepositCard extends StatefulWidget {
@@ -28,6 +29,14 @@ class DepositCard extends StatefulWidget {
 class _DepositCardState extends State<DepositCard> {
   int? _selectedParameterIndex;
   String _selectedFilter = "Dia";
+
+  bool _isSensorActive(dynamic sensors, int index) {
+    if (sensors == null || sensors is! List || index >= sensors.length) {
+      return true;
+    }
+    final sensor = sensors[index];
+    return (sensor is Map ? sensor["state"] : sensor.state) ?? true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,55 +79,61 @@ class _DepositCardState extends State<DepositCard> {
           ),
         ),
 
-        // Barras de progreso de los parámetros.
+        // Barras de progreso de los parámetros activos.
         Padding(
           padding: AppPadding.symmetric0_8,
           child: Row(
-            children: List.generate(parametersLabel.length, (index) {
-              final isSelected = _selectedParameterIndex == index;
-              return Expanded(
-                child: InkWell(
-                  borderRadius: AppBorder.all8,
-                  onTap: () {
-                    setState(() {
-                      if (_selectedParameterIndex == index) {
-                        _selectedParameterIndex = null;
-                      } else {
-                        _selectedParameterIndex = index;
-                      }
-                    });
-                  },
-                  child: Container(
-                    decoration: isSelected
-                        ? BoxDecoration(
-                            border: Border.all(
-                              color: index == 0
-                                  ? AppColor.parameterAqua
-                                  : index == 1
-                                  ? AppColor.parameterPH
-                                  : AppColor.parameterTurbidity,
-                              width: 2.0,
-                            ),
-                            borderRadius: AppBorder.all8,
-                          )
-                        : null,
-                    child: CircularProgressParameters(
-                      index: index,
-                      peakParameters: peakParameters,
-                      imputParameters: imputParameters,
-                      parametersLabel: parametersLabel,
-                      unit: unitParameters,
-                      depositData: depositData,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (int index = 0; index < parametersLabel.length; index++)
+                if (_isSensorActive(depositData["sensors"], index))
+                  Expanded(
+                    child: InkWell(
+                      borderRadius: AppBorder.all8,
+                      onTap: () {
+                        setState(() {
+                          if (_selectedParameterIndex == index) {
+                            _selectedParameterIndex = null;
+                          } else {
+                            _selectedParameterIndex = index;
+                          }
+                        });
+                      },
+                      child: Container(
+                        decoration: _selectedParameterIndex == index
+                            ? BoxDecoration(
+                                border: Border.all(
+                                  color: index == 0
+                                      ? AppColor.parameterAqua
+                                      : index == 1
+                                      ? AppColor.parameterPH
+                                      : AppColor.parameterTurbidity,
+                                  width: 2.0,
+                                ),
+                                borderRadius: AppBorder.all8,
+                              )
+                            : null,
+                        child: CircularProgressParameters(
+                          index: index,
+                          peakParameters: peakParameters,
+                          imputParameters: imputParameters,
+                          parametersLabel: parametersLabel,
+                          unit: unitParameters,
+                          depositData: depositData,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              );
-            }),
+            ],
           ),
         ),
 
-        // Detalle desplegado del parámetro seleccionado
-        if (_selectedParameterIndex != null) ...[
+        // Detalle desplegado del parámetro seleccionado si continúa activo
+        if (_selectedParameterIndex != null &&
+            _isSensorActive(
+              depositData["sensors"],
+              _selectedParameterIndex!,
+            )) ...[
           AppSizedBox.height12,
           _buildParameterDetail(context, _selectedParameterIndex!),
         ],
@@ -166,8 +181,8 @@ class _DepositCardState extends State<DepositCard> {
       }
     }
 
-    final rangeMin = minVal?.toStringAsFixed(1);
-    final rangeMax = maxVal?.toStringAsFixed(1);
+    final rangeMin = minVal?.toCleanString();
+    final rangeMax = maxVal?.toCleanString();
     final stateText = StateParameters.show(context, currentInputValue, unit);
 
     return Padding(
@@ -198,7 +213,7 @@ class _DepositCardState extends State<DepositCard> {
                         type: "body",
                       ),
                       TextFormat(
-                        text: "${peakValue.toStringAsFixed(0)} L",
+                        text: "${peakValue.toCleanString()} L",
                         context: context,
                         type: "titleSmall",
                       ),
@@ -213,10 +228,18 @@ class _DepositCardState extends State<DepositCard> {
                     TextFormat(
                       alignCenter: true,
                       text: unit != "NTU"
-                          ? "${context.l10n.comun_umbrales}:\n${rangeMin ?? ""} - ${rangeMax ?? ""} $unit"
-                          : "${context.l10n.comun_umbrales}:\n${rangeMax ?? ""} $unit",
+                          ? "${context.l10n.comun_umbrales}:"
+                          : "${context.l10n.comun_umbrales}:",
                       context: context,
                       type: "body",
+                    ),
+                    TextFormat(
+                      alignCenter: true,
+                      text: unit != "NTU"
+                          ? "${rangeMin ?? ""} - ${rangeMax ?? ""} $unit"
+                          : "${rangeMax ?? ""} $unit",
+                      context: context,
+                      type: "titleSmall",
                     ),
                   ],
                 ),

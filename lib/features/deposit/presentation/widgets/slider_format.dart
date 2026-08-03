@@ -5,7 +5,9 @@ import 'package:aqua_steward/core/utils/app_validators.dart';
 import 'package:aqua_steward/core/widgets/text_field_format.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:aqua_steward/core/widgets/dialog_emergent.dart';
+import 'package:aqua_steward/core/extensions/to_clean_string.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class SliderFormat extends StatefulWidget {
   final bool isSingle;
@@ -14,8 +16,9 @@ class SliderFormat extends StatefulWidget {
   final int divisions;
   final String labelLimit;
   final String unit;
-  final double? valueLimit;
+  final double? valueDefault;
   final RangeValues? rangeValues;
+  final bool allowDecimals;
   final ValueChanged<dynamic> onChanged;
   const SliderFormat({
     super.key,
@@ -25,8 +28,9 @@ class SliderFormat extends StatefulWidget {
     required this.divisions,
     required this.labelLimit,
     required this.unit,
-    this.valueLimit,
+    this.valueDefault,
     this.rangeValues,
+    this.allowDecimals = false,
     required this.onChanged,
   });
 
@@ -59,7 +63,7 @@ class _SliderFormatState extends State<SliderFormat> {
                       context,
                       TextFormat(
                         text:
-                            "${widget.valueLimit?.toStringAsFixed(1)} ${widget.unit}",
+                            "${widget.valueDefault?.toCleanString()} ${widget.unit}",
                         context: context,
                         type: "body",
                       ),
@@ -68,7 +72,7 @@ class _SliderFormatState extends State<SliderFormat> {
                       context,
                       TextFormat(
                         text:
-                            "${widget.rangeValues?.start.toStringAsFixed(1)} - ${widget.rangeValues?.end.toStringAsFixed(1)} ${widget.unit}",
+                            "${widget.rangeValues?.start.toCleanString()} - ${widget.rangeValues?.end.toCleanString()} ${widget.unit}",
                         context: context,
                         type: "body",
                       ),
@@ -80,7 +84,7 @@ class _SliderFormatState extends State<SliderFormat> {
                   min: widget.min,
                   max: widget.max,
                   divisions: widget.divisions,
-                  value: widget.valueLimit ?? widget.min,
+                  value: widget.valueDefault ?? widget.min,
                   onChanged: (val) => widget.onChanged(val),
                 )
               : RangeSlider(
@@ -114,9 +118,13 @@ class _SliderFormatState extends State<SliderFormat> {
   }
 
   void editDialog() {
+    List<TextInputFormatter> inputFormatters = [
+      if (!widget.allowDecimals) FilteringTextInputFormatter.digitsOnly,
+    ];
+
     if (widget.isSingle) {
       TextEditingController limitController = TextEditingController(
-        text: widget.valueLimit?.toStringAsFixed(1),
+        text: widget.valueDefault?.toCleanString(),
       );
 
       showDialog(
@@ -130,6 +138,7 @@ class _SliderFormatState extends State<SliderFormat> {
                 maxLength: 5,
                 controller: limitController,
                 keyboardType: TextInputType.number,
+                inputFormatters: inputFormatters,
                 labelText: "Valor en ${widget.unit}",
                 icon: AppIcon.edit(context: context),
                 validator: (val) => AppValidators.validateNumber(context, val),
@@ -143,7 +152,7 @@ class _SliderFormatState extends State<SliderFormat> {
               if (limitValue > widget.max) limitValue = widget.max;
 
               // Redondear para evitar errores de precisión.
-              limitValue = double.parse(limitValue.toStringAsFixed(1));
+              limitValue = double.parse(limitValue.toCleanString());
               widget.onChanged(limitValue);
 
               Navigator.pop(context);
@@ -154,10 +163,10 @@ class _SliderFormatState extends State<SliderFormat> {
       );
     } else {
       TextEditingController startController = TextEditingController(
-        text: widget.rangeValues?.start.toStringAsFixed(1),
+        text: widget.rangeValues?.start.toCleanString(),
       );
       TextEditingController endController = TextEditingController(
-        text: widget.rangeValues?.end.toStringAsFixed(1),
+        text: widget.rangeValues?.end.toCleanString(),
       );
 
       showDialog(
@@ -174,6 +183,7 @@ class _SliderFormatState extends State<SliderFormat> {
                     maxLength: 5,
                     controller: startController,
                     keyboardType: TextInputType.number,
+                    inputFormatters: inputFormatters,
                     labelText: "Valor inicial (${widget.unit})",
                     icon: AppIcon.edit(context: context),
                     validator: (val) =>
@@ -183,6 +193,7 @@ class _SliderFormatState extends State<SliderFormat> {
                     maxLength: 5,
                     controller: endController,
                     keyboardType: TextInputType.number,
+                    inputFormatters: inputFormatters,
                     labelText: "Valor final (${widget.unit})",
                     icon: AppIcon.edit(context: context),
                     validator: (val) =>
@@ -203,8 +214,8 @@ class _SliderFormatState extends State<SliderFormat> {
               if (valueMax > widget.max) valueMax = widget.max;
 
               // Redondear para evitar errores de precisión.
-              valueMin = double.parse(valueMin.toStringAsFixed(1));
-              valueMax = double.parse(valueMax.toStringAsFixed(1));
+              valueMin = double.parse(valueMin.toCleanString());
+              valueMax = double.parse(valueMax.toCleanString());
 
               // Se valida que el valor inicial no sea mayor al valor final.
               if (valueMin > valueMax) {

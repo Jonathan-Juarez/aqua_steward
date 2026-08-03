@@ -2,6 +2,7 @@ import 'package:aqua_steward/core/error/result.dart';
 import 'package:aqua_steward/core/services/secure_storage_service.dart';
 import 'package:aqua_steward/features/auth/data/models/user_model.dart';
 import 'package:aqua_steward/features/auth/domain/entities/user.dart';
+import 'package:aqua_steward/features/auth/domain/usecases/delete_user_usecase.dart';
 import 'package:aqua_steward/features/auth/domain/usecases/signin_usecase.dart';
 import 'package:aqua_steward/features/auth/domain/usecases/signup_usecase.dart';
 import 'package:aqua_steward/features/auth/domain/usecases/reset_password_usecase.dart';
@@ -14,6 +15,7 @@ class AuthProvider extends ChangeNotifier {
   final SignupUseCase _signupUseCase;
   final UpdateUserUseCase _updateUserUseCase;
   final ResetPasswordUseCase _resetPasswordUseCase;
+  final DeleteUserUseCase _deleteUserUseCase;
 
   // Sesión del usuario autenticado. Centraliza el estado global del usuario.
   User? _currentUser;
@@ -27,12 +29,14 @@ class AuthProvider extends ChangeNotifier {
     required SignupUseCase signupUseCase,
     required UpdateUserUseCase updateUserUseCase,
     required ResetPasswordUseCase resetPasswordUseCase,
+    required DeleteUserUseCase deleteUserUseCase,
   }) : _signinUseCase = signinUseCase,
        _signupUseCase = signupUseCase,
        _updateUserUseCase = updateUserUseCase,
-       _resetPasswordUseCase = resetPasswordUseCase;
+       _resetPasswordUseCase = resetPasswordUseCase,
+       _deleteUserUseCase = deleteUserUseCase;
 
-  /// Intenta restaurar la sesión guardada al abrir la aplicación.
+  // Intenta restaurar la sesión guardada al abrir la aplicación.
   Future<bool> tryAutoLogin() async {
     final token = await SecureStorageService.getToken();
     final userData = await SecureStorageService.getUserData();
@@ -182,6 +186,20 @@ class AuthProvider extends ChangeNotifier {
               );
         await SecureStorageService.saveUserData(model.toJson());
       }
+      return result;
+    } catch (e) {
+      return Result.failure(e.toString());
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<Result<void>> deleteUser(String email) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final result = await _deleteUserUseCase(email: email);
       return result;
     } catch (e) {
       return Result.failure(e.toString());

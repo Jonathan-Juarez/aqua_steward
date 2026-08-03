@@ -8,8 +8,7 @@ import "package:aqua_steward/core/widgets/dialog_emergent.dart";
 import "package:aqua_steward/core/widgets/snack_bar_format.dart";
 import "package:aqua_steward/core/widgets/text_format.dart";
 import "package:aqua_steward/core/theme/app_icon.dart";
-import "package:aqua_steward/core/theme/app_sizedbox.dart";
-import "package:aqua_steward/core/widgets/scaffold_main.dart";
+import "package:aqua_steward/core/widgets/list_view_format.dart";
 import "package:aqua_steward/features/auth/presentation/providers/auth_provider.dart";
 import "package:aqua_steward/features/deposit/presentation/providers/deposit_provider.dart";
 import "package:aqua_steward/features/notification/presentation/providers/notification_provider.dart";
@@ -18,26 +17,29 @@ import "package:aqua_steward/features/reading/presentation/widgets/dialog_export
 import "package:aqua_steward/features/team/presentation/providers/team_provider.dart";
 import "package:aqua_steward/core/services/notification_service.dart";
 import "package:aqua_steward/core/widgets/menu_button_format.dart";
-import "package:aqua_steward/core/widgets/exit_confirmation_scope.dart";
 import "package:flutter/material.dart";
 import "package:aqua_steward/core/extensions/l10n_extensions.dart";
 import "package:provider/provider.dart";
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+  final Map<String, dynamic>? switchValues;
+  const DashboardScreen({super.key, this.switchValues});
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
 class _DashboardScreenState extends State<DashboardScreen>
-    with WidgetsBindingObserver {
+    with AutomaticKeepAliveClientMixin {
   StreamSubscription? _dashboardMessageSubscription;
+
+  @override
+  // Mantiene el estado del widget aunque se navegue a otra pantalla.
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     // addPostFrameCallback sirve para ejecutar código después de que el widget se ha construido. permite que aparezca el loading.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final authProvider = context.read<AuthProvider>();
@@ -62,19 +64,12 @@ class _DashboardScreenState extends State<DashboardScreen>
       _dashboardMessageSubscription = NotificationService
           .instance
           .onMessageReceived
-          .listen((message) {
+          .listen((_) {
             final currentToken =
                 context.read<AuthProvider>().currentUser?.token ?? "";
             if (currentToken.isNotEmpty) {
-              // Refrescar invitaciones de equipo
               context.read<TeamProvider>().getInvitations(token: currentToken);
-              // Refrescar depósitos si el push es de tipo equipo (expulsión o cambio de rol)
-              final type = message.data["type"] ?? "";
-              if (type == "team_removed" || type == "team_role_changed") {
-                context.read<DepositProvider>().getDeposits(
-                  token: currentToken,
-                );
-              }
+              context.read<DepositProvider>().getDeposits(token: currentToken);
             }
           });
     });
@@ -82,22 +77,8 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     _dashboardMessageSubscription?.cancel();
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      final authProvider = context.read<AuthProvider>();
-      final token = authProvider.currentUser?.token ?? "";
-      if (token.isNotEmpty) {
-        // Refrescar depósitos e invitaciones cuando la app vuelve al primer plano
-        context.read<DepositProvider>().getDeposits(token: token);
-        context.read<TeamProvider>().getInvitations(token: token);
-      }
-    }
   }
 
   void _deleteDeposit(String depositId) async {
@@ -112,45 +93,49 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (mounted) {
       if (result.isSuccess) {
         // Notifica el éxito de la eliminación mediante un SnackBar.
-        SnackBarFormat.show(context, context.l10n.snackbar_deposito_eliminado);
+        SnackBarFormat(
+          context: context,
+          message: context.l10n.snackbar_deposito_eliminado,
+        ).show();
       } else {
         // Muestra un mensaje de error si la operación de borrado falló.
-        SnackBarFormat.show(context, result.error ?? "Error");
+        SnackBarFormat(
+          context: context,
+          message: result.error ?? "Error",
+          isError: true,
+        ).show();
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return ExitConfirmationScope(
-      child: ScaffoldMain(
-        children: [
-          // Header: Botones de Acción
-          Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Expanded(
-                  child: TextFormat(
-                    text: context.l10n.titulo_dashboard,
-                    context: context,
-                    type: "title",
-                  ),
+    super.build(context);
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Expanded(
+                child: TextFormat(
+                  text: context.l10n.titulo_dashboard,
+                  context: context,
+                  type: "title",
                 ),
-                // Se consume el provider de notificaciones y de invitaciones para mostrar el número total de notificaciones pendientes.
-                Consumer2<NotificationProvider, TeamProvider>(
-                  builder: (context, notifProvider, teamProvider, _) {
-                    // Guarda la cantidad total de notificaciones pendientes (alertas sin leer + invitaciones)
-                    final unreadCount =
-                        notifProvider.unreadCount +
-                        teamProvider.invitations.length;
-                    return Badge.count(
-                      count: unreadCount,
-                      // Solo se muestra si hay notificaciones sin leer o invitaciones pendientes.
-                      isLabelVisible: unreadCount > 0,
-                      backgroundColor: AppColor.error,
-                      child: ButtonFormat(
+              ),
+              // Se consume el provider de notificaciones y de invitaciones para mostrar el número total de notificaciones pendientes.
+              Consumer2<NotificationProvider, TeamProvider>(
+                builder: (context, notifProvider, teamProvider, _) {
+                  // Guarda la cantidad total de notificaciones pendientes (alertas sin leer + invitaciones)
+                  final unreadCount =
+                      notifProvider.unreadCount +
+                      teamProvider.invitations.length;
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      ButtonFormat(
                         type: "icon",
                         icon: AppIcon.notificationsOutlined(
                           color: Theme.of(context).colorScheme.onSurface,
@@ -158,101 +143,123 @@ class _DashboardScreenState extends State<DashboardScreen>
                         onConfirm: () =>
                             Navigator.pushNamed(context, AppRouter.alerts),
                       ),
-                    );
-                  },
-                ),
-                ButtonFormat(
-                  type: "icon",
-                  icon: AppIcon.supportOutline(
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                  onConfirm: () =>
-                      Navigator.pushNamed(context, AppRouter.support),
-                ),
-              ],
-            ),
-          ),
-
-          // Lista de Depósitos mediante Consumer para reaccionar a cambios en el provider.
-          Consumer<DepositProvider>(
-            builder: (context, provider, child) {
-              // Muestra un indicador de carga circular mientras se obtienen los datos.
-              if (provider.isLoading && provider.deposits.isEmpty) {
-                return const Center(child: CircularProgressIndicator());
-              }
-
-              // Verifica si la lista cargada está vacía para dar feedback al usuario.
-              if (provider.deposits.isEmpty) {
-                return Column(
-                  children: [
-                    Image(
-                      image: const AssetImage("assets/images/deposit.png"),
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      width: 100,
-                      height: 100,
-                    ),
-                    TextFormat(
-                      text: context.l10n.dashboard_sin_depositos,
-                      context: context,
-                      type: "bodySecondary",
-                    ),
-                  ],
-                );
-              }
-
-              final deposits = provider.deposits;
-
-              // Construye la lista de depósitos con separadores estándar.
-              return ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: deposits.length,
-                separatorBuilder: (context, index) => AppSizedBox.height12,
-                itemBuilder: (indexContext, index) {
-                  // Mapeamos el objeto Deposit a la estructura que espera containerDeposit.
-                  final deposit = deposits[index];
-                  final ip = deposit.ip ?? "";
-                  double currentLitters = 0.0;
-                  double currentPh = 0.0;
-                  double currentTurbidity = 0.0;
-
-                  // Recupera los datos de sensores en tiempo real desde el mapa global del provider.
-                  if (ip.isNotEmpty && provider.realTimeData.containsKey(ip)) {
-                    currentLitters = provider.realTimeData[ip]!['level'] ?? 0.0;
-                    currentPh = provider.realTimeData[ip]!['ph'] ?? 0.0;
-                    currentTurbidity =
-                        provider.realTimeData[ip]!['turbidity'] ?? 0.0;
-                  }
-
-                  // Prepara el mapa de datos del depósito.
-                  final depositDataMap = {
-                    "id": deposit.id,
-                    "name": deposit.name,
-                    "ip": ip,
-                    "capacity": deposit.capacity,
-                    "installation_height": deposit.installation_height,
-                    "fill_gap": deposit.fill_gap,
-                    "sensors": deposit.sensors,
-                    "peakLevel": deposit.capacity,
-                    "peakPh": 14.0,
-                    "peakTurbidity": 3000,
-                    "inputLevel": currentLitters,
-                    "inputPh": currentPh,
-                    "inputTurbidity": currentTurbidity,
-                    "role": deposit.role,
-                  };
-                  return DepositCard(
-                    depositData: depositDataMap,
-                    key: ValueKey(deposit.id),
-                    menuWidget: menuDeposit(context, depositDataMap),
+                      if (unreadCount > 0)
+                        Positioned(
+                          top: 6,
+                          right: 6,
+                          // Simula el borde invisible alrededor del punto rojo.
+                          child: Container(
+                            width: 20,
+                            height: 20,
+                            decoration: BoxDecoration(
+                              color: AppColor.error,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Theme.of(context).colorScheme.background,
+                                width: 2,
+                              ),
+                            ),
+                            alignment: Alignment.center,
+                            // El FittedBox asegura que el texto se escale sin alterar el tamaño del contenedor.
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Padding(
+                                padding: const EdgeInsets.all(1),
+                                child: TextFormat(
+                                  text: unreadCount > 99
+                                      ? '99+'
+                                      : '$unreadCount',
+                                  type: "bodySmallWhite",
+                                  context: context,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
                   );
                 },
-              );
-            },
+              ),
+            ],
           ),
-          AppSizedBox.height12,
-        ],
-      ),
+        ),
+
+        // Lista de Depósitos mediante Consumer para reaccionar a cambios en el provider.
+        Consumer<DepositProvider>(
+          builder: (context, provider, child) {
+            // Muestra un indicador de carga circular mientras se obtienen los datos.
+            if (provider.isLoading && provider.deposits.isEmpty) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            // Verifica si la lista cargada está vacía para dar feedback al usuario.
+            if (provider.deposits.isEmpty) {
+              return Column(
+                children: [
+                  Image(
+                    image: const AssetImage("assets/images/deposit.png"),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    width: 100,
+                    height: 100,
+                  ),
+                  TextFormat(
+                    text: context.l10n.dashboard_sin_depositos,
+                    context: context,
+                    type: "bodySecondary",
+                  ),
+                ],
+              );
+            }
+
+            final deposits = provider.deposits;
+
+            // Construye la lista de depósitos con separadores estándar.
+            return ListViewFormat(
+              itemCount: deposits.length,
+              itemBuilder: (indexContext, index) {
+                // Mapeamos el objeto Deposit a la estructura que espera containerDeposit.
+                final deposit = deposits[index];
+                final ip = deposit.ip ?? "";
+                double currentLitters = 0.0;
+                double currentPh = 0.0;
+                double currentTurbidity = 0.0;
+
+                // Recupera los datos de sensores en tiempo real desde el mapa global del provider.
+                if (ip.isNotEmpty && provider.realTimeData.containsKey(ip)) {
+                  currentLitters = provider.realTimeData[ip]!['level'] ?? 0.0;
+                  currentPh = provider.realTimeData[ip]!['ph'] ?? 0.0;
+                  currentTurbidity =
+                      provider.realTimeData[ip]!['turbidity'] ?? 0.0;
+                }
+
+                // Prepara el mapa de datos del depósito.
+                final depositDataMap = {
+                  "id": deposit.id,
+                  "name": deposit.name,
+                  "ip": ip,
+                  "capacity": deposit.capacity,
+                  "installation_height": deposit.installation_height,
+                  "fill_gap": deposit.fill_gap,
+                  "sensors": deposit.sensors,
+                  "peakLevel": deposit.capacity,
+                  "peakPh": 14.0,
+                  "peakTurbidity": 3000,
+                  "inputLevel": currentLitters,
+                  "inputPh": currentPh,
+                  "inputTurbidity": currentTurbidity,
+                  "role": deposit.role,
+                };
+                return DepositCard(
+                  depositData: depositDataMap,
+                  key: ValueKey(deposit.id),
+                  menuWidget: menuDeposit(context, depositDataMap),
+                );
+              },
+            );
+          },
+        ),
+        const SizedBox(height: 80),
+      ],
     );
   }
 
@@ -266,18 +273,13 @@ class _DashboardScreenState extends State<DashboardScreen>
         icon: AppIcon.groups2Outlined,
         text: context.l10n.comun_miembros,
       ),
-      if (RolePermissions.has(role, AppPermission.editThresholds))
+      if (RolePermissions.has(role, AppPermission.editDeposit)) ...[
         MenuItemModel(
-          value: "thresholds",
-          icon: AppIcon.dataThresholdingOutlined,
-          text: context.l10n.comun_umbrales,
-        ),
-      if (RolePermissions.has(role, AppPermission.editDeposit))
-        MenuItemModel(
-          value: "edit",
+          value: "deposit",
           icon: AppIcon.edit(context: context),
           text: context.l10n.comun_deposito,
         ),
+      ],
       MenuItemModel(
         value: "exportCsv",
         icon: AppIcon.download,
@@ -313,7 +315,11 @@ class _DashboardScreenState extends State<DashboardScreen>
             DialogExportCsv.show(context: context, depositData: depositData);
           },
           "generatePdf": () {
-            Navigator.pushNamed(context, AppRouter.generateReports);
+            Navigator.pushNamed(
+              context,
+              AppRouter.generateReports,
+              arguments: {"depositData": depositData},
+            );
           },
           "members": () {
             Navigator.pushNamed(
@@ -322,17 +328,10 @@ class _DashboardScreenState extends State<DashboardScreen>
               arguments: {"depositId": depositData["id"]},
             );
           },
-          "thresholds": () {
+          "deposit": () {
             Navigator.pushNamed(
               context,
-              AppRouter.settingsThreshold,
-              arguments: {"depositData": depositData},
-            );
-          },
-          "edit": () {
-            Navigator.pushNamed(
-              context,
-              AppRouter.addDeposit,
+              AppRouter.depositScreen,
               arguments: {"depositData": depositData},
             );
           },
@@ -341,9 +340,9 @@ class _DashboardScreenState extends State<DashboardScreen>
               showDialog(
                 context: context,
                 builder: (context) => DialogEmergent(
-                  title: context.l10n.dialogo_eliminar_titulo,
+                  title: context.l10n.dialogo_eliminar_deposito_titulo,
                   content: TextFormat(
-                    text: context.l10n.dialogo_eliminar,
+                    text: context.l10n.dialogo_eliminar_deposito,
                     context: context,
                     type: "body",
                   ),

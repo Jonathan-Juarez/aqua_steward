@@ -1,3 +1,4 @@
+import "package:aqua_steward/core/extensions/to_clean_string.dart";
 import "package:aqua_steward/core/theme/app_padding.dart";
 import "package:aqua_steward/core/widgets/text_format.dart";
 import "package:fl_chart/fl_chart.dart";
@@ -69,7 +70,11 @@ class _LineaChartState extends State<LineaChart> {
         setState(() {
           if (mounted) {
             datosLinea = result.data!.map((reading) {
-              return FlSpot(reading.index.toDouble(), reading.value.toDouble());
+              final double x =
+                  (widget.selectedFilter == "Mes" && reading.day != null)
+                  ? (reading.day! - 1).toDouble()
+                  : reading.index.toDouble();
+              return FlSpot(x, reading.value.toDouble());
             }).toList();
             // debugPrint(datosLinea.toString());
 
@@ -116,7 +121,9 @@ class _LineaChartState extends State<LineaChart> {
         maxX = 6; // 0 - 6 para 7 días
         break;
       case "Mes":
-        maxX = 29; // 0 - 29 para 30 días
+        // Se obtiene el número de días en el mes para ajustar el tamaño del eje x.
+        final totalDays = datosLinea.length;
+        maxX = (totalDays > 0 ? totalDays - 1 : 29).toDouble();
         break;
     }
 
@@ -184,9 +191,10 @@ class _LineaChartState extends State<LineaChart> {
           getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
             return touchedBarSpots.map((barSpot) {
               final val = barSpot.y;
-              final percent = ((val / widget.maxY) * 100).toStringAsFixed(1);
+              final formattedVal = val.toCleanString();
+              final percent = ((val / widget.maxY) * 100).toCleanString();
               return LineTooltipItem(
-                isVolume ? "$percent%" : "$val ${widget.unit}",
+                isVolume ? "$percent%" : "$formattedVal ${widget.unit}",
                 TextStyle(
                   color: Theme.of(context).colorScheme.onSurface,
                   fontWeight: FontWeight.bold,
@@ -235,7 +243,10 @@ class _LineaChartState extends State<LineaChart> {
                 text = dias[val];
               }
             } else if (widget.selectedFilter == "Mes") {
-              // Días del mes, ej: 1, 5, 10, 15, 20, 25, 29 (por si es febrero)
+              // Días del mes: 1, 4, 8, 12, 16, 20, 24, 28 y el último día (ej: 30 o 31)
+              final maxDayIndex = datosLinea.isNotEmpty
+                  ? datosLinea.length - 1
+                  : 29;
               mostrar =
                   val == 0 ||
                   val == 3 ||
@@ -244,7 +255,8 @@ class _LineaChartState extends State<LineaChart> {
                   val == 15 ||
                   val == 19 ||
                   val == 23 ||
-                  val == 28;
+                  val == 27 ||
+                  val == maxDayIndex;
               text = "${val + 1}";
             }
 
@@ -269,13 +281,11 @@ class _LineaChartState extends State<LineaChart> {
           getTitlesWidget: (value, meta) {
             if (value > widget.maxY) return const SizedBox.shrink();
 
-            String text = isVolume
-                ? (value / widget.maxY * 100).round().toString()
-                : widget.unit == "pH"
-                ? value.toStringAsFixed(1)
-                : value.toStringAsFixed(0);
-
-            return TextFormat(text: text, context: context, type: "label");
+            return TextFormat(
+              text: value.toCleanString(),
+              context: context,
+              type: "label",
+            );
           },
         ),
       ),

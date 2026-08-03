@@ -1,27 +1,26 @@
-import 'package:aqua_steward/core/theme/app_border.dart';
-import 'package:aqua_steward/core/theme/app_color.dart';
-import 'package:aqua_steward/core/theme/app_icon.dart';
-import 'package:aqua_steward/core/theme/app_padding.dart';
-import 'package:aqua_steward/core/theme/app_sizedbox.dart';
-import 'package:aqua_steward/core/widgets/button_format.dart';
-import 'package:aqua_steward/core/widgets/container_list_tile.dart';
-import 'package:aqua_steward/core/widgets/filter_chip_format.dart';
-import 'package:aqua_steward/core/widgets/scaffold_main.dart';
-import 'package:aqua_steward/core/widgets/snack_bar_format.dart';
-import 'package:aqua_steward/core/widgets/tab_bar_format.dart';
-import 'package:aqua_steward/core/widgets/text_format.dart';
-import 'package:aqua_steward/core/error/result_handler.dart';
-import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
-import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
-import 'package:aqua_steward/features/deposit/presentation/providers/deposit_provider.dart';
-import 'package:aqua_steward/features/notification/presentation/widgets/formater_time.dart';
-import 'package:aqua_steward/features/team/presentation/providers/team_provider.dart';
-import 'package:aqua_steward/features/notification/domain/entities/notification.dart';
-import 'package:aqua_steward/features/notification/presentation/providers/notification_provider.dart';
-import 'package:flutter/material.dart'
-    hide
-        Notification; // Se oculta Notification para evitar conflictos de nombres.
-import 'package:provider/provider.dart';
+import "package:aqua_steward/core/theme/app_border.dart";
+import "package:aqua_steward/core/theme/app_color.dart";
+import "package:aqua_steward/core/theme/app_icon.dart";
+import "package:aqua_steward/core/theme/app_padding.dart";
+import "package:aqua_steward/core/widgets/list_view_format.dart";
+import "package:aqua_steward/core/widgets/button_format.dart";
+import "package:aqua_steward/core/widgets/container_list_tile.dart";
+import "package:aqua_steward/core/widgets/filter_chip_format.dart";
+import "package:aqua_steward/core/widgets/scaffold_main.dart";
+import "package:aqua_steward/core/widgets/snack_bar_format.dart";
+import "package:aqua_steward/core/widgets/tab_bar_format.dart";
+import "package:aqua_steward/core/widgets/text_format.dart";
+import "package:aqua_steward/core/error/result_handler.dart";
+import "package:aqua_steward/core/extensions/l10n_extensions.dart";
+import "package:aqua_steward/features/auth/presentation/providers/auth_provider.dart";
+import "package:aqua_steward/features/deposit/presentation/providers/deposit_provider.dart";
+import "package:aqua_steward/features/notification/presentation/widgets/formater_time.dart";
+import "package:aqua_steward/features/team/presentation/providers/team_provider.dart";
+import "package:aqua_steward/features/notification/domain/entities/notification.dart";
+import "package:aqua_steward/features/notification/presentation/providers/notification_provider.dart";
+import "package:provider/provider.dart";
+// Se oculta Notification para evitar conflictos de nombres.
+import "package:flutter/material.dart" hide Notification;
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -63,10 +62,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
     if (_token.isNotEmpty) {
       final provider = context.read<NotificationProvider>();
       await provider.fetchNotifications(_token);
-      // En caso de que existan notificaciones sin leer, se marcan como leídas.
-      if (provider.hasUnreadNotifications) {
-        await provider.markNotificationsAsRead(_token);
-      }
+    }
+  }
+
+  void _markAllAsRead() async {
+    final provider = context.read<NotificationProvider>();
+    if (provider.hasUnreadNotifications) {
+      await provider.markNotificationsAsRead(_token);
     }
   }
 
@@ -85,7 +87,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   ) {
     // Excluir notificaciones de equipo en la pestaña de Alertas
     final sensorNotifications = notifications
-        .where((n) => n.type != 'team_removed' && n.type != 'team_role_changed')
+        .where((n) => n.type != "team_removed" && n.type != "team_role_changed")
         .toList();
     if (_selectedType == context.l10n.alertas_filtro_todos) {
       return sensorNotifications;
@@ -101,7 +103,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
         .deleteAllNotifications(_token);
     if (!mounted) return;
     if (result.isSuccess) {
-      SnackBarFormat.show(context, context.l10n.snackbar_alertas_eliminadas);
+      SnackBarFormat(
+        context: context,
+        message: context.l10n.snackbar_alertas_eliminadas,
+      ).show();
     }
   }
 
@@ -117,14 +122,36 @@ class _NotificationScreenState extends State<NotificationScreen> {
     final activeTeamNotifs = notifProvider.notifications
         .where(
           (n) =>
-              (n.type == 'team_removed' || n.type == 'team_role_changed') &&
-              n.state == 'activa',
+              (n.type == "team_removed" || n.type == "team_role_changed") &&
+              n.state == "activa",
         )
         .length;
     final totalTeamCount = teamProvider.invitations.length + activeTeamNotifs;
 
     return ScaffoldMain(
       titleAppBar: context.l10n.titulo_alertas,
+      actions: [
+        IconButton(
+          onPressed: notifProvider.hasUnreadNotifications
+              ? _markAllAsRead
+              : null,
+          icon: AppIcon.doneAll(
+            color: notifProvider.hasUnreadNotifications
+                ? AppColor.white
+                : AppColor.blackSecondary,
+          ),
+          tooltip: context.l10n.alertas_marcar_leidas,
+        ),
+        IconButton(
+          onPressed: filteredNotifications.isNotEmpty ? _deleteAll : null,
+          icon: AppIcon.deleteSweep(
+            color: filteredNotifications.isNotEmpty
+                ? AppColor.error
+                : Theme.of(context).colorScheme.inversePrimary,
+          ),
+          tooltip: context.l10n.alertas_eliminar_todas,
+        ),
+      ],
       children: [
         // Selector de pestaña principal.
         Padding(
@@ -141,73 +168,48 @@ class _NotificationScreenState extends State<NotificationScreen> {
             activeColor: AppColor.containerContrast,
           ),
         ),
-        // Filtros (Chips) y botón de eliminar (Solo visibles en la pestaña de Alertas).
+        // Filtros (Chips) (Solo visibles en la pestaña de Alertas).
         if (_currentTabIndex == 0)
           Padding(
             padding: AppPadding.symmetric16_0,
-            child: Row(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        FilterChipFormat(
-                          label: context.l10n.alertas_filtro_todos,
-                          isSelected:
-                              _selectedType ==
-                              context.l10n.alertas_filtro_todos,
-                          onSelected: (val) => setState(
-                            () => _selectedType =
-                                context.l10n.alertas_filtro_todos,
-                          ),
-                        ),
-                        FilterChipFormat(
-                          label: context.l10n.alertas_filtro_nivel,
-                          isSelected:
-                              _selectedType ==
-                              context.l10n.alertas_filtro_nivel,
-                          onSelected: (val) => setState(
-                            () => _selectedType =
-                                context.l10n.alertas_filtro_nivel,
-                          ),
-                        ),
-                        FilterChipFormat(
-                          label: context.l10n.alertas_filtro_ph,
-                          isSelected:
-                              _selectedType == context.l10n.alertas_filtro_ph,
-                          onSelected: (val) => setState(
-                            () =>
-                                _selectedType = context.l10n.alertas_filtro_ph,
-                          ),
-                        ),
-                        FilterChipFormat(
-                          label: context.l10n.alertas_filtro_turbidez,
-                          isSelected:
-                              _selectedType ==
-                              context.l10n.alertas_filtro_turbidez,
-                          onSelected: (val) => setState(
-                            () => _selectedType =
-                                context.l10n.alertas_filtro_turbidez,
-                          ),
-                        ),
-                      ],
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  FilterChipFormat(
+                    label: context.l10n.alertas_filtro_todos,
+                    isSelected:
+                        _selectedType == context.l10n.alertas_filtro_todos,
+                    onSelected: (val) => setState(
+                      () => _selectedType = context.l10n.alertas_filtro_todos,
                     ),
                   ),
-                ),
-                AppSizedBox.width8,
-                ButtonFormat(
-                  type: "icon",
-                  onConfirm: filteredNotifications.isNotEmpty
-                      ? _deleteAll
-                      : null,
-                  icon: filteredNotifications.isNotEmpty
-                      ? AppIcon.deleteSweep()
-                      : AppIcon.deleteSweep(
-                          color: Theme.of(context).colorScheme.inversePrimary,
-                        ),
-                ),
-              ],
+                  FilterChipFormat(
+                    label: context.l10n.alertas_filtro_nivel,
+                    isSelected:
+                        _selectedType == context.l10n.alertas_filtro_nivel,
+                    onSelected: (val) => setState(
+                      () => _selectedType = context.l10n.alertas_filtro_nivel,
+                    ),
+                  ),
+                  FilterChipFormat(
+                    label: context.l10n.alertas_filtro_ph,
+                    isSelected: _selectedType == context.l10n.alertas_filtro_ph,
+                    onSelected: (val) => setState(
+                      () => _selectedType = context.l10n.alertas_filtro_ph,
+                    ),
+                  ),
+                  FilterChipFormat(
+                    label: context.l10n.alertas_filtro_turbidez,
+                    isSelected:
+                        _selectedType == context.l10n.alertas_filtro_turbidez,
+                    onSelected: (val) => setState(
+                      () =>
+                          _selectedType = context.l10n.alertas_filtro_turbidez,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
 
@@ -236,7 +238,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
     final invitations = teamProvider.invitations;
     final teamNotifications = notifProvider.notifications
-        .where((n) => n.type == 'team_removed' || n.type == 'team_role_changed')
+        .where((n) => n.type == "team_removed" || n.type == "team_role_changed")
         .toList();
 
     if (invitations.isEmpty && teamNotifications.isEmpty) {
@@ -257,11 +259,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
       );
     }
 
-    return ListView.separated(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+    return ListViewFormat(
       itemCount: invitations.length + teamNotifications.length,
-      separatorBuilder: (_, _) => AppSizedBox.height12,
       itemBuilder: (context, index) {
         if (index < invitations.length) {
           return _buildInvitationCard(invitations[index]);
@@ -275,13 +274,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   Widget _buildTeamNotificationCard(
     Notification notif,
-    NotificationProvider provider,
+    NotificationProvider notifProvider,
   ) {
     return Dismissible(
       key: Key(notif.id),
       direction: DismissDirection.startToEnd,
       onDismissed: (direction) {
-        provider.deleteNotification(notif.id, _token);
+        notifProvider.deleteNotification(notif.id, _token);
       },
       background: Container(
         decoration: BoxDecoration(
@@ -293,10 +292,27 @@ class _NotificationScreenState extends State<NotificationScreen> {
         child: AppIcon.deleteOutline,
       ),
       child: ContainerListTile(
-        title: TextFormat(
-          text: notif.title,
-          context: context,
-          type: "titleSmall",
+        onTap: notif.state == "activa"
+            ? () => notifProvider.markNotificationsAsRead(
+                _token,
+                notificationId: notif.id,
+              )
+            : null,
+        title: Row(
+          children: [
+            TextFormat(text: notif.title, context: context, type: "titleSmall"),
+            const Spacer(),
+            notif.state == "activa"
+                ? Container(
+                    height: 8,
+                    width: 8,
+                    decoration: const BoxDecoration(
+                      color: AppColor.error,
+                      shape: BoxShape.circle,
+                    ),
+                  )
+                : const SizedBox(),
+          ],
         ),
         subtitle: notif.message,
         subsubtitle: FormaterTime(
@@ -335,11 +351,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
       );
     }
 
-    return ListView.separated(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+    return ListViewFormat(
       itemCount: filtered.length,
-      separatorBuilder: (context, index) => AppSizedBox.height12,
       itemBuilder: (context, index) {
         final notif = filtered[index];
         return Dismissible(
@@ -358,10 +371,31 @@ class _NotificationScreenState extends State<NotificationScreen> {
             child: AppIcon.deleteOutline,
           ),
           child: ContainerListTile(
-            title: TextFormat(
-              text: notif.title,
-              context: context,
-              type: "titleSmall",
+            onTap: notif.state == "activa"
+                ? () => provider.markNotificationsAsRead(
+                    _token,
+                    notificationId: notif.id,
+                  )
+                : null,
+            title: Row(
+              children: [
+                TextFormat(
+                  text: notif.title,
+                  context: context,
+                  type: "titleSmall",
+                ),
+                const Spacer(),
+                notif.state == "activa"
+                    ? Container(
+                        height: 8,
+                        width: 8,
+                        decoration: const BoxDecoration(
+                          color: AppColor.error,
+                          shape: BoxShape.circle,
+                        ),
+                      )
+                    : const SizedBox(),
+              ],
             ),
             subtitle: notif.message,
             subsubtitle: FormaterTime(

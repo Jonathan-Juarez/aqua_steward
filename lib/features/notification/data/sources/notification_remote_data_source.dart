@@ -7,15 +7,30 @@ import 'package:aqua_steward/features/notification/data/models/notification_mode
 import 'package:http/http.dart' as http;
 
 abstract class NotificationRemoteDataSourceInterface {
-  Future<Result<void>> registerToken({required String fcmToken, required String authToken});
-  Future<Result<void>> unregisterToken({required String fcmToken, required String authToken});
-  Future<Result<List<NotificationModel>>> getNotifications({required String token});
-  Future<Result<void>> deleteNotification({required String notificationId, required String token});
+  Future<Result<void>> registerToken({
+    required String fcmToken,
+    required String authToken,
+  });
+  Future<Result<void>> unregisterToken({
+    required String fcmToken,
+    required String authToken,
+  });
+  Future<Result<List<NotificationModel>>> getNotifications({
+    required String token,
+  });
+  Future<Result<void>> deleteNotification({
+    required String notificationId,
+    required String token,
+  });
   Future<Result<void>> deleteAllNotifications({required String token});
-  Future<Result<void>> markNotificationsAsRead({required String token});
+  Future<Result<void>> markNotificationsAsRead({
+    required String token,
+    String? notificationId,
+  });
 }
 
-class NotificationRemoteDataSource implements NotificationRemoteDataSourceInterface {
+class NotificationRemoteDataSource
+    implements NotificationRemoteDataSourceInterface {
   @override
   Future<Result<void>> registerToken({
     required String fcmToken,
@@ -59,7 +74,9 @@ class NotificationRemoteDataSource implements NotificationRemoteDataSourceInterf
   }
 
   @override
-  Future<Result<List<NotificationModel>>> getNotifications({required String token}) async {
+  Future<Result<List<NotificationModel>>> getNotifications({
+    required String token,
+  }) async {
     try {
       final http.Response response = await http.get(
         Uri.parse("$uri/api/notifications/getNotifications"),
@@ -72,7 +89,9 @@ class NotificationRemoteDataSource implements NotificationRemoteDataSourceInterf
       final result = manageHttpResponse(response: response);
       if (result.isSuccess) {
         final List<dynamic> body = json.decode(response.body);
-        final notifications = body.map((item) => NotificationModel.fromMap(item)).toList();
+        final notifications = body
+            .map((item) => NotificationModel.fromMap(item))
+            .toList();
         return Result.success(notifications);
       } else {
         return Result.failure(result.error);
@@ -120,10 +139,14 @@ class NotificationRemoteDataSource implements NotificationRemoteDataSourceInterf
   }
 
   @override
-  Future<Result<void>> markNotificationsAsRead({required String token}) async {
+  Future<Result<void>> markNotificationsAsRead({
+    required String token,
+    String? notificationId,
+  }) async {
     try {
-      final http.Response response = await http.post(
-        Uri.parse("$uri/api/notifications/read"),
+      final http.Response response = await http.put(
+        Uri.parse("$uri/api/notifications/markAsRead"),
+        body: json.encode({"notificationId": notificationId}),
         headers: <String, String>{
           "Content-Type": "application/json; charset=utf-8",
           "x-auth-token": token,

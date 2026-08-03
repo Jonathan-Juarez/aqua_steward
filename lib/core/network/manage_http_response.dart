@@ -1,9 +1,29 @@
 import "dart:convert";
 import "package:aqua_steward/core/error/result.dart";
+import "package:aqua_steward/core/services/session_service.dart";
 import 'package:http/http.dart' as http;
 
 // Gestiona la respuesta HTTP y retorna un objeto Result con éxito o el mensaje de error procesado.
 Result<void> manageHttpResponse({required http.Response response}) {
+  // 401 Unauthorized: token expirado o no válido.
+  if (response.statusCode == 401) {
+    String errorMsg = "Tu sesión ha expirado. Por favor, inicia sesión nuevamente.";
+    try {
+      final body = json.decode(response.body);
+      final rawMsg = body["errors"]?[0]["message"] ??
+          body["message"] ??
+          body["msg"] ??
+          body["error"];
+      if (rawMsg != null && rawMsg.toString().isNotEmpty) {
+        errorMsg = rawMsg.toString();
+      }
+    } catch (_) {}
+
+    // Desencadena el flujo global de cierre de sesión y redirección.
+    SessionService.handleSessionExpired("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+    return Result.failure(errorMsg);
+  }
+
   switch (response.statusCode) {
     // 200 OK sirve cuando la petición es exitosa.
     case 200:
@@ -19,8 +39,6 @@ Result<void> manageHttpResponse({required http.Response response}) {
     case 404:
     // 409 Conflict sirve cuando el recurso ya existe.
     case 409:
-    // 401 Unauthorized sirve cuando el usuario no tiene autorización.
-    case 401:
       try {
         final body = json.decode(response.body);
         // Extrae el mensaje de error del cuerpo de la respuesta para el fallo del Result.

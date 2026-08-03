@@ -6,12 +6,9 @@ import 'package:aqua_steward/core/theme/app_sizedbox.dart';
 import 'package:aqua_steward/core/utils/app_validators.dart';
 import 'package:aqua_steward/core/widgets/container_list_tile.dart';
 import 'package:aqua_steward/core/widgets/dialog_emergent.dart';
-import 'package:aqua_steward/core/widgets/exit_confirmation_scope.dart';
-import 'package:aqua_steward/core/widgets/scaffold_main.dart';
 import 'package:aqua_steward/core/widgets/text_field_format.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
-import 'package:aqua_steward/features/auth/presentation/widgets/dialog_profile.dart';
 import 'package:aqua_steward/features/auth/presentation/widgets/dialog_settings.dart';
 import 'package:aqua_steward/features/deposit/presentation/providers/deposit_provider.dart';
 import 'package:aqua_steward/features/notification/presentation/providers/notification_provider.dart';
@@ -25,11 +22,16 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends State<ProfileScreen>
+    with AutomaticKeepAliveClientMixin {
   // Estado local para los formularios de actualización de perfil.
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _lastNameController;
+  late String _email;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -38,6 +40,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final currentUser = context.read<AuthProvider>().currentUser;
     _nameController = TextEditingController(text: currentUser?.name);
     _lastNameController = TextEditingController(text: currentUser?.last_name);
+    _email = currentUser?.email ?? "";
   }
 
   @override
@@ -50,53 +53,225 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     // Se consumen ambos proveedores para separar responsabilidades de sesión y perfil.
     final provider = context.watch<AuthProvider>();
 
     final String name = provider.currentUser?.name ?? "";
     final String lastName = provider.currentUser?.last_name ?? "";
 
-    return ExitConfirmationScope(
-      child: ScaffoldMain(
-        children: [
-          Align(
-            alignment: Alignment.topLeft,
-            child: TextFormat(
+    return Column(
+      children: [
+        Row(
+          children: [
+            TextFormat(
               text: context.l10n.perfil_titulo,
               context: context,
               type: "title",
             ),
-          ),
+          ],
+        ),
 
-          AppSizedBox.height12,
-          // Avatar circular que muestra las iniciales del usuario.
-          CircleAvatar(
-            radius: 50,
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            child: TextFormat(
-              text:
-                  "${name.isNotEmpty ? name[0] : ''}${lastName.isNotEmpty ? lastName[0] : ''}",
-              context: context,
+        AppSizedBox.height12,
+
+        // Encabezado Tarjeta Hero: Avatar interactivo + Datos de usuario
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Center(
+            child: Column(
+              children: [
+                GestureDetector(
+                  onTap: () => _showEditProfileDialog(provider),
+                  child: Stack(
+                    alignment: Alignment.bottomRight,
+                    children: [
+                      CircleAvatar(
+                        radius: 40,
+                        backgroundColor: Theme.of(
+                          context,
+                        ).colorScheme.primary,
+                        child: TextFormat(
+                          text:
+                              "${name.isNotEmpty ? name[0] : ''}${lastName.isNotEmpty ? lastName[0] : ''}",
+                          context: context,
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(3),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.background,
+                            width: 0.5,
+                          ),
+                        ),
+                        child: AppIcon.edit(
+                          context: context,
+                          color: Theme.of(context).colorScheme.onSurface,
+                          size: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                AppSizedBox.height8,
+                TextFormat(
+                  text: "$name $lastName",
+                  context: context,
+                  type: "titleSmall",
+                ),
+                TextFormat(
+                  text: _email,
+                  context: context,
+                  type: "bodySecondary",
+                ),
+              ],
             ),
           ),
+        ),
 
-          // Título de la sección de información personal.
-          TextFormat(
-            text: context.l10n.perfil_info_personal,
-            context: context,
-            type: "subtitle",
+        // Personalización
+        TextFormat(
+          text: context.l10n.perfil_personalizacion,
+          context: context,
+          type: "subtitle",
+        ),
+        ContainerListTile(
+          onTap: () => DialogSettings.show(context),
+          title: context.l10n.perfil_tema_idioma,
+          icon: AppIcon.colorLensOutlined,
+        ),
+
+        AppSizedBox.height12,
+
+        // Configuración de cuenta (Cambiar contraseña, Cerrar sesión, Eliminar cuenta)
+        TextFormat(
+          text: context.l10n.perfil_ajustes_cuenta,
+          context: context,
+          type: "subtitle",
+        ),
+        ContainerListTile(
+          onTap: () => Navigator.pushNamed(
+            context,
+            AppRouter.forgotPassword,
+            arguments: {"email": _email},
           ),
+          title: context.l10n.perfil_cambiar_contrasenia,
+          icon: AppIcon.lockOutline,
+        ),
+        AppSizedBox.height12,
+        ContainerListTile(
+          title: context.l10n.dialogo_cerrar_sesion_titulo,
+          icon: AppIcon.logoutOutlined,
+          onTap: () => showDialog(
+            context: context,
+            builder: (context) => DialogEmergent(
+              title: context.l10n.dialogo_cerrar_sesion_titulo,
+              content: TextFormat(
+                text: context.l10n.dialogo_cerrar_sesion,
+                context: context,
+                type: "body",
+              ),
+              onPressed: () async {
+                final token = provider.currentUser?.token;
+                if (token != null) {
+                  await context.read<NotificationProvider>().cleanup(token);
+                }
+                if (context.mounted) {
+                  context.read<DepositProvider>().clearDeposits();
+                  provider.logout();
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    AppRouter.start,
+                    (route) => false,
+                  );
+                }
+              },
+            ),
+          ),
+        ),
+        AppSizedBox.height12,
+        ContainerListTile(
+          title: context.l10n.dialogo_eliminar_cuenta_titulo,
+          icon: AppIcon.noAccounts,
+          onTap: () => showDialog(
+            context: context,
+            builder: (context) => DialogEmergent(
+              title: context.l10n.dialogo_eliminar_cuenta_titulo,
+              content: TextFormat(
+                text: context.l10n.dialogo_eliminar_cuenta,
+                context: context,
+                type: "body",
+              ),
+              onPressed: () async {
+                final token = provider.currentUser?.token;
+                if (token != null) {
+                  await context.read<NotificationProvider>().cleanup(token);
+                }
+                final result = await deleteUser(_email);
+                if (result) {
+                  if (context.mounted) {
+                    context.read<DepositProvider>().clearDeposits();
+                    await provider.logout();
+                    if (context.mounted) {
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        AppRouter.start,
+                        (route) => false,
+                      );
+                    }
+                  }
+                }
+              },
+            ),
+          ),
+        ),
 
-          // Opción para editar el nombre del usuario.
-          ContainerListTile(
-            onTap: () => DialogProfile.show(
-              context: context,
-              title: context.l10n.perfil_nombre,
-              formkey: _formkey,
-              controller: _nameController,
-              content: Form(
-                key: _formkey,
-                child: TextFieldFormat(
+        AppSizedBox.height12,
+
+        // Soporte
+        TextFormat(
+          text: context.l10n.soporte_titulo,
+          context: context,
+          type: "subtitle",
+        ),
+        ContainerListTile(
+          title: context.l10n.soporte_preguntas_frecuentes,
+          onTap: () => Navigator.pushNamed(context, AppRouter.support),
+          icon: AppIcon.supportOutline,
+        ),
+        AppSizedBox.height12,
+        ContainerListTile(
+          title: context.l10n.soporte_manual,
+          icon: AppIcon.manual,
+          onTap: () => Navigator.pushNamed(context, AppRouter.userManual),
+        ),
+        AppSizedBox.height12,
+        ContainerListTile(
+          title: context.l10n.soporte_acerca_de,
+          icon: AppIcon.infoOutlined,
+          onTap: () => Navigator.pushNamed(context, AppRouter.about),
+        ),
+
+        const SizedBox(height: 80),
+      ],
+    );
+  }
+
+  void _showEditProfileDialog(AuthProvider provider) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return DialogEmergent(
+          title: context.l10n.perfil_editar_titulo,
+          formKey: _formkey,
+          content: Form(
+            key: _formkey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFieldFormat(
                   labelText: context.l10n.perfil_nombre,
                   icon: AppIcon.personOutlined(context: context),
                   controller: _nameController,
@@ -104,23 +279,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   validator: (val) =>
                       AppValidators.validateRequired(context, val),
                 ),
-              ),
-              onConfirm: () => updateProfile(provider, context),
-            ),
-            title: context.l10n.perfil_nombre,
-            subtitle: name,
-            icon: AppIcon.personOutlined(context: context),
-          ),
-          AppSizedBox.height12,
-          ContainerListTile(
-            onTap: () => DialogProfile.show(
-              context: context,
-              title: context.l10n.perfil_apellido,
-              formkey: _formkey,
-              controller: _lastNameController,
-              content: Form(
-                key: _formkey,
-                child: TextFieldFormat(
+                AppSizedBox.height12,
+                TextFieldFormat(
                   labelText: context.l10n.perfil_apellido,
                   icon: AppIcon.personOutlined(context: context),
                   controller: _lastNameController,
@@ -128,69 +288,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   validator: (val) =>
                       AppValidators.validateRequired(context, val),
                 ),
-              ),
-              onConfirm: () => updateProfile(provider, context),
+              ],
             ),
-            title: context.l10n.perfil_apellido,
-            subtitle: lastName,
-            icon: AppIcon.personOutlined(context: context),
           ),
-
-          TextFormat(
-            text: context.l10n.perfil_ajustes_cuenta,
-            context: context,
-            type: "subtitle",
-          ),
-          ContainerListTile(
-            onTap: () => DialogSettings.show(context),
-            title: context.l10n.perfil_personalizacion,
-            subtitle: context.l10n.perfil_tema_idioma,
-            icon: AppIcon.colorLensOutlined,
-          ),
-
-          AppSizedBox.height12,
-          ContainerListTile(
-            onTap: () => Navigator.pushNamed(context, AppRouter.forgotPassword),
-            title: context.l10n.perfil_cambiar_contrasenia,
-            icon: AppIcon.lockOutline,
-          ),
-          AppSizedBox.height12,
-
-          ContainerListTile(
-            onTap: () => showDialog(
-              context: context,
-              builder: (context) => DialogEmergent(
-                title: context.l10n.dialogo_cerrar_sesion_titulo,
-                content: TextFormat(
-                  text: context.l10n.dialogo_cerrar_sesion,
-                  context: context,
-                  type: "body",
-                ),
-                onPressed: () async {
-                  final token = provider.currentUser?.token;
-                  if (token != null) {
-                    // Desregistrar token FCM antes de cerrar sesión
-                    await context.read<NotificationProvider>().cleanup(token);
-                  }
-                  // Limpia los depósitos antes de cerrar sesión para evitar datos residuales.
-                  context.read<DepositProvider>().clearDeposits();
-                  provider.logout();
-                  if (context.mounted) {
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      AppRouter.start,
-                      (route) => false,
-                    );
-                  }
-                },
-              ),
-            ),
-            title: context.l10n.dialogo_cerrar_sesion_titulo,
-            icon: AppIcon.logoutOutlined,
-          ),
-          const SizedBox(height: 76),
-        ],
-      ),
+          onPressed: () {
+            updateProfile(provider, context);
+            Navigator.pop(context);
+          },
+        );
+      },
     );
   }
 
@@ -198,7 +304,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     AuthProvider provider,
     BuildContext context,
   ) async {
-    // Utiliza AuthProvider para la lógica de actualización.
     final result = await provider.updateUser(
       name: _nameController.text,
       lastName: _lastNameController.text,
@@ -209,6 +314,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return context.processResult(
       result,
       successMessage: context.l10n.snackbar_perfil_actualizado,
+    );
+  }
+
+  Future<bool> deleteUser(String email) async {
+    final result = await context.read<AuthProvider>().deleteUser(email);
+    if (!mounted) return false;
+    return context.processResult(
+      result,
+      successMessage: context.l10n.snackbar_usuario_eliminado,
     );
   }
 }

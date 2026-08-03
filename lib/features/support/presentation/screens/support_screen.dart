@@ -3,7 +3,6 @@ import 'package:aqua_steward/core/theme/app_icon.dart';
 import 'package:aqua_steward/core/theme/app_sizedbox.dart';
 import 'package:aqua_steward/core/widgets/button_format.dart';
 import 'package:aqua_steward/core/widgets/container_formart.dart';
-import 'package:aqua_steward/core/widgets/container_list_tile.dart';
 import 'package:aqua_steward/core/widgets/icon_format.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:aqua_steward/features/support/presentation/widgets/faq_item.dart';
@@ -17,31 +16,9 @@ class SupportScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScaffoldMain(
-      titleAppBar: context.l10n.titulo_soporte,
+      titleAppBar: context.l10n.soporte_preguntas_frecuentes,
       children: [
-        TextFormat(
-          text: context.l10n.soporte_recursos,
-          context: context,
-          type: "subtitle",
-        ),
-        ContainerListTile(
-          title: context.l10n.soporte_manual,
-          icon: AppIcon.manual,
-          onTap: () => Navigator.pushNamed(context, AppRouter.userManual),
-        ),
-
         AppSizedBox.height12,
-
-        ContainerListTile(
-          title: context.l10n.soporte_acerca_de,
-          icon: AppIcon.infoOutlined,
-          onTap: () => Navigator.pushNamed(context, AppRouter.about),
-        ),
-        TextFormat(
-          text: context.l10n.soporte_preguntas_frecuentes,
-          context: context,
-          type: "subtitle",
-        ),
         FAQItem(
           question: context.l10n.soporte_faq_p1,
           answer: context.l10n.soporte_faq_r1,

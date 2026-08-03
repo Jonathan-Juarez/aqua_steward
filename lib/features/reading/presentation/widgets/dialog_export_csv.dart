@@ -19,7 +19,10 @@ class DialogExportCsv {
   }) {
     final sensors = depositData["sensors"] as List? ?? [];
     if (sensors.isEmpty) {
-      SnackBarFormat.show(context, context.l10n.snackbar_csv_sin_datos);
+      SnackBarFormat(
+        context: context,
+        message: context.l10n.snackbar_csv_sin_datos,
+      ).show();
       return;
     }
 
@@ -152,10 +155,10 @@ class DialogExportCsv {
                 }
 
                 Navigator.pop(dialogContext);
-                SnackBarFormat.show(
-                  context,
-                  context.l10n.snackbar_csv_exportando,
-                );
+                SnackBarFormat(
+                  context: context,
+                  message: context.l10n.snackbar_csv_exportando,
+                ).show();
 
                 final token =
                     context.read<AuthProvider>().currentUser?.token ?? "";
@@ -175,10 +178,12 @@ class DialogExportCsv {
                 if (!context.mounted) return;
 
                 if (!result.isSuccess) {
-                  SnackBarFormat.show(
-                    context,
-                    context.l10n.snackbar_csv_error(result.error ?? ""),
-                  );
+                  SnackBarFormat(
+                    context: context,
+                    message: context.l10n.snackbar_csv_error(
+                      result.error ?? "",
+                    ),
+                  ).show();
                 }
               },
             );

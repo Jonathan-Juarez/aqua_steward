@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class PermissionService {
-  /// Solicita el permiso de cámara y maneja los estados de rechazo permanente.
-  /// Retorna `true` si fue concedido o `false` si fue denegado.
+  // Solicita el permiso de cámara y maneja los estados de rechazo permanente.
+  // Retorna `true` si fue concedido o `false` si fue denegado.
   static Future<bool> requestCameraPermission(BuildContext context) async {
     // Verificamos el estado actual
     PermissionStatus status = await Permission.camera.status;
@@ -34,7 +34,7 @@ class PermissionService {
     return false;
   }
 
-  /// Solicita el permiso de notificaciones y maneja los estados de rechazo.
+  // Solicita el permiso de notificaciones y maneja los estados de rechazo.
   static Future<bool> requestNotificationPermission(
     BuildContext context,
   ) async {
@@ -62,7 +62,7 @@ class PermissionService {
     return false;
   }
 
-  /// Muestra un cuadro de diálogo invitando al usuario a abrir la configuración nativa.
+  // Muestra un cuadro de diálogo invitando al usuario a abrir la configuración nativa.
   static void _showSettingsDialog(
     BuildContext context,
     String title,

@@ -1,4 +1,3 @@
-import 'package:aqua_steward/core/error/result_handler.dart';
 import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:aqua_steward/core/router/app_router.dart';
 import 'package:aqua_steward/core/theme/app_divider.dart';
@@ -69,24 +68,18 @@ class _SigninScreenState extends State<SigninScreen> {
               isLoading: authProvider.isLoading,
               onConfirm: () async {
                 // Se pasan los valores de los controladores locales al método limpio del provider.
-                final result = await authProvider.signin(
+                await authProvider.signin(
                   email: _emailController.text,
                   password: _passwordController.text,
                 );
 
                 if (!mounted) return;
 
-                final isSuccess = context.processResult(
-                  result,
-                  successMessage: context.l10n.snackbar_inicio_sesion_exitoso,
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  AppRouter.mainNavigation,
+                  (route) => false,
                 );
-                if (isSuccess) {
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    AppRouter.dashboard,
-                    (route) => false,
-                  );
-                }
               },
             ),
           ),

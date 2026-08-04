@@ -2,14 +2,20 @@ import 'package:aqua_steward/core/error/result_handler.dart';
 import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:aqua_steward/core/router/app_router.dart';
 import 'package:aqua_steward/core/theme/app_icon.dart';
+import 'package:aqua_steward/core/theme/app_padding.dart';
 import 'package:aqua_steward/core/theme/app_sizedbox.dart';
 import 'package:aqua_steward/core/utils/app_validators.dart';
 import 'package:aqua_steward/core/widgets/container_list_tile.dart';
 import 'package:aqua_steward/core/widgets/dialog_emergent.dart';
+import 'package:aqua_steward/core/widgets/icon_format.dart';
 import 'package:aqua_steward/core/widgets/text_field_format.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
+import 'package:aqua_steward/core/providers/language_provider.dart';
+import 'package:aqua_steward/core/providers/theme_provider.dart';
+import 'package:aqua_steward/core/widgets/button_format.dart';
+import 'package:aqua_steward/core/widgets/container_formart.dart';
+import 'package:aqua_steward/core/widgets/filter_chip_format.dart';
 import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
-import 'package:aqua_steward/features/auth/presentation/widgets/dialog_settings.dart';
 import 'package:aqua_steward/features/deposit/presentation/providers/deposit_provider.dart';
 import 'package:aqua_steward/features/notification/presentation/providers/notification_provider.dart';
 import 'package:flutter/material.dart';
@@ -57,6 +63,16 @@ class _ProfileScreenState extends State<ProfileScreen>
     // Se consumen ambos proveedores para separar responsabilidades de sesión y perfil.
     final provider = context.watch<AuthProvider>();
 
+    final themeProvider = context.watch<ThemeProvider>();
+    final languageProvider = context.watch<LanguageProvider>();
+
+    final String currentTheme = themeProvider.themeMode == ThemeMode.system
+        ? "system"
+        : themeProvider.themeMode == ThemeMode.light
+        ? "light"
+        : "dark";
+    final String currentLanguage = languageProvider.locale.languageCode;
+
     final String name = provider.currentUser?.name ?? "";
     final String lastName = provider.currentUser?.last_name ?? "";
 
@@ -87,9 +103,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                     children: [
                       CircleAvatar(
                         radius: 40,
-                        backgroundColor: Theme.of(
-                          context,
-                        ).colorScheme.primary,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
                         child: TextFormat(
                           text:
                               "${name.isNotEmpty ? name[0] : ''}${lastName.isNotEmpty ? lastName[0] : ''}",
@@ -137,13 +151,90 @@ class _ProfileScreenState extends State<ProfileScreen>
           context: context,
           type: "subtitle",
         ),
-        ContainerListTile(
-          onTap: () => DialogSettings.show(context),
-          title: context.l10n.perfil_tema_idioma,
-          icon: AppIcon.colorLensOutlined,
+        ContainerFormat(
+          children: [
+            Padding(
+              padding: AppPadding.all8,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      const IconFormat(icon: AppIcon.colorLensOutlined),
+                      AppSizedBox.width8,
+                      TextFormat(
+                        text: context.l10n.perfil_tema,
+                        context: context,
+                        type: "body",
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      ButtonFormat(
+                        type: "icon",
+                        icon: AppIcon.systemMode,
+                        isSelected: currentTheme == "system",
+                        onConfirm: () => themeProvider.setTheme("system"),
+                      ),
+                      ButtonFormat(
+                        type: "icon",
+                        icon: AppIcon.lightMode,
+                        isSelected: currentTheme == "light",
+                        onConfirm: () => themeProvider.setTheme("light"),
+                      ),
+                      ButtonFormat(
+                        type: "icon",
+                        icon: AppIcon.darkMode,
+                        isSelected: currentTheme == "dark",
+                        onConfirm: () => themeProvider.setTheme("dark"),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-
         AppSizedBox.height12,
+        ContainerFormat(
+          children: [
+            Padding(
+              padding: AppPadding.all8,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      const IconFormat(icon: Icon(Icons.language_outlined)),
+                      AppSizedBox.width8,
+                      TextFormat(
+                        text: context.l10n.perfil_idioma,
+                        context: context,
+                        type: "body",
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      FilterChipFormat(
+                        label: context.l10n.perfil_espanol,
+                        isSelected: currentLanguage == 'es',
+                        onSelected: (_) => languageProvider.setLanguage("es"),
+                      ),
+                      AppSizedBox.width8,
+                      FilterChipFormat(
+                        label: context.l10n.perfil_ingles,
+                        isSelected: currentLanguage == 'en',
+                        onSelected: (_) => languageProvider.setLanguage("en"),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
 
         // Configuración de cuenta (Cambiar contraseña, Cerrar sesión, Eliminar cuenta)
         TextFormat(
@@ -227,8 +318,6 @@ class _ProfileScreenState extends State<ProfileScreen>
             ),
           ),
         ),
-
-        AppSizedBox.height12,
 
         // Soporte
         TextFormat(

@@ -10,6 +10,7 @@
   "comun_deposito": "Deposit",
   "comun_umbrales": "Thresholds",
   "comun_abandonar": "Leave",
+  "comun_rango": "Range: {min} - {max} {unit}",
   "logo_nombre": "AquaSteward",
   "logo_slogan": "Smart Water Monitoring",
   "button_inicio": "Home",

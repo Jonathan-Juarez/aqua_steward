@@ -8,6 +8,8 @@ import 'package:aqua_steward/core/utils/app_validators.dart';
 import 'package:aqua_steward/core/utils/permission_service.dart';
 import 'package:aqua_steward/core/widgets/button_format.dart';
 import 'package:aqua_steward/core/widgets/container_formart.dart';
+import 'package:aqua_steward/core/widgets/container_list_tile.dart';
+import 'package:aqua_steward/features/deposit/presentation/widgets/value_dialog.dart';
 import 'package:aqua_steward/core/widgets/scaffold_main.dart';
 import 'package:aqua_steward/core/widgets/snack_bar_format.dart';
 import 'package:aqua_steward/core/widgets/text_field_format.dart';
@@ -389,39 +391,52 @@ class _DepositScreenState extends State<DepositScreen> {
             type: "body",
           ),
           AppSizedBox.height12,
-          ContainerFormat(
-            children: [
-              SliderFormat(
-                isSingle: true,
-                min: 0,
-                max: 1000,
-                divisions: 100,
-                labelLimit: context.l10n.umbrales_capacidad,
-                unit: "L",
-                valueDefault: _depositCapacity,
-                onChanged: (val) => setState(() => _depositCapacity = val),
-              ),
-              SliderFormat(
-                isSingle: true,
-                min: 0,
-                max: 150,
-                divisions: 150,
-                labelLimit: context.l10n.umbrales_altura,
-                unit: "CM",
-                valueDefault: _depositHeight,
-                onChanged: (val) => setState(() => _depositHeight = val),
-              ),
-              SliderFormat(
-                isSingle: true,
-                min: 0,
-                max: 50,
-                divisions: 50,
-                labelLimit: context.l10n.umbrales_espacio_sensor,
-                unit: "CM",
-                valueDefault: _fillGap,
-                onChanged: (val) => setState(() => _fillGap = val),
-              ),
-            ],
+          ContainerListTile(
+            title: context.l10n.umbrales_capacidad,
+            subtitle: "${_depositCapacity.toInt()} L",
+            subsubtitle: context.l10n.comun_rango("0", "1000", "L"),
+            icon: AppIcon.localDrinkOutlined,
+            onTap: () => ValueDialog.show(
+              context: context,
+              title: context.l10n.umbrales_capacidad,
+              valueDefault: _depositCapacity,
+              min: 0,
+              max: 1000,
+              unit: "L",
+              onSaved: (val) => setState(() => _depositCapacity = val),
+            ),
+          ),
+          AppSizedBox.height12,
+          ContainerListTile(
+            title: context.l10n.umbrales_altura,
+            subtitle: "${_depositHeight.toInt()} CM",
+            subsubtitle: context.l10n.comun_rango("0", "150", "CM"),
+            icon: AppIcon.heightOutlined,
+            onTap: () => ValueDialog.show(
+              context: context,
+              title: context.l10n.umbrales_altura,
+              valueDefault: _depositHeight,
+              min: 0,
+              max: 150,
+              unit: "CM",
+              onSaved: (val) => setState(() => _depositHeight = val),
+            ),
+          ),
+          AppSizedBox.height12,
+          ContainerListTile(
+            title: context.l10n.umbrales_espacio_sensor,
+            subtitle: "${_fillGap.toInt()} CM",
+            subsubtitle: context.l10n.comun_rango("0", "50", "CM"),
+            icon: AppIcon.straightenOutlined,
+            onTap: () => ValueDialog.show(
+              context: context,
+              title: context.l10n.umbrales_espacio_sensor,
+              valueDefault: _fillGap,
+              min: 0,
+              max: 50,
+              unit: "CM",
+              onSaved: (val) => setState(() => _fillGap = val),
+            ),
           ),
         ],
 

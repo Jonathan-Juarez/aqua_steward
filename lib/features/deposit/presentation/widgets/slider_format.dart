@@ -6,6 +6,7 @@ import 'package:aqua_steward/core/widgets/text_field_format.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:aqua_steward/core/widgets/dialog_emergent.dart';
 import 'package:aqua_steward/core/extensions/to_clean_string.dart';
+import 'package:aqua_steward/features/deposit/presentation/widgets/value_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -123,44 +124,17 @@ class _SliderFormatState extends State<SliderFormat> {
     ];
 
     if (widget.isSingle) {
-      TextEditingController limitController = TextEditingController(
-        text: widget.valueDefault?.toCleanString(),
-      );
-
-      showDialog(
+      ValueDialog.show(
         context: context,
-        builder: (context) {
-          return DialogEmergent(
-            title: "Editar ${widget.labelLimit.toLowerCase()}",
-            content: Form(
-              key: formKey,
-              child: TextFieldFormat(
-                maxLength: 5,
-                controller: limitController,
-                keyboardType: TextInputType.number,
-                inputFormatters: inputFormatters,
-                labelText: "Valor en ${widget.unit}",
-                icon: AppIcon.edit(context: context),
-                validator: (val) => AppValidators.validateNumber(context, val),
-              ),
-            ),
-            onPressed: () {
-              // Se convierte el valor del controlador a double.
-              double limitValue = double.parse(limitController.text);
-              // Se valida que el número esté dentro del rango permitido, si sobrepasa, se le asigna el valor máximo o mínimo.
-              if (limitValue < widget.min) limitValue = widget.min;
-              if (limitValue > widget.max) limitValue = widget.max;
-
-              // Redondear para evitar errores de precisión.
-              limitValue = double.parse(limitValue.toCleanString());
-              widget.onChanged(limitValue);
-
-              Navigator.pop(context);
-            },
-            formKey: formKey,
-          );
-        },
+        title: "Editar ${widget.labelLimit.toLowerCase()}",
+        valueDefault: widget.valueDefault ?? widget.min,
+        min: widget.min,
+        max: widget.max,
+        unit: widget.unit,
+        allowDecimals: widget.allowDecimals,
+        onSaved: (val) => widget.onChanged(val),
       );
+      // En caso de no ser un slider simple, se crea un dialog con dos edit controllers para editar el rango.
     } else {
       TextEditingController startController = TextEditingController(
         text: widget.rangeValues?.start.toCleanString(),

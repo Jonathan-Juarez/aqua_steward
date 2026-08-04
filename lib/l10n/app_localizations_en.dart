@@ -41,6 +41,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get comun_abandonar => 'Leave';
 
   @override
+  String comun_rango(Object max, Object min, Object unit) {
+    return 'Range: $min - $max $unit';
+  }
+
+  @override
   String get logo_nombre => 'AquaSteward';
 
   @override

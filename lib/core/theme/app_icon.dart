@@ -79,6 +79,9 @@ class AppIcon {
   static const Icon wifi = Icon(Icons.wifi);
   static const Icon waterDamageOutlined = Icon(Icons.water_damage_outlined);
   static const Icon qrCodeScanner = Icon(Icons.qr_code_scanner);
+  static const Icon localDrinkOutlined = Icon(Icons.local_drink_outlined);
+  static const Icon heightOutlined = Icon(Icons.height_outlined);
+  static const Icon straightenOutlined = Icon(Icons.straighten_outlined);
 
   // Iconos de calendario
   static Icon calendarMonth({Color? color, BuildContext? context}) => Icon(

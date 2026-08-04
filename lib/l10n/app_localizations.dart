@@ -158,6 +158,12 @@ abstract class AppLocalizations {
   /// **'Abandonar'**
   String get comun_abandonar;
 
+  /// No description provided for @comun_rango.
+  ///
+  /// In es, this message translates to:
+  /// **'Rango: {min} - {max} {unit}'**
+  String comun_rango(Object max, Object min, Object unit);
+
   /// No description provided for @logo_nombre.
   ///
   /// In es, this message translates to:

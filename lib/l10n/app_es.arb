@@ -10,6 +10,7 @@
   "comun_deposito": "Depósito",
   "comun_umbrales": "Umbrales",
   "comun_abandonar": "Abandonar",
+  "comun_rango": "Rango: {min} - {max} {unit}",
   "logo_nombre": "AquaSteward",
   "logo_slogan": "Monitoreo Inteligente del Agua",
   "button_inicio": "Inicio",

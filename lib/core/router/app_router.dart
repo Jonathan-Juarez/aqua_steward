@@ -20,7 +20,6 @@ class AppRouter {
   static const String members = "/members";
 
   // Depósitos
-  static const String addDeposit = "/add_deposit";
   static const String depositScreen = "/deposit_screen";
   static const String settingsThreshold = "/settings_threshold";
   static const String scanner = "/scanner";

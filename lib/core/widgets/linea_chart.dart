@@ -1,5 +1,6 @@
 import "package:aqua_steward/core/extensions/to_clean_string.dart";
 import "package:aqua_steward/core/theme/app_padding.dart";
+import "package:aqua_steward/core/widgets/snack_bar_format.dart";
 import "package:aqua_steward/core/widgets/text_format.dart";
 import "package:fl_chart/fl_chart.dart";
 import "package:flutter/material.dart";
@@ -82,7 +83,12 @@ class _LineaChartState extends State<LineaChart> {
           }
         });
       } else {
-        debugPrint("Error cargando lectura diaria: ${result.error}");
+        // El error detectado es cuando se sobrepasa el rate limit.
+        SnackBarFormat(
+          context: context,
+          message: result.error.toString(),
+          isError: true,
+        ).show();
         setState(() {
           isLoading = false;
         });

@@ -8,7 +8,7 @@ Las características principales, incluyendo las que se tienen planeadas a futur
 - **Gestión de Depósitos:**
   - Crear, editar y eliminar depósitos de agua.
   - Escaneo de código QR para vincular dispositivos IoT.
-  - Configurar umbrales personalizados por sensor (Nivel, Turbidez, pH).
+  - Configurar las dimensiones del depósito (capacidad, altura, espacio libre) y umbrales personalizador por sensor (nivel, pH y turbidez).
 - **Monitoreo en Tiempo Real:**
   - Visualizar parámetros actuales de agua (Nivel, Turbidez, pH) mediante Socket.IO.
   - Historial de lecturas con filtrado por periodo (diario, semanal, mensual).
@@ -33,8 +33,12 @@ Las características principales, incluyendo las que se tienen planeadas a futur
   - Captura de gráficos para inclusión en PDF.
 - **Internacionalización:**
   - Soporte multilenguaje (español e inglés).
-- **Personalización de Tema:**
-  - Soporte para modo claro y oscuro, de manera consistente y persistente usando almacenamiento local.
+- **Personalización de Tema e Idioma:**
+  - Selector de tema (sistema, claro, oscuro) e idioma directamente en el perfil.
+- **Monitoreo de Conectividad:**
+  - Detección automática de pérdida y restauración de internet.
+  - SnackBar persistente flotante al perder la conexión.
+  - Recarga automática de depósitos al restaurar la conexión.
 - **Soporte y Ayuda:**
   - Sección de preguntas frecuentes (FAQ), manual de usuario y contacto de soporte.
 
@@ -45,7 +49,7 @@ Las características principales, incluyendo las que se tienen planeadas a futur
 | Framework              | Flutter / Dart                                          |
 | Gestión de Estado      | Provider                                                |
 | Persistencia Local     | Shared Preferences                                      |
-| Conectividad           | Socket.IO Client, HTTP                                  |
+| Conectividad           | Socket.IO Client, HTTP, internet_connection_checker_plus |
 | Notificaciones Push    | Firebase Cloud Messaging                                |
 | Visualización de Datos | fl_chart, PDF, Printing, Screenshot                     |
 | Internacionalización   | intl, flutter_localizations                             |
@@ -107,6 +111,7 @@ lib/
 │   ├── network/                     # Conectividad (HTTP, Socket.IO, variables globales)
 │   │   ├── global_variable.dart            # URL del backend y constantes de red
 │   │   ├── manage_http_response.dart       # Gestión de respuestas HTTP
+│   │   ├── network_validator.dart          # Validador de conectividad con SnackBar persistente
 │   │   └── socket_service.dart             # Servicio de conexión Socket.IO
 │   ├── permissions/                 # Lógica de permisos basada en roles
 │   │   └── app_permission.dart             # Definición de permisos por rol de usuario
@@ -192,7 +197,9 @@ lib/
 │   │       │   ├── signup_screen.dart
 │   │       │   └── start_screen.dart
 │   │       └── widgets/
+│   │           ├── dialog_profile.dart             # Diálogo de edición de perfil
 │   │           ├── logo.dart
+│   │           ├── password_requirements_widget.dart # Indicador de requisitos de contraseña
 │   │           └── scaffold_account.dart
 │   ├── deposit/             # Gestión de depósitos y sensores
 │   │   ├── data/
@@ -218,11 +225,11 @@ lib/
 │   │       ├── providers/
 │   │       │   └── deposit_provider.dart
 │   │       ├── screens/
-│   │       │   ├── add_deposit_screen.dart
-│   │       │   ├── scanner_screen.dart
-│   │       │   └── settings_threshold_screen.dart
+│   │       │   ├── deposit_screen.dart             # Pantalla unificada de creación y edición
+│   │       │   └── scanner_screen.dart
 │   │       └── widgets/
-│   │           └── slider_format.dart
+│   │           ├── slider_format.dart              # Selector deslizable de valores
+│   │           └── value_dialog.dart               # Diálogo de selección numérica de valor
 │   ├── reading/             # Lecturas de sensores y dashboard de monitoreo
 │   │   ├── data/
 │   │   │   ├── models/
@@ -233,21 +240,28 @@ lib/
 │   │   │       └── reading_data_source.dart
 │   │   ├── domain/
 │   │   │   ├── entities/
-│   │   │   │   └── reading.dart
+│   │   │   │   ├── export_reading.dart
+│   │   │   │   ├── reading.dart
+│   │   │   │   └── report_stats.dart
 │   │   │   ├── repositories/
 │   │   │   │   └── reading_repository_interface.dart
 │   │   │   └── usecases/
-│   │   │       └── get_daily_readings_usecase.dart
+│   │   │       ├── export_readings_usecase.dart
+│   │   │       ├── get_daily_readings_usecase.dart
+│   │   │       └── get_reading_report_stats_usecase.dart
 │   │   └── presentation/
 │   │       ├── providers/
 │   │       │   └── reading_provider.dart
 │   │       ├── screens/
-│   │       │   ├── dashborad_screen.dart
-│   │       │   ├── generate_reports_screen.dart
+│   │       │   ├── dashborad_screen.dart           # Panel principal de monitoreo
+│   │       │   ├── main_navigation_screen.dart     # Pantalla raíz con navegación
 │   │       │   ├── pdf_screen.dart
-│   │       │   └── registers_screen.dart
+│   │       │   └── reports_screen.dart
 │   │       └── widgets/
-│   │           └── circular_progress_parameters.dart
+│   │           ├── circular_progress_parameters.dart
+│   │           ├── deposit_card.dart               # Tarjeta de depósito con datos en tiempo real
+│   │           ├── dialog_export_csv.dart          # Diálogo de exportación CSV
+│   │           └── state_parameters.dart           # Indicador visual de estado de parámetros
 │   ├── support/             # Ayuda, soporte y contacto
 │   │   ├── data/
 │   │   │   ├── models/

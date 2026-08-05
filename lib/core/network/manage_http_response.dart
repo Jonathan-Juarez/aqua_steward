@@ -31,14 +31,12 @@ Result<void> manageHttpResponse({required http.Response response}) {
     case 201:
       // Retorna éxito sin datos adicionales al ser un código de éxito estándar.
       return Result.success(null);
-    // 400 Bad request sirve cuando el usuario manda datos incorrectos.
+    // 400 Bad request, 403 Forbidden, 404 Not Found, 409 Conflict, 429 Too Many Requests.
     case 400:
-    // 403 Forbidden sirve cuando el usuario no tiene permiso para realizar la acción.
     case 403:
-    // 404 Not Found sirve cuando el recurso solicitado no existe.
     case 404:
-    // 409 Conflict sirve cuando el recurso ya existe.
     case 409:
+    case 429:
       try {
         final body = json.decode(response.body);
         // Extrae el mensaje de error del cuerpo de la respuesta para el fallo del Result.

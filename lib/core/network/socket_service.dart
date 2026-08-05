@@ -12,7 +12,7 @@ class SocketService {
 
     String backendUrl = uri;
 
-    // Se conecta al backend por Socket.IO, pero no se conecta automaticamente, sino que hasta que se solicite (entre al dashboard).
+    // Se conecta al backend por Socket.IO, pero no se conecta automaticamente, sino que hasta que se solicite (entrar al dashboard).
     socket = io.io(backendUrl, <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': false,
@@ -24,47 +24,9 @@ class SocketService {
       debugPrint('Conectado al Backend (Socket.IO)');
     });
 
-    // Escucha el evento nivel que emitirá el backend.
-    socket!.on('deposit_level_update', (data) {
-      if (data != null && data is Map<String, dynamic>) {
-        final ip = data['ip'] as String?;
-        final nivelLitros = (data['litros'] as num?)?.toDouble();
-
-        if (ip != null && nivelLitros != null) {
-          if (onDataReceived != null) {
-            onDataReceived!(ip, 'level', nivelLitros);
-          }
-        }
-      }
-    });
-
-    // Escucha el evento pH que emitirá el backend.
-    socket!.on('deposit_ph_update', (data) {
-      if (data != null && data is Map<String, dynamic>) {
-        final ip = data['ip'] as String?;
-        final phValue = (data['ph'] as num?)?.toDouble();
-
-        if (ip != null && phValue != null) {
-          if (onDataReceived != null) {
-            onDataReceived!(ip, 'ph', phValue);
-          }
-        }
-      }
-    });
-
-    // Escucha el evento turbidez que emitirá el backend.
-    socket!.on('deposit_turbidity_update', (data) {
-      if (data != null && data is Map<String, dynamic>) {
-        final ip = data['ip'] as String?;
-        final ntuValue = (data['ntu'] as num?)?.toDouble();
-
-        if (ip != null && ntuValue != null) {
-          if (onDataReceived != null) {
-            onDataReceived!(ip, 'turbidity', ntuValue);
-          }
-        }
-      }
-    });
+    ListenerSensor("deposit_level_update", "litros", "level");
+    ListenerSensor("deposit_ph_update", "ph", "ph");
+    ListenerSensor("deposit_turbidity_update", "ntu", "turbidity");
 
     socket!.onDisconnect((_) {
       debugPrint('Desconectado del Backend (Socket.IO)');
@@ -72,6 +34,21 @@ class SocketService {
 
     socket!.onError((error) {
       debugPrint('Error en Socket.IO: $error');
+    });
+  }
+
+  void ListenerSensor(String event, String key, String parameter) {
+    socket!.on(event, (data) {
+      if (data != null && data is Map<String, dynamic>) {
+        final ip = data['ip'] as String?;
+        final value = (data[key] as num?)?.toDouble();
+
+        if (ip != null && value != null) {
+          if (onDataReceived != null) {
+            onDataReceived!(ip, parameter, value);
+          }
+        }
+      }
     });
   }
 

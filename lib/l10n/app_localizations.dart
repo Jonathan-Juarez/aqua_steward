@@ -188,6 +188,18 @@ abstract class AppLocalizations {
   /// **'Perfil'**
   String get button_perfil;
 
+  /// No description provided for @red_sin_conexion.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión a internet'**
+  String get red_sin_conexion;
+
+  /// No description provided for @red_conexion_restaurada.
+  ///
+  /// In es, this message translates to:
+  /// **'Conexión a internet restaurada'**
+  String get red_conexion_restaurada;
+
   /// No description provided for @dialogo_salida.
   ///
   /// In es, this message translates to:

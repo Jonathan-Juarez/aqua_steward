@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 class TextFormat extends StatelessWidget {
   final String? type;
   final String text;
-  final BuildContext context;
+  final BuildContext? context;
   final bool? alignCenter;
   const TextFormat({
     super.key,
     required this.text,
-    required this.context,
+    this.context,
     this.type,
     this.alignCenter,
   });

@@ -58,6 +58,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get button_perfil => 'Profile';
 
   @override
+  String get red_sin_conexion => 'No internet connection';
+
+  @override
+  String get red_conexion_restaurada => 'Internet connection restored';
+
+  @override
   String get dialogo_salida => 'Are you sure you want to leave this space?';
 
   @override

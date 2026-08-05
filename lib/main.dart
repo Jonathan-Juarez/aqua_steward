@@ -1,3 +1,4 @@
+import 'package:aqua_steward/core/network/network_validator.dart';
 import 'package:aqua_steward/core/router/app_router.dart';
 import 'package:aqua_steward/core/services/session_service.dart';
 import 'package:aqua_steward/core/theme/app_theme.dart';
@@ -186,7 +187,7 @@ class MainApp extends StatelessWidget {
                   maxScaleFactor: 1.15,
                 ),
               ),
-              child: child!,
+              child: NetworkValidator(screen: child!),
             );
           },
         ),

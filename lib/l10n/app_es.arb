@@ -15,6 +15,8 @@
   "logo_slogan": "Monitoreo Inteligente del Agua",
   "button_inicio": "Inicio",
   "button_perfil": "Perfil",
+  "red_sin_conexion": "Sin conexión a internet",
+  "red_conexion_restaurada": "Conexión a internet restaurada",
   "dialogo_salida": "¿Estás seguro de que quieres salir de este espacio?",
   "dialogo_salida_titulo": "Salir de AquaSteward",
   "dialogo_eliminar_deposito": "¿Estás seguro de que deseas eliminar este depósito?",

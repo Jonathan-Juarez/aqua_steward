@@ -5,6 +5,7 @@ class User {
   final String? email;
   final String? password;
   final String? role;
+  final String? global_role;
   final String? depositID;
   final String? token;
 
@@ -15,6 +16,7 @@ class User {
     this.email,
     this.password,
     this.role,
+    this.global_role,
     this.depositID,
     this.token,
   });
@@ -26,6 +28,7 @@ class User {
     String? email,
     String? password,
     String? role,
+    String? global_role,
     String? depositID,
     String? token,
   }) {
@@ -36,6 +39,7 @@ class User {
       email: email ?? this.email,
       password: password ?? this.password,
       role: role ?? this.role,
+      global_role: global_role ?? this.global_role,
       depositID: depositID ?? this.depositID,
       token: token ?? this.token,
     );

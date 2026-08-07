@@ -95,6 +95,24 @@ class AppLocalizationsEs extends AppLocalizations {
   String get dialogo_presiona_nuevamente_salir => 'Desliza de nuevo para salir';
 
   @override
+  String get tech_panel_titulo => 'Panel de Técnico';
+
+  @override
+  String get tech_usuarios => 'Usuarios';
+
+  @override
+  String get tech_depositos => 'Depósitos';
+
+  @override
+  String get tech_sensores_activos => 'Sensores Activos';
+
+  @override
+  String get tech_estado_sistema => 'Estado de Infraestructura';
+
+  @override
+  String get tech_ver_usuarios => 'Gestión Global de Usuarios';
+
+  @override
   String get titulo_dashboard => 'Mis Depósitos';
 
   @override
@@ -318,32 +336,33 @@ class AppLocalizationsEs extends AppLocalizations {
   String get manual_guia_basica => 'Guía básica';
 
   @override
-  String get manual_roles_titulo => '1. Roles y Colaboración';
+  String get manual_roles_titulo => '1. Roles y Permisos del Depósito';
 
   @override
   String get manual_roles_desc =>
-      'AquaSteward permite que varias personas supervisen los mismos depósitos. Según tu rol, tendrás diferentes permisos:\n\n• Propietario: Control total del espacio. Es el único que puede ceder la propiedad a otra persona o eliminar el entorno completo.\n• Administrador: Puede agregar, configurar y eliminar depósitos. También tiene permiso para invitar a nuevos miembros, asignarles roles o eliminarlos del grupo.\n• Analista: Su función es el monitoreo activo. Puede visualizar lecturas, alertas y generar reportes, pero no puede modificar la configuración de los depósitos ni gestionar usuarios.';
+      'AquaSteward organiza la colaboración según 3 roles jerárquicos:\n• Analista: Monitoreo activo. Puede visualizar lecturas, registros y alertas, consultar miembros del equipo, generar reportes y exportar registros.\n• Administrador: Incluye los permisos de Analista, más la capacidad de editar la configuración del depósito, gestionar miembros (invitar y eliminar usuarios) y administrar notificaciones.\n• Propietario: Incluye todos los permisos anteriores y es el único con facultad para eliminar el depósito.';
 
   @override
   String get manual_agregar_titulo => '2. Cómo agregar un nuevo Depósito';
 
   @override
   String get manual_agregar_desc =>
-      'Si tienes el rol de Administrador o Propietario, puedes registrar un nuevo punto de monitoreo siguiendo estos pasos:\n\n1. Ve a la sección Depósitos en el menú principal.\n2. Presiona el botón de agregar (+).\n3. Identificación: Asigna un nombre (ej. \"Tanque Principal\") y una dirección física.\n4. Conexión: Ingresa la dirección IP de tu dispositivo ESP32 para vincularlo.\n5. Configuración: Define la capacidad máxima del contenedor y los sensores que tiene instalados (Nivel, pH, Turbidez).\n6. Límites: Establece los rangos de alerta (mínimos y máximos) para recibir notificaciones si el agua sale de los niveles seguros.';
+      'Cualquier usuario puede registrar un nuevo depósito de agua:\n1. Ve a la sección Depósitos y presiona el botón de agregar (+).\n2. Datos Generales: Ingresa el nombre y la ubicación del depósito.\n3. Sensores: Configura los sensores instalados (Nivel, pH, Turbidez).\n4. Rangos de Alerta: Establece los límites mínimos y máximos para recibir alertas cuando los valores salgan de los parámetros de seguridad.';
 
   @override
-  String get manual_invitaciones_titulo => '3. Gestión de Invitaciones';
+  String get manual_invitaciones_titulo =>
+      '3. Gestión de Miembros e Invitaciones';
 
   @override
   String get manual_invitaciones_desc =>
-      'Para trabajar en conjunto y monitorear los mismos depósitos, el Propietario o el Administrador deben invitar a los nuevos integrantes:\n\nEnviar invitación: Desde la sección de usuarios, ingresa el correo electrónico de la persona que deseas agregar y asígnale un rol (Analista o Administrador).\n\nRegistro: El invitado recibirá un correo con un enlace seguro. Solo debe seguir ese enlace para crear su cuenta y unirse automáticamente a tu entorno.\n\nControl de accesos: Como Administrador o Propietario, puedes eliminar el acceso de cualquier usuario o modificar su rol en cualquier momento desde esta misma sección.';
+      'Para colaborar en la supervisión de depósitos:\n• Enviar Invitación: El Propietario o Administrador ingresa el correo del usuario y le asigna un rol (Administrador o Analista).\n• Responder Invitación: El usuario invitado recibe la notificación en la app donde puede aceptar o rechazar la solicitud.\n• Gestión de Equipo: Administradores y Propietarios pueden modificar roles o eliminar miembros desde la sección de Miembros.';
 
   @override
-  String get manual_monitoreo_titulo => '4. Monitoreo Inteligente';
+  String get manual_monitoreo_titulo => '4. Monitoreo, Alertas y Reportes';
 
   @override
   String get manual_monitoreo_desc =>
-      'Una vez configurado, el Panel de Control te mostrará el estado de salud del agua:\n\n• Lecturas: Valores actualizados de los sensores.\n• Alertas: Si un valor sale de los rangos configurados, verás una notificación crítica en la campana de alertas.\n• Reportes: Puedes consultar el historial de días anteriores y exportarlo en formato digital si necesitas compartirlo o realizar un análisis externo.';
+      'Supervisión integral de la calidad del agua:\n• Lecturas y Registros: Consulta el estado en tiempo real y el historial de nivel, pH y turbidez.\n• Alertas: Recibe y gestiona notificaciones cuando una medida exceda los rangos configurados.\n• Reportes: Genera reportes de estado y exporta registros para análisis o auditoría.';
 
   @override
   String get contacto_titulo => 'Contacto';
@@ -657,7 +676,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get acerca_proposito_desc =>
-      'AquaSteward es un sistema diseñado para el monitoreo del nivel y calidad del agua en tiempo real mediante tecnología IoT, promoviendo una gestión eficiente y responsable del recurso hídrico.';
+      'AquaSteward es un sistema diseñado para el monitoreo del nivel y calidad del agua en tiempo real mediante Internet de las Cosas, promoviendo una gestión eficiente y responsable del recurso hídrico.';
 
   @override
   String get acerca_creditos_titulo => 'Créditos y Desarrollo';
@@ -683,6 +702,79 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get acerca_software_licencias => 'Licencias de Código Abierto';
+
+  @override
+  String get acerca_privacidad_titulo => 'Política de Privacidad';
+
+  @override
+  String get acerca_privacidad_subtitulo =>
+      'Información sobre el manejo y protección de datos';
+
+  @override
+  String get privacidad_introduccion =>
+      'Este aviso de privacidad establece el compromiso de AquaSteward con la protección de la información, explicando de manera transparente cómo se manejan, guardan y cuidan los datos personales en la plataforma.';
+
+  @override
+  String get privacidad_sec1_titulo => '1. ¿Qué información se recopila?';
+
+  @override
+  String get privacidad_sec1_desc =>
+      'Para proporcionar las funciones de monitoreo y gestión de agua, la aplicación recopila la siguiente información proporcionada por el usuario al registrarse y configurar el sistema:\n• Datos de Cuenta: Nombre completo, correo electrónico y contraseña cifrada de forma segura.\n• Datos de Depósitos y Dispositivos IoT: Nombres de depósitos, dimensiones físicas, límites de alertas y la dirección IP del kit con los sensores.\n• Lecturas de Calidad de Agua: Mediciones periódicas de nivel de agua, pH y turbidez.\n• Datos de Equipo: Direcciones de correo e invitaciones para colaborar con otros miembros bajo roles específicos (propietario, administrador o analista).';
+
+  @override
+  String get privacidad_sec2_titulo => '2. ¿Cómo se utiliza la información?';
+
+  @override
+  String get privacidad_sec2_desc =>
+      'La información obtenida se emplea exclusivamente para el funcionamiento interno de la plataforma, específicamente para:\n• Mostrar el estado de los depósitos de agua, tanto en tiempo real como en sus registros históricos.\n• Emitir notificaciones de alerta ante variaciones críticas en el nivel, pH o turbidez.\n• Gestionar los permisos de acceso y control de los miembros del equipo de trabajo.\n• Permitir la generación de reportes detallados en formatos PDF y exportaciones CSV.';
+
+  @override
+  String get privacidad_sec3_titulo =>
+      '3. Compartición de Datos y Prácticas de Privacidad';
+
+  @override
+  String get privacidad_sec3_desc =>
+      'AquaSteward no vende, alquila ni comparte los datos personales con empresas de análisis, redes publicitarias u otros terceros para fines comerciales.\n\nPara garantizar esta privacidad, la plataforma establece las siguientes restricciones operativas:\n• No utiliza cookies de seguimiento ni herramientas para rastrear el comportamiento del usuario fuera de la aplicación.\n• No recopila datos de ubicación GPS precisa en tiempo real bajo ninguna circunstancia.\n• No emplea tecnologías de Inteligencia Artificial (IA) orientadas a la elaboración de perfiles.\n\nLa única integración externa de la aplicación es con Firebase Cloud Messaging (Google). Esta conexión técnica es estrictamente necesaria y se utiliza exclusivamente para enviar notificaciones push en tiempo real al dispositivo, ya sea cuando los parámetros de agua superen los límites configurados o cuando existan actualizaciones en un depósito compartido.';
+
+  @override
+  String get privacidad_firebase_link =>
+      'Política de Privacidad de Firebase (Google)';
+
+  @override
+  String get privacidad_sec4_titulo =>
+      '4. Retención de Datos y Derechos del Usuario';
+
+  @override
+  String get privacidad_sec4_desc =>
+      'Los datos personales se conservan únicamente mientras la cuenta del usuario permanezca activa. El titular de la información tiene control total sobre sus datos y cuenta con los siguientes derechos:\n• Acceso y Actualización: Es posible consultar o actualizar la información del perfil y de los depósitos directamente desde la configuración de la aplicación.\n• Eliminación: El usuario puede eliminar su cuenta de manera directa desde la aplicación, lo cual elimina de forma definitiva todos sus datos asociados del sistema.';
+
+  @override
+  String get privacidad_sec5_titulo => '5. Seguridad de la Información';
+
+  @override
+  String get privacidad_sec5_desc =>
+      'Se implementan rigurosas medidas de seguridad técnicas para proteger los datos contra accesos no autorizados. Esto incluye el almacenamiento cifrado de contraseñas mediante algoritmos hash seguros (bcrypt) y comunicación cifrada en tránsito mediante protocolos seguros (HTTPS, WebSockets).';
+
+  @override
+  String get privacidad_sec6_titulo => '6. Publicidad';
+
+  @override
+  String get privacidad_sec6_desc =>
+      'AquaSteward está diseñada para ser una herramienta limpia y funcional; por lo tanto, no cuenta con anuncios publicitarios de ningún tipo.';
+
+  @override
+  String get privacidad_sec7_titulo => '7. Cambios a esta política';
+
+  @override
+  String get privacidad_sec7_desc =>
+      'Esta Política de Privacidad puede actualizarse o modificarse según sea necesario. Cualquier modificación significativa será notificada dentro de la aplicación y el texto actualizado se reflejará en esta misma sección.';
+
+  @override
+  String get privacidad_sec8_titulo => '8. Contacto';
+
+  @override
+  String get privacidad_sec8_desc =>
+      'Para cualquier duda sobre esta Política de Privacidad o el tratamiento de los datos, el contacto es: jonathan.juarez@ulv.edu.mx';
 
   @override
   String get tiempo_ahora => 'Ahora';

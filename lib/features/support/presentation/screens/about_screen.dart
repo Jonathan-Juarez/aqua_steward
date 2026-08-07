@@ -1,3 +1,4 @@
+import 'package:aqua_steward/core/router/app_router.dart';
 import 'package:aqua_steward/core/theme/app_icon.dart';
 import 'package:aqua_steward/core/theme/app_sizedbox.dart';
 import 'package:aqua_steward/core/widgets/container_formart.dart';
@@ -109,7 +110,20 @@ class AboutScreen extends StatelessWidget {
           ],
         ),
 
-        // 5. Licencias de Código Abierto
+        // Política de Privacidad
+        TextFormat(
+          text: context.l10n.acerca_privacidad_titulo,
+          context: context,
+          type: "subtitle",
+        ),
+        ContainerListTile(
+          title: context.l10n.acerca_privacidad_titulo,
+          subtitle: context.l10n.acerca_privacidad_subtitulo,
+          icon: AppIcon.privacyPolicy,
+          onTap: () => Navigator.pushNamed(context, AppRouter.privacyPolicy),
+        ),
+
+        // Licencias de Código Abierto
         TextFormat(
           text: context.l10n.acerca_software_titulo,
           context: context,

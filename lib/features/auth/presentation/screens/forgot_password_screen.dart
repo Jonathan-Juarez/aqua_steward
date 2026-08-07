@@ -1,13 +1,16 @@
 import 'package:aqua_steward/core/router/app_router.dart';
 import 'package:aqua_steward/core/theme/app_icon.dart';
 import 'package:aqua_steward/core/utils/app_validators.dart';
+import 'package:aqua_steward/core/utils/send_otp.dart';
 import 'package:aqua_steward/core/widgets/button_format.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:aqua_steward/features/auth/presentation/widgets/scaffold_account.dart';
 import 'package:aqua_steward/core/widgets/text_field_format.dart';
 import 'package:aqua_steward/core/widgets/container_formart.dart';
 import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
+import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // Pantalla de recuperación de contraseña con gestión local de estado para UI.
 class ForgotPassword extends StatefulWidget {
@@ -33,6 +36,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   @override
   Widget build(BuildContext context) {
+    // Se envía el OTP.
+
     return ScaffoldAccount(
       formKey: _formKey,
       body: ContainerFormat(
@@ -53,11 +58,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           ButtonFormat(
             formKey: _formKey,
             label: context.l10n.comun_confirmar,
-            onConfirm: () => Navigator.pushNamed(
-              context,
-              AppRouter.confirmationReset,
-              arguments: {"email": _emailController.text},
-            ),
+            isLoading: context.watch<AuthProvider>().isLoading,
+            onConfirm: () => SendOtp(
+              context: context,
+              route: AppRouter.confirmation,
+              arguments: {"email": _emailController.text.trim()},
+            ).execute(),
           ),
         ],
       ),

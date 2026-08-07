@@ -65,6 +65,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
     }
   }
 
+  Future<void> _onRefresh() async {
+    if (_token.isNotEmpty) {
+      await Future.wait([
+        context.read<NotificationProvider>().fetchNotifications(_token),
+        context.read<TeamProvider>().getInvitations(token: _token),
+      ]);
+    }
+  }
+
   void _markAllAsRead() async {
     final provider = context.read<NotificationProvider>();
     if (provider.hasUnreadNotifications) {
@@ -127,8 +136,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
         )
         .length;
     final totalTeamCount = teamProvider.invitations.length + activeTeamNotifs;
+    final totalAlertCount = notifProvider.unreadCount;
 
     return ScaffoldMain(
+      onRefresh: _onRefresh,
       titleAppBar: context.l10n.titulo_alertas,
       actions: [
         IconButton(
@@ -158,7 +169,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
           padding: AppPadding.symmetric16_0,
           child: TabBarFormat(
             labels: [
-              context.l10n.alertas_filtro_alertas,
+              totalAlertCount > 0
+                  ? "${context.l10n.alertas_filtro_alertas} ($totalAlertCount)"
+                  : context.l10n.alertas_filtro_alertas,
               totalTeamCount > 0
                   ? "${context.l10n.alertas_filtro_invitaciones} ($totalTeamCount)"
                   : context.l10n.alertas_filtro_invitaciones,
@@ -232,35 +245,17 @@ class _NotificationScreenState extends State<NotificationScreen> {
     TeamProvider teamProvider,
     NotificationProvider notifProvider,
   ) {
-    if (teamProvider.isLoadingInvitations || notifProvider.isLoading) {
-      return const Center(heightFactor: 5, child: CircularProgressIndicator());
-    }
-
     final invitations = teamProvider.invitations;
     final teamNotifications = notifProvider.notifications
         .where((n) => n.type == "team_removed" || n.type == "team_role_changed")
         .toList();
-
-    if (invitations.isEmpty && teamNotifications.isEmpty) {
-      return Center(
-        heightFactor: 5,
-        child: Column(
-          children: [
-            AppIcon.notificationsOffOutlined(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-            TextFormat(
-              text: context.l10n.alertas_sin_invitaciones,
-              context: context,
-              type: "bodySecondary",
-            ),
-          ],
-        ),
-      );
-    }
+    final totalCount = invitations.length + teamNotifications.length;
 
     return ListViewFormat(
-      itemCount: invitations.length + teamNotifications.length,
+      isLoading: teamProvider.isLoadingInvitations || notifProvider.isLoading,
+      emptyMessage: context.l10n.alertas_sin_invitaciones,
+      emptyWidget: AppIcon.notificationsOffOutlined(context: context),
+      itemCount: totalCount,
       itemBuilder: (context, index) {
         if (index < invitations.length) {
           return _buildInvitationCard(invitations[index]);
@@ -276,6 +271,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     Notification notif,
     NotificationProvider notifProvider,
   ) {
+    // Dismissible permite deslizar para eliminar la notificación.
     return Dismissible(
       key: Key(notif.id),
       direction: DismissDirection.startToEnd,
@@ -327,31 +323,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   // Lista de Alertas Reales.
   Widget _buildAlertsList(NotificationProvider provider) {
-    if (provider.isLoading) {
-      return const Center(heightFactor: 5, child: CircularProgressIndicator());
-    }
-
     final filtered = _getFilteredNotifications(provider.notifications);
 
-    if (filtered.isEmpty) {
-      return Center(
-        heightFactor: 5,
-        child: Column(
-          children: [
-            AppIcon.notificationsOffOutlined(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-            TextFormat(
-              text: context.l10n.alertas_sin_notificaciones,
-              context: context,
-              type: "bodySecondary",
-            ),
-          ],
-        ),
-      );
-    }
-
     return ListViewFormat(
+      isLoading: provider.isLoading,
+      emptyMessage: context.l10n.alertas_sin_notificaciones,
+      emptyWidget: AppIcon.notificationsOffOutlined(context: context),
       itemCount: filtered.length,
       itemBuilder: (context, index) {
         final notif = filtered[index];

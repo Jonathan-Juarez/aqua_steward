@@ -13,6 +13,7 @@ class ScaffoldMain extends StatefulWidget {
   final List<Widget>? actions;
   final Widget? body;
   final Widget? bottomNavigationBar;
+  final Future<void> Function()? onRefresh;
 
   const ScaffoldMain({
     super.key,
@@ -22,6 +23,7 @@ class ScaffoldMain extends StatefulWidget {
     this.actions,
     this.body,
     this.bottomNavigationBar,
+    this.onRefresh,
   });
 
   @override
@@ -37,6 +39,7 @@ class _ScaffoldMainState extends State<ScaffoldMain> {
       content = widget.body!;
     } else {
       content = AppSafe(
+        onRefresh: widget.onRefresh,
         child: FadeInDown(
           duration: const Duration(milliseconds: 400),
           child: Column(

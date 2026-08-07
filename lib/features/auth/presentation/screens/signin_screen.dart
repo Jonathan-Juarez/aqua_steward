@@ -5,6 +5,7 @@ import 'package:aqua_steward/core/theme/app_icon.dart';
 import 'package:aqua_steward/core/utils/app_validators.dart';
 import 'package:aqua_steward/core/widgets/button_format.dart';
 import 'package:aqua_steward/core/widgets/container_formart.dart';
+import 'package:aqua_steward/core/widgets/snack_bar_format.dart';
 import 'package:aqua_steward/core/widgets/text_field_format.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
@@ -68,18 +69,27 @@ class _SigninScreenState extends State<SigninScreen> {
               isLoading: authProvider.isLoading,
               onConfirm: () async {
                 // Se pasan los valores de los controladores locales al método limpio del provider.
-                await authProvider.signin(
+                final result = await authProvider.signin(
                   email: _emailController.text,
                   password: _passwordController.text,
                 );
 
                 if (!mounted) return;
 
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  AppRouter.mainNavigation,
-                  (route) => false,
-                );
+                if (result.isSuccess) {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    AppRouter.mainNavigation,
+                    (route) => false,
+                  );
+                } else {
+                  // El correo o contraseña es incorrecto.
+                  SnackBarFormat(
+                    context: context,
+                    message: result.error!,
+                    isError: true,
+                  ).show();
+                }
               },
             ),
           ),
@@ -101,7 +111,8 @@ class _SigninScreenState extends State<SigninScreen> {
               ButtonFormat(
                 type: "text",
                 label: context.l10n.auth_registrarse,
-                onConfirm: () => Navigator.pushNamed(context, AppRouter.signup),
+                onConfirm: () =>
+                    Navigator.pushReplacementNamed(context, AppRouter.signup),
               ),
             ],
           ),

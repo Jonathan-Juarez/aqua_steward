@@ -128,18 +128,17 @@ class _DashboardScreenState extends State<DashboardScreen>
               // Se consume el provider de notificaciones y de invitaciones para mostrar el número total de notificaciones pendientes.
               Consumer2<NotificationProvider, TeamProvider>(
                 builder: (context, notifProvider, teamProvider, _) {
-                  // Guarda la cantidad total de notificaciones pendientes (alertas sin leer + invitaciones)
+                  // Cantidad total de notificaciones pendientes (alertas sin leer + invitaciones)
                   final unreadCount =
                       notifProvider.unreadCount +
                       teamProvider.invitations.length;
+
                   return Stack(
                     alignment: Alignment.center,
                     children: [
                       ButtonFormat(
                         type: "icon",
-                        icon: AppIcon.notificationsOutlined(
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
+                        icon: AppIcon.notificationsOutlined(context: context),
                         onConfirm: () =>
                             Navigator.pushNamed(context, AppRouter.alerts),
                       ),
@@ -147,30 +146,36 @@ class _DashboardScreenState extends State<DashboardScreen>
                         Positioned(
                           top: 6,
                           right: 6,
-                          // Simula el borde invisible alrededor del punto rojo.
-                          child: Container(
-                            width: 20,
-                            height: 20,
-                            decoration: BoxDecoration(
-                              color: AppColor.error,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Theme.of(context).colorScheme.background,
-                                width: 2,
+                          // Se ignora el click del punto rojo para que el click sea en el botón.
+                          child: IgnorePointer(
+                            // Contador de notificaciones.
+                            child: Container(
+                              width: 20,
+                              height: 20,
+                              // El borde simula un espacio invisible alrededor del punto rojo.
+                              decoration: BoxDecoration(
+                                color: AppColor.error,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.background,
+                                  width: 2,
+                                ),
                               ),
-                            ),
-                            alignment: Alignment.center,
-                            // El FittedBox asegura que el texto se escale sin alterar el tamaño del contenedor.
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Padding(
-                                padding: const EdgeInsets.all(1),
-                                child: TextFormat(
-                                  text: unreadCount > 99
-                                      ? '99+'
-                                      : '$unreadCount',
-                                  type: "bodySmallWhite",
-                                  context: context,
+                              alignment: Alignment.center,
+                              // El FittedBox asegura que el texto se escale sin alterar el tamaño del contenedor.
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(1),
+                                  child: TextFormat(
+                                    text: unreadCount > 99
+                                        ? '99+'
+                                        : '$unreadCount',
+                                    type: "bodySmallWhite",
+                                    context: context,
+                                  ),
                                 ),
                               ),
                             ),
@@ -187,34 +192,17 @@ class _DashboardScreenState extends State<DashboardScreen>
         // Lista de Depósitos mediante Consumer para reaccionar a cambios en el provider.
         Consumer<DepositProvider>(
           builder: (context, provider, child) {
-            // Muestra un indicador de carga circular mientras se obtienen los datos.
-            if (provider.isLoading && provider.deposits.isEmpty) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            // Verifica si la lista cargada está vacía para dar feedback al usuario.
-            if (provider.deposits.isEmpty) {
-              return Column(
-                children: [
-                  Image(
-                    image: const AssetImage("assets/images/deposit.png"),
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    width: 100,
-                    height: 100,
-                  ),
-                  TextFormat(
-                    text: context.l10n.dashboard_sin_depositos,
-                    context: context,
-                    type: "bodySecondary",
-                  ),
-                ],
-              );
-            }
-
             final deposits = provider.deposits;
 
-            // Construye la lista de depósitos con separadores estándar.
             return ListViewFormat(
+              isLoading: provider.isLoading,
+              emptyMessage: context.l10n.dashboard_sin_depositos,
+              emptyWidget: Image(
+                image: const AssetImage("assets/images/deposit.png"),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                width: 100,
+                height: 100,
+              ),
               itemCount: deposits.length,
               itemBuilder: (indexContext, index) {
                 // Mapeamos el objeto Deposit a la estructura que espera containerDeposit.

@@ -3,6 +3,7 @@ import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:aqua_steward/core/widgets/snack_bar_format.dart';
 import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
 import 'package:aqua_steward/features/deposit/presentation/providers/deposit_provider.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +17,7 @@ class NetworkValidator extends StatefulWidget {
 }
 
 class _NetworkValidatorState extends State<NetworkValidator> {
-  StreamSubscription? _connectionSub;
+  StreamSubscription? _connectivitySub;
   bool? _hasInternet;
 
   @override
@@ -27,38 +28,50 @@ class _NetworkValidatorState extends State<NetworkValidator> {
 
   @override
   void dispose() {
-    _connectionSub?.cancel();
+    _connectivitySub?.cancel();
     super.dispose();
   }
 
   Future<void> _initNetworkListener() async {
-    // Si inicia sin internet, muestra snackbar.
+    // Verificación inicial de conectividad real.
     final isConnected = await InternetConnection().hasInternetAccess;
     if (!mounted) return;
     _hasInternet = isConnected;
     if (!isConnected) _snackbarNoConnection();
 
-    // Escucha cambios futuros de estado de red.
-    _connectionSub = InternetConnection().onStatusChange.listen((status) {
+    // Escucha cambios de interfaz de red (WiFi/datos encendidos o apagados).
+    _connectivitySub = Connectivity().onConnectivityChanged.listen((
+      results,
+    ) async {
       if (!mounted) return;
-      final connected = status == InternetStatus.connected;
 
-      // Solo reacciona si el estado realmente cambió.
-      if (_hasInternet == connected) return;
-      _hasInternet = connected;
+      // Determina si al menos una interfaz de red está activa.
+      final hasInterface = results.any(
+        (result) => result != ConnectivityResult.none,
+      );
 
-      if (connected) {
-        // Oculta el aviso persistente de sin conexión.
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        // Muestra el mensaje de conexión restaurada.
-        SnackBarFormat(
-          context: context,
-          message: context.l10n.red_conexion_restaurada,
-        ).show();
-        // Refresca los depósitos automáticamente al restaurar la conexión.
-        _refreshDeposits();
-      } else {
-        _snackbarNoConnection();
+      if (!hasInterface) {
+        // Si WiFi/datos están apagados, se notifica sin conexión.
+        if (_hasInternet != false) {
+          _hasInternet = false;
+          _snackbarNoConnection();
+        }
+      } else if (_hasInternet == false) {
+        // La interfaz de red se reactivó, confirma acceso real a internet.
+        final hasAccess = await InternetConnection().hasInternetAccess;
+        if (!mounted) return;
+
+        if (hasAccess) {
+          _hasInternet = true;
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          // Muestra el mensaje de conexión restaurada.
+          SnackBarFormat(
+            context: context,
+            message: context.l10n.red_conexion_restaurada,
+          ).show();
+          // Refresca los depósitos automáticamente al restaurar la conexión.
+          _refreshDeposits();
+        }
       }
     });
   }

@@ -48,7 +48,7 @@ Las características principales, incluyendo las que se tienen planeadas a futur
 | ---------------------- | ------------------------------------------------------- |
 | Framework              | Flutter / Dart                                          |
 | Gestión de Estado      | Provider                                                |
-| Persistencia Local     | Shared Preferences                                      |
+| Persistencia Local     | Shared Preferences, flutter_secure_storage              |
 | Conectividad           | Socket.IO Client, HTTP, internet_connection_checker_plus |
 | Notificaciones Push    | Firebase Cloud Messaging                                |
 | Visualización de Datos | fl_chart, PDF, Printing, Screenshot                     |

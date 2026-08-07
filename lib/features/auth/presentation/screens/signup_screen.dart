@@ -1,3 +1,4 @@
+import 'package:aqua_steward/core/utils/send_otp.dart';
 import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
 import 'package:aqua_steward/core/router/app_router.dart';
 import 'package:provider/provider.dart';
@@ -6,7 +7,6 @@ import 'package:aqua_steward/core/theme/app_sizedbox.dart';
 import 'package:aqua_steward/core/utils/app_validators.dart';
 import 'package:aqua_steward/core/widgets/button_format.dart';
 import 'package:aqua_steward/core/widgets/container_formart.dart';
-import 'package:aqua_steward/core/widgets/snack_bar_format.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:aqua_steward/features/auth/presentation/widgets/scaffold_account.dart';
 import 'package:aqua_steward/core/widgets/text_field_format.dart';
@@ -55,38 +55,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Gestiona el proceso de registro del usuario y maneja la respuesta del servidor.
-    void signupUser() async {
-      final authProvider = context.read<AuthProvider>();
-      // Invoca la petición de registro en el proveedor pasando los datos locales.
-      final result = await authProvider.signup(
-        name: _nameController.text,
-        lastName: _lastNameController.text,
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-
-      if (mounted) {
-        if (result.isSuccess) {
-          SnackBarFormat(
-            context: context,
-            message: context.l10n.snackbar_usuario_registrado,
-          ).show();
-          Navigator.pushNamed(
-            context,
-            AppRouter.confirmationSignup,
-            arguments: {"email": _emailController.text},
-          );
-        } else {
-          SnackBarFormat(
-            context: context,
-            message: result.error ?? "Error",
-            isError: true,
-          ).show();
-        }
-      }
-    }
-
     return ScaffoldAccount(
       formKey: _formKey,
       body: ContainerFormat(
@@ -142,14 +110,21 @@ class _SignupScreenState extends State<SignupScreen> {
           if (_passwordController.text.isNotEmpty)
             PasswordRequirementsWidget(password: _passwordController.text),
 
-          // Observa el estado de carga mediante Consumer.
-          Consumer<AuthProvider>(
-            builder: (context, provider, _) => ButtonFormat(
-              formKey: _formKey,
-              label: context.l10n.auth_registrarse,
-              isLoading: provider.isLoading,
-              onConfirm: signupUser,
-            ),
+          // Observa el estado de carga mediante
+          ButtonFormat(
+            formKey: _formKey,
+            label: context.l10n.auth_registrarse,
+            isLoading: context.watch<AuthProvider>().isLoading,
+            onConfirm: () => SendOtp(
+              context: context,
+              route: AppRouter.confirmation,
+              arguments: {
+                "name": _nameController.text.trim(),
+                "lastName": _lastNameController.text.trim(),
+                "email": _emailController.text.trim(),
+                "password": _passwordController.text,
+              },
+            ).execute(),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -162,7 +137,8 @@ class _SignupScreenState extends State<SignupScreen> {
               ButtonFormat(
                 type: "text",
                 label: context.l10n.auth_iniciar_sesion,
-                onConfirm: () => Navigator.pop(context),
+                onConfirm: () =>
+                    Navigator.pushReplacementNamed(context, AppRouter.signin),
               ),
             ],
           ),

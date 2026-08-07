@@ -13,11 +13,14 @@ export "package:aqua_steward/features/reading/presentation/screens/reports_scree
 export "package:aqua_steward/features/reading/presentation/screens/pdf_screen.dart";
 export "package:aqua_steward/features/support/presentation/screens/about_screen.dart";
 export "package:aqua_steward/features/support/presentation/screens/contact_screen.dart";
+export "package:aqua_steward/features/support/presentation/screens/privacy_policy_screen.dart";
 export "package:aqua_steward/features/support/presentation/screens/support_screen.dart";
 export "package:aqua_steward/features/reading/presentation/screens/dashborad_screen.dart";
 export "package:aqua_steward/features/auth/presentation/screens/profile_screen.dart";
 export "package:aqua_steward/features/support/presentation/screens/user_manual.dart";
 export "package:aqua_steward/features/reading/presentation/screens/main_navigation_screen.dart";
+export "package:aqua_steward/features/tech/presentation/screens/tech_dashboard_screen.dart";
+export "package:aqua_steward/features/tech/presentation/screens/tech_users_screen.dart";
 
 // Providers
 export "package:aqua_steward/features/auth/presentation/providers/auth_provider.dart";
@@ -25,26 +28,37 @@ export "package:aqua_steward/features/support/presentation/providers/contact_pro
 export "package:aqua_steward/features/deposit/presentation/providers/deposit_provider.dart";
 export "package:aqua_steward/features/reading/presentation/providers/reading_provider.dart";
 export "package:aqua_steward/features/team/presentation/providers/team_provider.dart";
+export "package:aqua_steward/features/notification/presentation/providers/notification_provider.dart";
+export "package:aqua_steward/features/tech/presentation/providers/tech_provider.dart";
 
 // Data Sources
 export "package:aqua_steward/features/auth/data/sources/auth_data_source.dart";
+export "package:aqua_steward/features/auth/data/sources/otp_remote_data_source.dart";
 export "package:aqua_steward/features/team/data/sources/team_data_source.dart";
 export "package:aqua_steward/features/support/data/sources/contact_launcher_source.dart";
 export "package:aqua_steward/features/deposit/data/sources/deposit_data_source.dart";
 export "package:aqua_steward/features/reading/data/sources/reading_data_source.dart";
+export "package:aqua_steward/features/notification/data/sources/notification_remote_data_source.dart";
+export "package:aqua_steward/features/tech/data/sources/tech_data_source.dart";
 
 // Repositories
 export "package:aqua_steward/features/auth/data/repositories/auth_repository_impl.dart";
+export "package:aqua_steward/features/auth/data/repositories/otp_repository_impl.dart";
 export "package:aqua_steward/features/team/data/repositories/team_repository_impl.dart";
 export "package:aqua_steward/features/support/data/repositories/contact_repository_impl.dart";
 export "package:aqua_steward/features/deposit/data/repositories/deposit_repository_impl.dart";
 export "package:aqua_steward/features/reading/data/repositories/reading_repository_impl.dart";
+export "package:aqua_steward/features/notification/data/repositories/notification_repository_impl.dart";
+export "package:aqua_steward/features/tech/data/repositories/tech_repository_impl.dart";
 
 // Use Cases
 export "package:aqua_steward/features/auth/domain/usecases/reset_password_usecase.dart";
 export "package:aqua_steward/features/auth/domain/usecases/update_user_usecase.dart";
 export "package:aqua_steward/features/auth/domain/usecases/signin_usecase.dart";
 export "package:aqua_steward/features/auth/domain/usecases/signup_usecase.dart";
+export "package:aqua_steward/features/auth/domain/usecases/delete_user_usecase.dart";
+export "package:aqua_steward/features/auth/domain/usecases/send_otp_usecase.dart";
+export "package:aqua_steward/features/auth/domain/usecases/verify_otp_usecase.dart";
 export "package:aqua_steward/features/support/domain/usecases/send_email_usecase.dart";
 export "package:aqua_steward/features/deposit/domain/usecases/create_deposit_usecase.dart";
 export "package:aqua_steward/features/deposit/domain/usecases/delete_deposit_usecase.dart";
@@ -60,3 +74,11 @@ export "package:aqua_steward/features/team/domain/usecases/update_member_usecase
 export "package:aqua_steward/features/team/domain/usecases/get_invitations_usecase.dart";
 export "package:aqua_steward/features/team/domain/usecases/accept_invitation_usecase.dart";
 export "package:aqua_steward/features/team/domain/usecases/reject_invitation_usecase.dart";
+export "package:aqua_steward/features/notification/domain/usecases/register_fcm_token_usecase.dart";
+export "package:aqua_steward/features/notification/domain/usecases/unregister_fcm_token_usecase.dart";
+export "package:aqua_steward/features/notification/domain/usecases/get_notifications_usecase.dart";
+export "package:aqua_steward/features/notification/domain/usecases/delete_notification_usecase.dart";
+export "package:aqua_steward/features/notification/domain/usecases/delete_all_notifications_usecase.dart";
+export "package:aqua_steward/features/notification/domain/usecases/mark_notifications_as_read_usecase.dart";
+export "package:aqua_steward/features/tech/domain/usecases/get_system_stats_usecase.dart";
+export "package:aqua_steward/features/tech/domain/usecases/get_all_users_tech_usecase.dart";

@@ -71,6 +71,11 @@ class _MembersScreenState extends State<MembersScreen> {
     final provider = context.watch<TeamProvider>();
 
     return ScaffoldMain(
+      onRefresh: () async {
+        if (_token.isNotEmpty) {
+          await provider.getMembers(depositId: widget.depositId, token: _token);
+        }
+      },
       titleAppBar: context.l10n.comun_miembros,
       children: [
         // Filtros y botón de agregar miembro.
@@ -104,24 +109,20 @@ class _MembersScreenState extends State<MembersScreen> {
 
         // Lista reactiva de miembros.
         () {
-          if (provider.isLoading) {
-            return const Center(
-              heightFactor: 5,
-              child: CircularProgressIndicator(),
-            );
-          }
-
           final filtered = _selectedIndex == 0
               ? provider.members
                     .where((m) => m.status == "accepted" || m.role == "owner")
                     .toList()
               : provider.members.where((m) => m.status == "pending").toList();
 
-          if (filtered.isEmpty) {
-            return const Center(heightFactor: 5, child: SizedBox.shrink());
-          }
+          final emptyMsg = _selectedIndex == 0
+              ? "No hay miembros agregados"
+              : "No hay invitaciones pendientes";
 
           return ListViewFormat(
+            isLoading: provider.isLoading,
+            emptyMessage: emptyMsg,
+            emptyWidget: AppIcon.personOff(context: context),
             itemCount: filtered.length,
             itemBuilder: (_, i) => containerMember(filtered[i]),
           );

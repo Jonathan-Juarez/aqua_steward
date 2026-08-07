@@ -325,6 +325,17 @@ class _ProfileScreenState extends State<ProfileScreen>
           context: context,
           type: "subtitle",
         ),
+
+        // Panel Técnico (Solo para usuarios con rol global de técnico)
+        if (provider.currentUser?.global_role == "technician") ...[
+          ContainerListTile(
+            title: context.l10n.tech_panel_titulo,
+            icon: AppIcon.dashboard,
+            onTap: () => Navigator.pushNamed(context, AppRouter.techDashboard),
+          ),
+          AppSizedBox.height12,
+        ],
+
         ContainerListTile(
           title: context.l10n.soporte_preguntas_frecuentes,
           onTap: () => Navigator.pushNamed(context, AppRouter.support),

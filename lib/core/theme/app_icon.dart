@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 // El tamaño predeterminado de los iconos es 24px.
 class AppIcon {
   // Iconos de botones de la pantalla de inicio.
-  static Icon notificationsOutlined({Color? color}) =>
-      Icon(Icons.notifications_outlined, color: color);
+  static Icon notificationsOutlined({BuildContext? context}) => Icon(
+    Icons.notifications_outlined,
+    color: Theme.of(context!).colorScheme.onSurface,
+  );
 
   static const Icon supportOutline = Icon(Icons.help_outline);
 
@@ -13,7 +15,9 @@ class AppIcon {
 
   static const Icon manual = Icon(Icons.menu_book_rounded);
   static const Icon infoOutlined = Icon(Icons.info_outlined);
+  static const Icon privacyPolicy = Icon(Icons.privacy_tip_outlined);
   static const Icon code = Icon(Icons.code);
+  static const Icon launch = Icon(Icons.launch, size: 20);
 
   static Icon personAdd({Color? color}) =>
       Icon(Icons.person_add_alt_1_outlined, color: color);
@@ -68,12 +72,24 @@ class AppIcon {
   static const Icon logoutOutlined = Icon(Icons.logout_outlined);
   static const Icon noAccounts = Icon(Icons.no_accounts);
   static const Icon languageOutlined = Icon(Icons.language_outlined);
+  static const Icon dashboard = Icon(Icons.dashboard);
+
+  // Sección técnico
+  static Icon personOff({BuildContext? context}) => Icon(
+    Icons.person_off,
+    size: 50,
+    color: Theme.of(context!).colorScheme.onSurfaceVariant,
+  );
+
   // Sección de alertas.
   static Icon doneAll({Color? color}) => Icon(Icons.done_all, color: color);
   static Icon deleteSweep({Color? color}) =>
       Icon(Icons.delete_sweep, color: color ?? AppColor.error);
-  static Icon notificationsOffOutlined({Color? color}) =>
-      Icon(Icons.notifications_off_outlined, size: 50, color: color);
+  static Icon notificationsOffOutlined({BuildContext? context}) => Icon(
+    Icons.notifications_off_outlined,
+    size: 50,
+    color: Theme.of(context!).colorScheme.onSurfaceVariant,
+  );
 
   // Iconos de en la sección agregar depósito
   static const Icon wifi = Icon(Icons.wifi);

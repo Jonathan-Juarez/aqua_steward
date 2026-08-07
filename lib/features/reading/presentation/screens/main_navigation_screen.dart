@@ -5,7 +5,10 @@ import 'package:aqua_steward/core/widgets/exit_confirmation_scope.dart';
 import 'package:aqua_steward/core/widgets/scaffold_main.dart';
 import 'package:aqua_steward/features/auth/presentation/screens/profile_screen.dart';
 import 'package:aqua_steward/features/reading/presentation/screens/dashborad_screen.dart';
+import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
+import 'package:aqua_steward/features/deposit/presentation/providers/deposit_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // Pantalla principal que permite navegar horizontalmente (swipe) entre Dashboard y Perfil.
 class MainNavigationScreen extends StatefulWidget {
@@ -34,7 +37,16 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           controller: _pageController,
           onPageChanged: (index) => setState(() => _currentIndex = index),
           children: [
-            securePage(DashboardScreen(switchValues: widget.switchValues)),
+            securePage(
+              DashboardScreen(switchValues: widget.switchValues),
+              onRefresh: () async {
+                final token =
+                    context.read<AuthProvider>().currentUser?.token ?? '';
+                if (token.isNotEmpty) {
+                  await context.read<DepositProvider>().getDeposits(token: token);
+                }
+              },
+            ),
             securePage(const ProfileScreen()),
           ],
         ),
@@ -50,8 +62,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     );
   }
 
-  AppSafe securePage(Widget widget) {
+  AppSafe securePage(Widget widget, {Future<void> Function()? onRefresh}) {
     return AppSafe(
+      onRefresh: onRefresh,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [widget, AppSizedBox.height12],

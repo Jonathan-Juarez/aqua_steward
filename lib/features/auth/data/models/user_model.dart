@@ -9,6 +9,7 @@ class UserModel extends User {
     super.email,
     super.password,
     super.role,
+    super.global_role,
     super.depositID,
     super.token,
   });
@@ -22,6 +23,7 @@ class UserModel extends User {
     String? email,
     String? password,
     String? role,
+    String? global_role,
     String? depositID,
     String? token,
   }) {
@@ -32,6 +34,7 @@ class UserModel extends User {
       email: email ?? this.email,
       password: password ?? this.password,
       role: role ?? this.role,
+      global_role: global_role ?? this.global_role,
       depositID: depositID ?? this.depositID,
       token: token ?? this.token,
     );
@@ -46,6 +49,7 @@ class UserModel extends User {
       if (email != null) "email": email!,
       if (password != null) "password": password!,
       if (role != null) "role": role!,
+      if (global_role != null) "global_role": global_role!,
       if (depositID != null) "depositID": depositID!,
       if (token != null) "token": token!,
     };
@@ -63,6 +67,8 @@ class UserModel extends User {
       email: map["email"] as String? ?? "",
       password: map["password"] as String? ?? "",
       role: map["role"] as String? ?? "",
+      global_role:
+          (map["global_role"] ?? map["globalRole"]) as String? ?? "user",
       depositID: map["depositID"] as String? ?? "",
       token: map["token"] as String? ?? "",
     );

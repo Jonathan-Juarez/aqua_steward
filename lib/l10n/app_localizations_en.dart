@@ -93,6 +93,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialogo_presiona_nuevamente_salir => 'Swipe again to exit';
 
   @override
+  String get tech_panel_titulo => 'Technician Panel';
+
+  @override
+  String get tech_usuarios => 'Users';
+
+  @override
+  String get tech_depositos => 'Deposits';
+
+  @override
+  String get tech_sensores_activos => 'Active Sensors';
+
+  @override
+  String get tech_estado_sistema => 'Infrastructure Status';
+
+  @override
+  String get tech_ver_usuarios => 'Global User Management';
+
+  @override
   String get titulo_dashboard => 'My Deposits';
 
   @override
@@ -314,32 +332,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get manual_guia_basica => 'Basic guide';
 
   @override
-  String get manual_roles_titulo => '1. Roles and Collaboration';
+  String get manual_roles_titulo => '1. Deposit Roles and Permissions';
 
   @override
   String get manual_roles_desc =>
-      'AquaSteward allows several people to monitor the same deposits. Depending on your role, you will have different permissions:\n\n• Owner: Total control of the space. They are the only ones who can assign ownership to another person or delete the entire environment.\n• Admin: Can add, configure and delete deposits. They also have permission to invite new members, assign roles or remove them from the group.\n• Analyst: Their role is active monitoring. They can view readings, alerts and generate reports, but they cannot modify the configuration of the deposits or manage users.';
+      'AquaSteward organizes collaboration across 3 hierarchical roles:\n• Analyst: Active monitoring. Can view readings, logs, and alerts, consult team members, generate reports, and export logs.\n• Admin: Includes Analyst permissions, plus the ability to edit deposit settings, manage members (invite and remove users), and manage notifications.\n• Owner: Includes all previous permissions and is the only role authorized to delete the deposit.';
 
   @override
   String get manual_agregar_titulo => '2. How to add a new Deposit';
 
   @override
   String get manual_agregar_desc =>
-      'If you have the Admin or Owner role, you can register a new monitoring point following these steps:\n\n1. Go to the Deposits section in the main menu.\n2. Press the add button (+).\n3. Identification: Assign a name (e.g. \"Main Tank\") and a physical address.\n4. Connection: Enter the IP address of your ESP32 device to link it.\n5. Configuration: Define the maximum capacity of the container and the sensors it has installed (Level, pH, Turbidity).\n6. Limits: Set the alert ranges (minimum and maximum) to receive notifications if the water goes out of safe levels.';
+      'Any user can register a new water deposit:\n1. Go to the Deposits section and tap the add button (+).\n2. General Data: Enter the name and location of the deposit.\n3. Sensors: Configure installed sensors (Level, pH, Turbidity).\n4. Alert Ranges: Set minimum and maximum thresholds to receive alerts when values exceed safety parameters.';
 
   @override
-  String get manual_invitaciones_titulo => '3. Invitation Management';
+  String get manual_invitaciones_titulo => '3. Member & Invitation Management';
 
   @override
   String get manual_invitaciones_desc =>
-      'To work together and monitor the same deposits, the Owner or the Admin must invite the new members:\n\nSend invitation: From the users section, enter the email address of the person you want to add and assign them a role (Analyst or Admin).\n\nRegistration: The guest will receive an email with a secure link. They just have to follow that link to create their account and automatically join your environment.\n\nAccess control: As an Admin or Owner, you can remove access from any user or modify their role at any time from this same section.';
+      'To collaborate on deposit monitoring:\n• Send Invitation: The Owner or Admin enters a user\'s email and assigns a role (Admin or Analyst).\n• Respond to Invitation: The invited user receives an in-app notification to accept or decline the request.\n• Team Management: Admins and Owners can update roles or remove members from the Members section.';
 
   @override
-  String get manual_monitoreo_titulo => '4. Intelligent Monitoring';
+  String get manual_monitoreo_titulo => '4. Monitoring, Alerts & Reports';
 
   @override
   String get manual_monitoreo_desc =>
-      'Once configured, the Control Panel will show you the health status of the water:\n\n• Readings: Updated sensor values.\n• Alerts: If a value exceeds the configured ranges, you will see a critical notification in the alert bell.\n• Reports: You can check the history of previous days and export it in digital format if you need to share it or perform an external analysis.';
+      'Comprehensive water quality supervision:\n• Readings & Logs: Check real-time status and historical data for level, pH, and turbidity.\n• Alerts: Receive and manage notifications whenever a reading exceeds configured safety ranges.\n• Reports: Generate status reports and export logs for analysis or auditing.';
 
   @override
   String get contacto_titulo => 'Contact';
@@ -650,7 +668,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get acerca_proposito_desc =>
-      'AquaSteward is a system designed for monitoring water level and quality in real time using IoT technology, promoting efficient and responsible management of water resources.';
+      'AquaSteward is a system designed for monitoring water level and quality in real time using Internet of Things, promoting efficient and responsible management of water resources.';
 
   @override
   String get acerca_creditos_titulo => 'Credits and Development';
@@ -676,6 +694,76 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get acerca_software_licencias => 'Open Source Licenses';
+
+  @override
+  String get acerca_privacidad_titulo => 'Privacy Policy';
+
+  @override
+  String get acerca_privacidad_subtitulo =>
+      'Information regarding data management and protection';
+
+  @override
+  String get privacidad_introduccion =>
+      'This privacy notice establishes AquaSteward\'s commitment to protecting information, transparently explaining how personal data is handled, stored, and protected on the platform.';
+
+  @override
+  String get privacidad_sec1_titulo => '1. What information is collected?';
+
+  @override
+  String get privacidad_sec1_desc =>
+      'To provide water monitoring and management features, the application collects the following information provided by the user when registering and setting up the system:\n• Account Data: Full name, email address, and securely encrypted password.\n• Tank and IoT Device Data: Tank names, physical dimensions, alert thresholds, and the IP address of the sensor kit.\n• Water Quality Readings: Periodic measurements of water level, pH, and turbidity.\n• Team Data: Email addresses and invitations to collaborate with other members under specific roles (owner, administrator, or analyst).';
+
+  @override
+  String get privacidad_sec2_titulo => '2. How is the information used?';
+
+  @override
+  String get privacidad_sec2_desc =>
+      'The information obtained is used exclusively for the internal operation of the platform, specifically to:\n• Display the status of water tanks, both in real-time and in historical logs.\n• Issue alert notifications upon critical variations in level, pH, or turbidity.\n• Manage access permissions and control for team members.\n• Enable the generation of detailed PDF reports and CSV exports.';
+
+  @override
+  String get privacidad_sec3_titulo => '3. Data Sharing and Privacy Practices';
+
+  @override
+  String get privacidad_sec3_desc =>
+      'AquaSteward does not sell, rent, or share personal data with analytics companies, ad networks, or other third parties for commercial purposes.\n\nTo guarantee this privacy, the platform establishes the following operational restrictions:\n• Does not use tracking cookies or tools to track user behavior outside the application.\n• Does not collect precise real-time GPS location data under any circumstances.\n• Does not use Artificial Intelligence (AI) technologies aimed at profiling.\n\nThe only external application integration is with Firebase Cloud Messaging (Google). This technical connection is strictly necessary and used exclusively to send real-time push notifications to the device, whether when water parameters exceed configured limits or when updates occur in a shared tank.';
+
+  @override
+  String get privacidad_firebase_link => 'Firebase (Google) Privacy Policy';
+
+  @override
+  String get privacidad_sec4_titulo => '4. Data Retention and User Rights';
+
+  @override
+  String get privacidad_sec4_desc =>
+      'Personal data is retained only while the user\'s account remains active. The information owner has full control over their data and possesses the following rights:\n• Access and Update: It is possible to view or update profile and tank information directly from application settings.\n• Deletion: Users can delete their account directly from the application, which permanently removes all associated data from the system.';
+
+  @override
+  String get privacidad_sec5_titulo => '5. Information Security';
+
+  @override
+  String get privacidad_sec5_desc =>
+      'Rigorous technical security measures are implemented to protect data against unauthorized access. This includes encrypted password storage using secure hash algorithms (bcrypt) and data transmission encrypted in transit using secure protocols (HTTPS, WebSockets).';
+
+  @override
+  String get privacidad_sec6_titulo => '6. Advertising';
+
+  @override
+  String get privacidad_sec6_desc =>
+      'AquaSteward is designed to be a clean and functional tool; therefore, it contains no advertisements of any kind.';
+
+  @override
+  String get privacidad_sec7_titulo => '7. Changes to this policy';
+
+  @override
+  String get privacidad_sec7_desc =>
+      'This Privacy Policy may be updated or modified as necessary. Any significant modification will be notified within the application and the updated text will be reflected in this section.';
+
+  @override
+  String get privacidad_sec8_titulo => '8. Contact';
+
+  @override
+  String get privacidad_sec8_desc =>
+      'For any questions regarding this Privacy Policy or data processing, contact: jonathan.juarez@ulv.edu.mx';
 
   @override
   String get tiempo_ahora => 'Just now';

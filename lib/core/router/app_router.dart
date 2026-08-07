@@ -10,8 +10,7 @@ class AppRouter {
   static const String signin = "/signin";
   static const String resetPassword = "/reset_password";
   static const String forgotPassword = "/forgot_password";
-  static const String confirmationReset = "/confirmation_reset";
-  static const String confirmationSignup = "/confirmation_signup";
+  static const String confirmation = "/confirmation";
 
   // Navegación entre dashboard y perfil.
   static const String mainNavigation = "/main_navigation";
@@ -36,6 +35,11 @@ class AppRouter {
   static const String contact = "/contact";
   static const String userManual = "/user_manual";
   static const String about = "/about";
+  static const String privacyPolicy = "/privacy_policy";
+
+  // Panel Técnico
+  static const String techDashboard = "/tech_dashboard";
+  static const String techUsers = "/tech_users";
 
   //Rutas del sistema.
   static Map<String, WidgetBuilder> routes = {
@@ -43,31 +47,29 @@ class AppRouter {
     // Auth
     signup: (context) => const SignupScreen(),
     signin: (context) => const SigninScreen(),
-    resetPassword: (context) {
-      final args =
-          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-      return ResetPasswordScreen(email: args["email"] as String);
-    },
 
     forgotPassword: (context) {
       final args =
-          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-      return ForgotPassword(email: args["email"] as String);
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      return ForgotPassword(email: args?["email"] as String?);
     },
-    confirmationReset: (context) {
+    resetPassword: (context) {
       final args =
-          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-      return ConfirmationScreen(
-        screen: AppRouter.resetPassword,
-        email: args["email"] as String,
-      );
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      return ResetPasswordScreen(email: args?["email"] as String? ?? "");
     },
-    confirmationSignup: (context) {
+    confirmation: (context) {
       final args =
-          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
       return ConfirmationScreen(
-        screen: AppRouter.signin,
-        email: args["email"] as String,
+        // Si el usuario envía contraseña va al inicio de sesión (creó cuenta).
+        screen: args?["password"] != null
+            ? AppRouter.signin
+            : AppRouter.resetPassword,
+        email: args?["email"] as String?,
+        name: args?["name"] as String?,
+        lastName: args?["lastName"] as String?,
+        password: args?["password"] as String?,
       );
     },
 
@@ -126,5 +128,10 @@ class AppRouter {
     ),
     userManual: (context) => const UserManualScreen(),
     about: (context) => const AboutScreen(),
+    privacyPolicy: (context) => const PrivacyPolicyScreen(),
+
+    // Panel Técnico
+    techDashboard: (context) => const TechDashboardScreen(),
+    techUsers: (context) => const TechUsersScreen(),
   };
 }

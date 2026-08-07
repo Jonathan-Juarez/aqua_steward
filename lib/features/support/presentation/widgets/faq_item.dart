@@ -1,4 +1,5 @@
 import 'package:aqua_steward/core/theme/app_padding.dart';
+import 'package:aqua_steward/core/theme/app_sizedbox.dart';
 import 'package:aqua_steward/core/widgets/container_formart.dart';
 import 'package:aqua_steward/core/widgets/icon_format.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
@@ -8,12 +9,14 @@ class FAQItem extends StatelessWidget {
   final String question;
   final String answer;
   final IconFormat? icon;
+  final Widget? widget;
 
   const FAQItem({
     super.key,
     required this.question,
     required this.answer,
     this.icon,
+    this.widget,
   });
 
   @override
@@ -31,11 +34,23 @@ class FAQItem extends StatelessWidget {
                 padding: AppPadding.symmetric0_16,
                 child: Align(
                   alignment: Alignment.centerLeft,
-                  child: TextFormat(
-                    text: answer,
-                    context: context,
-                    type: "bodySecondary",
-                  ),
+                  child: widget != null
+                      ? Column(
+                          children: [
+                            TextFormat(
+                              text: answer,
+                              context: context,
+                              type: "bodySecondary",
+                            ),
+                            AppSizedBox.height12,
+                            widget!,
+                          ],
+                        )
+                      : TextFormat(
+                          text: answer,
+                          context: context,
+                          type: "bodySecondary",
+                        ),
                 ),
               ),
             ],

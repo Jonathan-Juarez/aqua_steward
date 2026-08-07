@@ -7,6 +7,8 @@ import 'package:aqua_steward/features/auth/domain/usecases/signin_usecase.dart';
 import 'package:aqua_steward/features/auth/domain/usecases/signup_usecase.dart';
 import 'package:aqua_steward/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:aqua_steward/features/auth/domain/usecases/update_user_usecase.dart';
+import 'package:aqua_steward/features/auth/domain/usecases/send_otp_usecase.dart';
+import 'package:aqua_steward/features/auth/domain/usecases/verify_otp_usecase.dart';
 import 'package:flutter/material.dart';
 
 // Proveedor único encargado de gestionar todo el estado y la lógica de autenticación y perfil del usuario.
@@ -16,6 +18,8 @@ class AuthProvider extends ChangeNotifier {
   final UpdateUserUseCase _updateUserUseCase;
   final ResetPasswordUseCase _resetPasswordUseCase;
   final DeleteUserUseCase _deleteUserUseCase;
+  final SendOtpUseCase _sendOtpUseCase;
+  final VerifyOtpUseCase _verifyOtpUseCase;
 
   // Sesión del usuario autenticado. Centraliza el estado global del usuario.
   User? _currentUser;
@@ -30,11 +34,15 @@ class AuthProvider extends ChangeNotifier {
     required UpdateUserUseCase updateUserUseCase,
     required ResetPasswordUseCase resetPasswordUseCase,
     required DeleteUserUseCase deleteUserUseCase,
+    required SendOtpUseCase sendOtpUseCase,
+    required VerifyOtpUseCase verifyOtpUseCase,
   }) : _signinUseCase = signinUseCase,
        _signupUseCase = signupUseCase,
        _updateUserUseCase = updateUserUseCase,
        _resetPasswordUseCase = resetPasswordUseCase,
-       _deleteUserUseCase = deleteUserUseCase;
+       _deleteUserUseCase = deleteUserUseCase,
+       _sendOtpUseCase = sendOtpUseCase,
+       _verifyOtpUseCase = verifyOtpUseCase;
 
   // Intenta restaurar la sesión guardada al abrir la aplicación.
   Future<bool> tryAutoLogin() async {
@@ -76,6 +84,7 @@ class AuthProvider extends ChangeNotifier {
                 last_name: _currentUser!.last_name,
                 email: _currentUser!.email,
                 role: _currentUser!.role,
+                global_role: _currentUser!.global_role,
                 depositID: _currentUser!.depositID,
                 token: _currentUser!.token,
               );
@@ -181,6 +190,7 @@ class AuthProvider extends ChangeNotifier {
                 last_name: _currentUser!.last_name,
                 email: _currentUser!.email,
                 role: _currentUser!.role,
+                global_role: _currentUser!.global_role,
                 depositID: _currentUser!.depositID,
                 token: _currentUser!.token,
               );
@@ -200,6 +210,39 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
     try {
       final result = await _deleteUserUseCase(email: email);
+      return result;
+    } catch (e) {
+      return Result.failure(e.toString());
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // Solcita el envío del código OTP al correo electrónico indicado.
+  Future<Result<void>> sendOtp(String email) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final result = await _sendOtpUseCase(email: email);
+      return result;
+    } catch (e) {
+      return Result.failure(e.toString());
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // Verifica el código OTP ingresado por el usuario.
+  Future<Result<bool>> verifyOtp({
+    required String email,
+    required String otp,
+  }) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final result = await _verifyOtpUseCase(email: email, otp: otp);
       return result;
     } catch (e) {
       return Result.failure(e.toString());

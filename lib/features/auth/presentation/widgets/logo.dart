@@ -1,6 +1,4 @@
 import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
-import 'package:aqua_steward/core/theme/app_padding.dart';
-import 'package:aqua_steward/core/theme/app_sizedbox.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:flutter/material.dart';
 
@@ -11,21 +9,11 @@ class Logo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          width: 130,
-          height: 130,
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
-            shape: BoxShape.circle,
-          ),
-          child: Padding(
-            padding: AppPadding.all8,
-            child: Image.asset(
-              "assets/images/logo_transparente_AquaSteward.png",
-            ),
-          ),
+        SizedBox(
+          width: 200,
+          height: 200,
+          child: Image.asset("assets/images/logo_transparente_AquaSteward.png"),
         ),
-        AppSizedBox.height12,
         TextFormat(
           text: context.l10n.logo_nombre,
           context: context,
@@ -36,7 +24,7 @@ class Logo extends StatelessWidget {
           context: context,
           type: "body",
         ),
-        AppSizedBox.height12,
+        const SizedBox(height: 20),
       ],
     );
   }

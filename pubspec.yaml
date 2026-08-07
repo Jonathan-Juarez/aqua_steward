@@ -33,6 +33,7 @@ dependencies:
   path_provider: ^2.1.6 # Obtener rutas temporales para guardar archivos.
   google_fonts: ^8.2.0
   internet_connection_checker_plus: ^3.1.1 # Verificar si realmente hay internet.
+  connectivity_plus: ^7.3.1
 
 
 
@@ -48,18 +49,15 @@ flutter:
   # Habilita la autogeneración de código para internacionalización (i18n).
   generate: true
   assets:
-    - assets/images/logo_AquaSteward.png
     - assets/images/logo_transparente_AquaSteward.png
     - assets/images/deposit.png
-    - assets/images/branding.png
-    - assets/images/branding_dark.png
 
 # Ejecutar dart run flutter_launcher_icons para configurar el ícono de la app
 flutter_launcher_icons:
   android: true
   ios: true
   image_path: "assets/images/logo_AquaSteward.png"
-  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_background: "assets/images/background_AquaSteward.png"
   adaptive_icon_foreground: "assets/images/logo_transparente_AquaSteward.png"
   adaptive_icon_monochrome: "assets/images/logo_transparente_AquaSteward_monochrome.png"
 

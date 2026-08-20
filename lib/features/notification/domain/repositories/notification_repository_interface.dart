@@ -1,7 +1,7 @@
 import 'package:aqua_steward/core/error/result.dart';
 import 'package:aqua_steward/features/notification/domain/entities/notification.dart';
 
-abstract class NotificationRepositoryInterface {
+abstract class INotificationRepository {
   // Registra el token FCM del dispositivo en el backend.
   Future<Result<void>> registerToken({
     required String fcmToken,

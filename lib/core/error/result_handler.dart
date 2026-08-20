@@ -1,4 +1,5 @@
 import 'package:aqua_steward/core/error/result.dart';
+export 'package:aqua_steward/core/error/result.dart';
 import 'package:aqua_steward/core/widgets/snack_bar_format.dart';
 import 'package:flutter/material.dart';
 

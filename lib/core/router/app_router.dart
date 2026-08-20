@@ -35,7 +35,6 @@ class AppRouter {
   static const String contact = "/contact";
   static const String userManual = "/user_manual";
   static const String about = "/about";
-  static const String privacyPolicy = "/privacy_policy";
 
   // Panel Técnico
   static const String techDashboard = "/tech_dashboard";
@@ -128,7 +127,6 @@ class AppRouter {
     ),
     userManual: (context) => const UserManualScreen(),
     about: (context) => const AboutScreen(),
-    privacyPolicy: (context) => const PrivacyPolicyScreen(),
 
     // Panel Técnico
     techDashboard: (context) => const TechDashboardScreen(),

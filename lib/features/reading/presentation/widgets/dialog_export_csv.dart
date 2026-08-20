@@ -5,6 +5,7 @@ import 'package:aqua_steward/core/theme/app_sizedbox.dart';
 import 'package:aqua_steward/core/widgets/container_list_tile.dart';
 import 'package:aqua_steward/core/widgets/dialog_emergent.dart';
 import 'package:aqua_steward/core/widgets/menu_button_format.dart';
+import 'package:aqua_steward/core/error/result_handler.dart';
 import 'package:aqua_steward/core/widgets/snack_bar_format.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
@@ -177,14 +178,7 @@ class DialogExportCsv {
 
                 if (!context.mounted) return;
 
-                if (!result.isSuccess) {
-                  SnackBarFormat(
-                    context: context,
-                    message: context.l10n.snackbar_csv_error(
-                      result.error ?? "",
-                    ),
-                  ).show();
-                }
+                context.processResult(result);
               },
             );
           },

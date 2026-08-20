@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ThemeProvider extends ChangeNotifier {
+class ThemeStorage extends ChangeNotifier {
   // Clave para guardar la preferencia en SharedPreferences.
   static const String _themeKey = 'selected_theme';
 
@@ -14,14 +14,14 @@ class ThemeProvider extends ChangeNotifier {
 
   ThemeMode _currentTheme;
 
-  ThemeProvider(this._currentTheme);
+  ThemeStorage(this._currentTheme);
 
   // Carga el tema guardado al iniciar la app.
-  static Future<ThemeProvider> load() async {
+  static Future<ThemeStorage> load() async {
     // SharedPreferencesAsync es la API recomendada a partir de shared_preferences 2.3.0+.
     final prefshared = SharedPreferencesAsync();
     final savedTheme = await prefshared.getString(_themeKey) ?? 'system';
-    return ThemeProvider(_themeModes[savedTheme] ?? ThemeMode.system);
+    return ThemeStorage(_themeModes[savedTheme] ?? ThemeMode.system);
   }
 
   // Tema activo de la app.

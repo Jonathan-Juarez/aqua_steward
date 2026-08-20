@@ -1,12 +1,8 @@
-import 'dart:convert';
 import 'package:aqua_steward/core/error/result.dart';
-import 'package:aqua_steward/core/network/global_variable.dart';
-import 'package:aqua_steward/core/network/manage_http_response.dart';
-import 'package:aqua_steward/core/error/exception_handler.dart';
+import 'package:aqua_steward/core/network/api_client.dart';
 import 'package:aqua_steward/features/notification/data/models/notification_model.dart';
-import 'package:http/http.dart' as http;
 
-abstract class NotificationRemoteDataSourceInterface {
+abstract class INotificationRemoteDataSource {
   Future<Result<void>> registerToken({
     required String fcmToken,
     required String authToken,
@@ -29,133 +25,60 @@ abstract class NotificationRemoteDataSourceInterface {
   });
 }
 
-class NotificationRemoteDataSource
-    implements NotificationRemoteDataSourceInterface {
+class NotificationRemoteDataSource implements INotificationRemoteDataSource {
   @override
   Future<Result<void>> registerToken({
     required String fcmToken,
     required String authToken,
-  }) async {
-    try {
-      final http.Response response = await http.post(
-        Uri.parse("$uri/api/notifications/register"),
-        body: json.encode({"fcmToken": fcmToken}),
-        headers: <String, String>{
-          "Content-Type": "application/json; charset=utf-8",
-          "x-auth-token": authToken,
-        },
-      );
-
-      return manageHttpResponse(response: response);
-    } catch (e) {
-      return handleException(e);
-    }
-  }
+  }) => ApiClient.post(
+    '/api/notifications/register',
+    token: authToken,
+    body: {'fcmToken': fcmToken},
+  );
 
   @override
   Future<Result<void>> unregisterToken({
     required String fcmToken,
     required String authToken,
-  }) async {
-    try {
-      final http.Response response = await http.post(
-        Uri.parse("$uri/api/notifications/unregister"),
-        body: json.encode({"fcmToken": fcmToken}),
-        headers: <String, String>{
-          "Content-Type": "application/json; charset=utf-8",
-          "x-auth-token": authToken,
-        },
-      );
-
-      return manageHttpResponse(response: response);
-    } catch (e) {
-      return handleException(e);
-    }
-  }
+  }) => ApiClient.post(
+    '/api/notifications/unregister',
+    token: authToken,
+    body: {'fcmToken': fcmToken},
+  );
 
   @override
   Future<Result<List<NotificationModel>>> getNotifications({
     required String token,
-  }) async {
-    try {
-      final http.Response response = await http.get(
-        Uri.parse("$uri/api/notifications/getNotifications"),
-        headers: <String, String>{
-          "Content-Type": "application/json; charset=utf-8",
-          "x-auth-token": token,
-        },
-      );
-
-      final result = manageHttpResponse(response: response);
-      if (result.isSuccess) {
-        final List<dynamic> body = json.decode(response.body);
-        final notifications = body
-            .map((item) => NotificationModel.fromMap(item))
-            .toList();
-        return Result.success(notifications);
-      } else {
-        return Result.failure(result.error);
-      }
-    } catch (e) {
-      return handleException(e);
-    }
-  }
+  }) => ApiClient.get(
+    '/api/notifications/getNotifications',
+    token: token,
+    fromJson: (data) =>
+        (data as List).map((item) => NotificationModel.fromMap(item)).toList(),
+  );
 
   @override
   Future<Result<void>> deleteNotification({
     required String notificationId,
     required String token,
-  }) async {
-    try {
-      final http.Response response = await http.delete(
-        Uri.parse("$uri/api/notifications/deleteNotification/$notificationId"),
-        headers: <String, String>{
-          "Content-Type": "application/json; charset=utf-8",
-          "x-auth-token": token,
-        },
-      );
-
-      return manageHttpResponse(response: response);
-    } catch (e) {
-      return handleException(e);
-    }
-  }
+  }) => ApiClient.delete(
+    '/api/notifications/deleteNotification/$notificationId',
+    token: token,
+  );
 
   @override
-  Future<Result<void>> deleteAllNotifications({required String token}) async {
-    try {
-      final http.Response response = await http.delete(
-        Uri.parse("$uri/api/notifications/deleteAllNotifications"),
-        headers: <String, String>{
-          "Content-Type": "application/json; charset=utf-8",
-          "x-auth-token": token,
-        },
+  Future<Result<void>> deleteAllNotifications({required String token}) =>
+      ApiClient.delete(
+        '/api/notifications/deleteAllNotifications',
+        token: token,
       );
-
-      return manageHttpResponse(response: response);
-    } catch (e) {
-      return handleException(e);
-    }
-  }
 
   @override
   Future<Result<void>> markNotificationsAsRead({
     required String token,
     String? notificationId,
-  }) async {
-    try {
-      final http.Response response = await http.put(
-        Uri.parse("$uri/api/notifications/markAsRead"),
-        body: json.encode({"notificationId": notificationId}),
-        headers: <String, String>{
-          "Content-Type": "application/json; charset=utf-8",
-          "x-auth-token": token,
-        },
-      );
-
-      return manageHttpResponse(response: response);
-    } catch (e) {
-      return handleException(e);
-    }
-  }
+  }) => ApiClient.put(
+    '/api/notifications/markAsRead',
+    token: token,
+    body: {'notificationId': notificationId},
+  );
 }

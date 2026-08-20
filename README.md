@@ -109,19 +109,24 @@ lib/
 │   ├── extensions/                  # Extensiones de Dart/Flutter
 │   │   └── l10n_extensions.dart            # Extensiones de internacionalización
 │   ├── network/                     # Conectividad (HTTP, Socket.IO, variables globales)
+│   │   ├── api_client.dart                 # Cliente HTTP para la API
 │   │   ├── global_variable.dart            # URL del backend y constantes de red
 │   │   ├── manage_http_response.dart       # Gestión de respuestas HTTP
 │   │   ├── network_validator.dart          # Validador de conectividad con SnackBar persistente
 │   │   └── socket_service.dart             # Servicio de conexión Socket.IO
 │   ├── permissions/                 # Lógica de permisos basada en roles
 │   │   └── app_permission.dart             # Definición de permisos por rol de usuario
-│   ├── providers/                   # Providers globales de la aplicación
-│   │   ├── language_provider.dart          # Provider de idioma (español/inglés)
-│   │   └── theme_provider.dart             # Provider de tema (claro/oscuro)
 │   ├── router/                      # Enrutamiento y navegación
 │   │   ├── app_navigator.dart              # Animación personalizada de navegación
 │   │   ├── app_router.dart                 # Definición de rutas de la aplicación
 │   │   └── imports.dart                    # Barrel de importaciones
+│   ├── services/                    # Servicios nativos de plataforma
+│   │   └── notification_service.dart       # Servicio de notificaciones push FCM y locales
+│   ├── storage/                     # Persistencia local (sesión, token, idioma, tema)
+│   │   ├── language_storage.dart           # Persistencia y Provider de idioma
+│   │   ├── secure_storage.dart             # Almacenamiento seguro del token JWT
+│   │   ├── session_storage.dart            # Servicio global de gestión y expiración de sesión
+│   │   └── theme_storage.dart              # Persistencia y Provider de tema
 │   ├── theme/                       # Sistema de diseño visual
 │   │   ├── app_border.dart                 # Bordes estándar
 │   │   ├── app_color.dart                  # Paleta de colores

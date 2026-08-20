@@ -1,6 +1,6 @@
 import "package:aqua_steward/core/extensions/to_clean_string.dart";
 import "package:aqua_steward/core/theme/app_padding.dart";
-import "package:aqua_steward/core/widgets/snack_bar_format.dart";
+import "package:aqua_steward/core/error/result_handler.dart";
 import "package:aqua_steward/core/widgets/text_format.dart";
 import "package:fl_chart/fl_chart.dart";
 import "package:flutter/material.dart";
@@ -67,7 +67,7 @@ class _LineaChartState extends State<LineaChart> {
         widget.selectedFilter,
       );
 
-      if (result.isSuccess) {
+      if (context.processResult(result)) {
         setState(() {
           if (mounted) {
             datosLinea = result.data!.map((reading) {
@@ -77,18 +77,11 @@ class _LineaChartState extends State<LineaChart> {
                   : reading.index.toDouble();
               return FlSpot(x, reading.value.toDouble());
             }).toList();
-            // debugPrint(datosLinea.toString());
 
             isLoading = false;
           }
         });
       } else {
-        // El error detectado es cuando se sobrepasa el rate limit.
-        SnackBarFormat(
-          context: context,
-          message: result.error.toString(),
-          isError: true,
-        ).show();
         setState(() {
           isLoading = false;
         });

@@ -47,4 +47,10 @@ abstract class ITeamRepository {
     required String depositId,
     required String token,
   });
+
+  // Contrato para abandonar un depósito.
+  Future<Result<void>> leaveDeposit({
+    required String depositId,
+    required String token,
+  });
 }

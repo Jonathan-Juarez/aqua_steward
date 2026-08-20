@@ -4,6 +4,7 @@ import 'package:aqua_steward/core/theme/app_sizedbox.dart';
 import 'package:aqua_steward/core/utils/app_validators.dart';
 import 'package:aqua_steward/core/widgets/button_format.dart';
 import 'package:aqua_steward/core/widgets/container_formart.dart';
+import 'package:aqua_steward/core/error/result_handler.dart';
 import 'package:aqua_steward/core/widgets/snack_bar_format.dart';
 import 'package:aqua_steward/core/widgets/text_field_format.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
@@ -67,7 +68,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
 
     final authProvider = context.read<AuthProvider>();
 
-    // 1. Verificar OTP mediante el servicio externo
+    // Verificar OTP mediante el servicio externo
     final verifyResult = await authProvider.verifyOtp(
       email: targetEmail,
       otp: otp,
@@ -75,16 +76,9 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
 
     if (!mounted) return;
 
-    if (verifyResult.isFailure) {
-      SnackBarFormat(
-        context: context,
-        message: verifyResult.error ?? "Código de verificación inválido",
-        isError: true,
-      ).show();
-      return;
-    }
+    if (!context.processResult(verifyResult)) return;
 
-    // 2. Si viene del flujo de registro (name/lastName/password presentes)
+    // Si viene del flujo de registro (name/lastName/password presentes)
     if (widget.name != null && widget.password != null) {
       final signupResult = await authProvider.signup(
         name: widget.name!,
@@ -95,27 +89,20 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
 
       if (!mounted) return;
 
-      if (signupResult.isSuccess) {
-        SnackBarFormat(
-          context: context,
-          message: context.l10n.snackbar_usuario_registrado,
-        ).show();
+      if (context.processResult(
+        signupResult,
+        successMessage: context.l10n.snackbar_usuario_registrado,
+      )) {
         Navigator.pushNamedAndRemoveUntil(
           context,
           AppRouter.start,
           (route) => false,
         );
-      } else {
-        SnackBarFormat(
-          context: context,
-          message: signupResult.error ?? "Error al registrar la cuenta",
-          isError: true,
-        ).show();
       }
       return;
     }
 
-    // 3. Flujo de restablecimiento u otro destino
+    // Flujo de restablecimiento u otro destino
     if (widget.screen == AppRouter.signin) {
       Navigator.pushNamedAndRemoveUntil(
         context,
@@ -140,18 +127,10 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
 
     if (!mounted) return;
 
-    if (result.isSuccess) {
-      SnackBarFormat(
-        context: context,
-        message: "Código de verificación reenviado a $targetEmail",
-      ).show();
-    } else {
-      SnackBarFormat(
-        context: context,
-        message: result.error ?? "No se pudo reenviar el código",
-        isError: true,
-      ).show();
-    }
+    context.processResult(
+      result,
+      successMessage: "Código de verificación reenviado a $targetEmail",
+    );
   }
 
   @override

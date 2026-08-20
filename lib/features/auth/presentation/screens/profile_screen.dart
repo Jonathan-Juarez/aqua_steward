@@ -1,6 +1,8 @@
 import 'package:aqua_steward/core/error/result_handler.dart';
 import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:aqua_steward/core/router/app_router.dart';
+import 'package:aqua_steward/core/storage/language_storage.dart';
+import 'package:aqua_steward/core/storage/theme_storage.dart';
 import 'package:aqua_steward/core/theme/app_icon.dart';
 import 'package:aqua_steward/core/theme/app_padding.dart';
 import 'package:aqua_steward/core/theme/app_sizedbox.dart';
@@ -10,8 +12,6 @@ import 'package:aqua_steward/core/widgets/dialog_emergent.dart';
 import 'package:aqua_steward/core/widgets/icon_format.dart';
 import 'package:aqua_steward/core/widgets/text_field_format.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
-import 'package:aqua_steward/core/providers/language_provider.dart';
-import 'package:aqua_steward/core/providers/theme_provider.dart';
 import 'package:aqua_steward/core/widgets/button_format.dart';
 import 'package:aqua_steward/core/widgets/container_formart.dart';
 import 'package:aqua_steward/core/widgets/filter_chip_format.dart';
@@ -63,15 +63,15 @@ class _ProfileScreenState extends State<ProfileScreen>
     // Se consumen ambos proveedores para separar responsabilidades de sesión y perfil.
     final provider = context.watch<AuthProvider>();
 
-    final themeProvider = context.watch<ThemeProvider>();
-    final languageProvider = context.watch<LanguageProvider>();
+    final themeStorage = context.watch<ThemeStorage>();
+    final languageStorage = context.watch<LanguageStorage>();
 
-    final String currentTheme = themeProvider.themeMode == ThemeMode.system
+    final String currentTheme = themeStorage.themeMode == ThemeMode.system
         ? "system"
-        : themeProvider.themeMode == ThemeMode.light
+        : themeStorage.themeMode == ThemeMode.light
         ? "light"
         : "dark";
-    final String currentLanguage = languageProvider.locale.languageCode;
+    final String currentLanguage = languageStorage.locale.languageCode;
 
     final String name = provider.currentUser?.name ?? "";
     final String lastName = provider.currentUser?.last_name ?? "";
@@ -175,19 +175,19 @@ class _ProfileScreenState extends State<ProfileScreen>
                         type: "icon",
                         icon: AppIcon.systemMode,
                         isSelected: currentTheme == "system",
-                        onConfirm: () => themeProvider.setTheme("system"),
+                        onConfirm: () => themeStorage.setTheme("system"),
                       ),
                       ButtonFormat(
                         type: "icon",
                         icon: AppIcon.lightMode,
                         isSelected: currentTheme == "light",
-                        onConfirm: () => themeProvider.setTheme("light"),
+                        onConfirm: () => themeStorage.setTheme("light"),
                       ),
                       ButtonFormat(
                         type: "icon",
                         icon: AppIcon.darkMode,
                         isSelected: currentTheme == "dark",
-                        onConfirm: () => themeProvider.setTheme("dark"),
+                        onConfirm: () => themeStorage.setTheme("dark"),
                       ),
                     ],
                   ),
@@ -220,13 +220,13 @@ class _ProfileScreenState extends State<ProfileScreen>
                       FilterChipFormat(
                         label: context.l10n.perfil_espanol,
                         isSelected: currentLanguage == 'es',
-                        onSelected: (_) => languageProvider.setLanguage("es"),
+                        onSelected: (_) => languageStorage.setLanguage("es"),
                       ),
                       AppSizedBox.width8,
                       FilterChipFormat(
                         label: context.l10n.perfil_ingles,
                         isSelected: currentLanguage == 'en',
-                        onSelected: (_) => languageProvider.setLanguage("en"),
+                        onSelected: (_) => languageStorage.setLanguage("en"),
                       ),
                     ],
                   ),

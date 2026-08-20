@@ -7,9 +7,6 @@ class SendOtpUseCase {
   SendOtpUseCase(this._repository);
 
   Future<Result<void>> call({required String email}) async {
-    if (email.trim().isEmpty) {
-      return Result.failure("El correo electrónico no puede estar vacío");
-    }
     return await _repository.sendOtp(email: email);
   }
 }

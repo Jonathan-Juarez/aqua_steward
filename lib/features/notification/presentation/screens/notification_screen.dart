@@ -7,7 +7,7 @@ import "package:aqua_steward/core/widgets/button_format.dart";
 import "package:aqua_steward/core/widgets/container_list_tile.dart";
 import "package:aqua_steward/core/widgets/filter_chip_format.dart";
 import "package:aqua_steward/core/widgets/scaffold_main.dart";
-import "package:aqua_steward/core/widgets/snack_bar_format.dart";
+
 import "package:aqua_steward/core/widgets/tab_bar_format.dart";
 import "package:aqua_steward/core/widgets/text_format.dart";
 import "package:aqua_steward/core/error/result_handler.dart";
@@ -111,12 +111,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
         .read<NotificationProvider>()
         .deleteAllNotifications(_token);
     if (!mounted) return;
-    if (result.isSuccess) {
-      SnackBarFormat(
-        context: context,
-        message: context.l10n.snackbar_alertas_eliminadas,
-      ).show();
-    }
+    context.processResult(
+      result,
+      successMessage: context.l10n.snackbar_alertas_eliminadas,
+    );
   }
 
   @override

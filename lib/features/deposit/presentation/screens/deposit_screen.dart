@@ -1,4 +1,4 @@
-import 'package:aqua_steward/core/error/result.dart';
+import 'package:aqua_steward/core/error/result_handler.dart';
 import 'package:aqua_steward/core/router/app_router.dart';
 import 'package:aqua_steward/core/theme/app_border.dart';
 import 'package:aqua_steward/core/theme/app_icon.dart';
@@ -195,28 +195,20 @@ class _DepositScreenState extends State<DepositScreen> {
       );
     }
 
-    if (mounted) {
-      if (result.isSuccess) {
-        SnackBarFormat(
-          context: context,
-          message: isEditing
-              ? context.l10n.snackbar_deposito_actualizado
-              : context.l10n.snackbar_deposito_creado,
-        ).show();
+    if (!mounted) return;
 
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          AppRouter.mainNavigation,
-          (route) => false,
-          arguments: {"args": _switchValues},
-        );
-      } else {
-        SnackBarFormat(
-          context: context,
-          message: result.error ?? "Error",
-          isError: true,
-        ).show();
-      }
+    if (context.processResult(
+      result,
+      successMessage: isEditing
+          ? context.l10n.snackbar_deposito_actualizado
+          : context.l10n.snackbar_deposito_creado,
+    )) {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppRouter.mainNavigation,
+        (route) => false,
+        arguments: {"args": _switchValues},
+      );
     }
   }
 

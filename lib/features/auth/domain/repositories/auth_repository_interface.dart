@@ -27,8 +27,12 @@ abstract class IAuthRepository {
     required String id,
     String? name,
     String? lastName,
+    required String token,
   });
 
   // Contrato para eliminar un usuario por su correo electrónico.
-  Future<Result<void>> deleteUser({required String email});
+  Future<Result<void>> deleteUser({
+    required String email,
+    required String token,
+  });
 }

@@ -1,12 +1,8 @@
-import 'dart:convert';
 import 'package:aqua_steward/core/error/result.dart';
-import 'package:aqua_steward/core/network/global_variable.dart';
-import 'package:aqua_steward/core/network/manage_http_response.dart';
-import 'package:aqua_steward/core/error/exception_handler.dart';
+import 'package:aqua_steward/core/network/api_client.dart';
 import 'package:aqua_steward/features/reading/data/models/reading_model.dart';
 import 'package:aqua_steward/features/reading/data/models/export_reading_model.dart';
 import 'package:aqua_steward/features/reading/data/models/report_stats_model.dart';
-import 'package:http/http.dart' as http;
 
 abstract class IReadingDataSource {
   Future<Result<List<ReadingModel>>> getReadings({
@@ -37,33 +33,12 @@ class ReadingDataSourceImpl implements IReadingDataSource {
     required String sensorType,
     required String token,
     required String filter,
-  }) async {
-    try {
-      // filter es para filtrar las lecturas por día, semana o mes.
-      final http.Response response = await http.get(
-        Uri.parse(
-          "$uri/api/reading/$depositId/sensor/$sensorType?filter=$filter",
-        ),
-        headers: <String, String>{
-          "Content-Type": "application/json; charset=utf-8",
-          "x-auth-token": token,
-        },
-      );
-      final result = manageHttpResponse(response: response);
-      if (result.isSuccess) {
-        // Se decodifica el JSON y se mapea a una lista de ReadingModel.
-        final List<dynamic> data = json.decode(response.body);
-        final list = data
-            .map((readingMap) => ReadingModel.fromJson(readingMap))
-            .toList();
-        return Result.success(list);
-      } else {
-        return Result.failure(result.error);
-      }
-    } catch (e) {
-      return handleException(e);
-    }
-  }
+  }) => ApiClient.get(
+    '/api/reading/$depositId/sensor/$sensorType?filter=$filter',
+    token: token,
+    fromJson: (data) =>
+        (data as List).map((m) => ReadingModel.fromJson(m)).toList(),
+  );
 
   @override
   Future<Result<List<ExportReadingModel>>> exportReadings({
@@ -71,59 +46,21 @@ class ReadingDataSourceImpl implements IReadingDataSource {
     required List<String> sensorTypes,
     required String token,
     required String filter,
-  }) async {
-    try {
-      final sensorsQuery = sensorTypes.join(',');
-      final http.Response response = await http.get(
-        Uri.parse(
-          "$uri/api/reading/$depositId/export?sensors=$sensorsQuery&filter=$filter",
-        ),
-        headers: <String, String>{
-          "Content-Type": "application/json; charset=utf-8",
-          "x-auth-token": token,
-        },
-      );
-      final result = manageHttpResponse(response: response);
-      if (result.isSuccess) {
-        final List<dynamic> data = json.decode(response.body);
-        final list = data
-            .map((readingMap) => ExportReadingModel.fromJson(readingMap))
-            .toList();
-        return Result.success(list);
-      } else {
-        return Result.failure(result.error);
-      }
-    } catch (e) {
-      return handleException(e);
-    }
-  }
+  }) => ApiClient.get(
+    '/api/reading/$depositId/export?sensors=${sensorTypes.join(',')}&filter=$filter',
+    token: token,
+    fromJson: (data) =>
+        (data as List).map((m) => ExportReadingModel.fromJson(m)).toList(),
+  );
 
   @override
   Future<Result<ReportStatsModel>> getReportStats({
     required String depositId,
     required String token,
     required String filter,
-  }) async {
-    try {
-      final http.Response response = await http.get(
-        Uri.parse(
-          "$uri/api/reading/$depositId/report-stats?filter=$filter",
-        ),
-        headers: <String, String>{
-          "Content-Type": "application/json; charset=utf-8",
-          "x-auth-token": token,
-        },
-      );
-      final result = manageHttpResponse(response: response);
-      if (result.isSuccess) {
-        final Map<String, dynamic> data = json.decode(response.body);
-        final stats = ReportStatsModel.fromJson(data);
-        return Result.success(stats);
-      } else {
-        return Result.failure(result.error);
-      }
-    } catch (e) {
-      return handleException(e);
-    }
-  }
+  }) => ApiClient.get(
+    '/api/reading/$depositId/report-stats?filter=$filter',
+    token: token,
+    fromJson: (data) => ReportStatsModel.fromJson(data as Map<String, dynamic>),
+  );
 }

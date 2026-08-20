@@ -1,5 +1,5 @@
 import 'package:aqua_steward/core/error/result.dart';
-import 'package:aqua_steward/core/services/secure_storage_service.dart';
+import 'package:aqua_steward/core/storage/secure_storage.dart';
 import 'package:aqua_steward/features/auth/data/models/user_model.dart';
 import 'package:aqua_steward/features/auth/domain/entities/user.dart';
 import 'package:aqua_steward/features/auth/domain/usecases/delete_user_usecase.dart';
@@ -46,15 +46,15 @@ class AuthProvider extends ChangeNotifier {
 
   // Intenta restaurar la sesión guardada al abrir la aplicación.
   Future<bool> tryAutoLogin() async {
-    final token = await SecureStorageService.getToken();
-    final userData = await SecureStorageService.getUserData();
+    final token = await SecureStorage.getToken();
+    final userData = await SecureStorage.getUserData();
     if (token != null && token.isNotEmpty && userData != null) {
       try {
         _currentUser = UserModel.fromJson(userData);
         notifyListeners();
         return true;
       } catch (_) {
-        await SecureStorageService.clearSession();
+        await SecureStorage.clearSession();
       }
     }
     return false;
@@ -88,8 +88,8 @@ class AuthProvider extends ChangeNotifier {
                 depositID: _currentUser!.depositID,
                 token: _currentUser!.token,
               );
-        await SecureStorageService.saveToken(_currentUser!.token!);
-        await SecureStorageService.saveUserData(model.toJson());
+        await SecureStorage.saveToken(_currentUser!.token!);
+        await SecureStorage.saveUserData(model.toJson());
       }
       return Result.success(null);
     } catch (e) {
@@ -170,10 +170,14 @@ class AuthProvider extends ChangeNotifier {
           ? (_currentUser?.last_name ?? "")
           : lastName.trim();
 
+      final String token =
+          _currentUser?.token ?? await SecureStorage.getToken() ?? "";
+
       final result = await _updateUserUseCase(
         id: _currentUser!.id ?? "",
         name: finalName,
         lastName: finalLastName,
+        token: token,
       );
 
       if (result.isSuccess) {
@@ -194,7 +198,7 @@ class AuthProvider extends ChangeNotifier {
                 depositID: _currentUser!.depositID,
                 token: _currentUser!.token,
               );
-        await SecureStorageService.saveUserData(model.toJson());
+        await SecureStorage.saveUserData(model.toJson());
       }
       return result;
     } catch (e) {
@@ -209,7 +213,9 @@ class AuthProvider extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
     try {
-      final result = await _deleteUserUseCase(email: email);
+      final String token =
+          _currentUser?.token ?? await SecureStorage.getToken() ?? "";
+      final result = await _deleteUserUseCase(email: email, token: token);
       return result;
     } catch (e) {
       return Result.failure(e.toString());
@@ -255,7 +261,7 @@ class AuthProvider extends ChangeNotifier {
   // Cierra la sesión activa limpiando los datos del usuario.
   Future<void> logout() async {
     _currentUser = null;
-    await SecureStorageService.clearSession();
+    await SecureStorage.clearSession();
     notifyListeners();
   }
 }

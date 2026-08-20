@@ -5,7 +5,7 @@ import 'package:aqua_steward/core/theme/app_icon.dart';
 import 'package:aqua_steward/core/utils/app_validators.dart';
 import 'package:aqua_steward/core/widgets/button_format.dart';
 import 'package:aqua_steward/core/widgets/container_formart.dart';
-import 'package:aqua_steward/core/widgets/snack_bar_format.dart';
+import 'package:aqua_steward/core/error/result_handler.dart';
 import 'package:aqua_steward/core/widgets/text_field_format.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
@@ -76,19 +76,12 @@ class _SigninScreenState extends State<SigninScreen> {
 
                 if (!mounted) return;
 
-                if (result.isSuccess) {
+                if (context.processResult(result)) {
                   Navigator.pushNamedAndRemoveUntil(
                     context,
                     AppRouter.mainNavigation,
                     (route) => false,
                   );
-                } else {
-                  // El correo o contraseña es incorrecto.
-                  SnackBarFormat(
-                    context: context,
-                    message: result.error!,
-                    isError: true,
-                  ).show();
                 }
               },
             ),

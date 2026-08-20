@@ -7,13 +7,19 @@ class UpdateUserUseCase {
 
   UpdateUserUseCase(this.repository);
 
-  // Ejecuta la actualización delegando al repositorio el ID y datos de perfil del usuario.
+  // Ejecuta la actualización delegando al repositorio el ID, token y datos de perfil del usuario.
   Future<Result<void>> call({
     required String id,
     String? name,
     String? lastName,
+    required String token,
   }) {
     // Retorna el resultado de la actualización de perfil procesado por la capa de datos.
-    return repository.updateUser(id: id, name: name, lastName: lastName);
+    return repository.updateUser(
+      id: id,
+      name: name,
+      lastName: lastName,
+      token: token,
+    );
   }
 }

@@ -3,7 +3,7 @@ import 'package:aqua_steward/features/notification/domain/entities/notification.
 import 'package:aqua_steward/features/notification/domain/repositories/notification_repository_interface.dart';
 
 class GetNotificationsUseCase {
-  final NotificationRepositoryInterface _repository;
+  final INotificationRepository _repository;
 
   GetNotificationsUseCase(this._repository);
 

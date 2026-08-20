@@ -257,6 +257,7 @@ class _MembersScreenState extends State<MembersScreen> {
         icon: AppIcon.personOutlined(context: context),
         text: context.l10n.miembros_rol_admin,
       ),
+
       if (showDelete &&
           RolePermissions.has(_currentRole, AppPermission.deleteMember))
         MenuItemModel(

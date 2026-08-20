@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LanguageProvider extends ChangeNotifier {
+class LanguageStorage extends ChangeNotifier {
   static const String _languageKey = 'selected_language';
 
   // Mapa de idiomas soportados (El inglés no está completo).
@@ -12,13 +12,13 @@ class LanguageProvider extends ChangeNotifier {
 
   Locale _currentLocale;
 
-  LanguageProvider(this._currentLocale);
+  LanguageStorage(this._currentLocale);
 
   // Carga el idioma guardado al iniciar la app.
-  static Future<LanguageProvider> load() async {
+  static Future<LanguageStorage> load() async {
     final prefshared = SharedPreferencesAsync();
     final savedLanguage = await prefshared.getString(_languageKey) ?? 'es';
-    return LanguageProvider(_locales[savedLanguage] ?? const Locale('es', ''));
+    return LanguageStorage(_locales[savedLanguage] ?? const Locale('es', ''));
   }
 
   // Idioma activo de la app.

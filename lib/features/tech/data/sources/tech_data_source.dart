@@ -1,9 +1,5 @@
-import 'dart:convert';
-import 'package:aqua_steward/core/error/exception_handler.dart';
 import 'package:aqua_steward/core/error/result.dart';
-import 'package:aqua_steward/core/network/global_variable.dart';
-import 'package:aqua_steward/core/network/manage_http_response.dart';
-import 'package:http/http.dart' as http;
+import 'package:aqua_steward/core/network/api_client.dart';
 
 abstract class ITechDataSource {
   Future<Result<Map<String, dynamic>>> getSystemStats({required String token});
@@ -14,46 +10,17 @@ class TechDataSourceImpl implements ITechDataSource {
   @override
   Future<Result<Map<String, dynamic>>> getSystemStats({
     required String token,
-  }) async {
-    try {
-      final response = await http.get(
-        Uri.parse("$uri/api/tech/stats"),
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          "x-auth-token": token,
-        },
-      );
-
-      final res = manageHttpResponse(response: response);
-      if (res.isSuccess) {
-        return Result.success(json.decode(response.body));
-      } else {
-        return Result.failure(res.error);
-      }
-    } catch (e) {
-      return handleException(e);
-    }
-  }
+  }) => ApiClient.get(
+    '/api/tech/stats',
+    token: token,
+    fromJson: (data) => data as Map<String, dynamic>,
+  );
 
   @override
-  Future<Result<List<dynamic>>> getAllUsers({required String token}) async {
-    try {
-      final response = await http.get(
-        Uri.parse("$uri/api/tech/users"),
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          "x-auth-token": token,
-        },
+  Future<Result<List<dynamic>>> getAllUsers({required String token}) =>
+      ApiClient.get(
+        '/api/tech/users',
+        token: token,
+        fromJson: (data) => data as List<dynamic>,
       );
-
-      final res = manageHttpResponse(response: response);
-      if (res.isSuccess) {
-        return Result.success(json.decode(response.body));
-      } else {
-        return Result.failure(res.error);
-      }
-    } catch (e) {
-      return handleException(e);
-    }
-  }
 }

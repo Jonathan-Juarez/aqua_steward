@@ -13,7 +13,6 @@ export "package:aqua_steward/features/reading/presentation/screens/reports_scree
 export "package:aqua_steward/features/reading/presentation/screens/pdf_screen.dart";
 export "package:aqua_steward/features/support/presentation/screens/about_screen.dart";
 export "package:aqua_steward/features/support/presentation/screens/contact_screen.dart";
-export "package:aqua_steward/features/support/presentation/screens/privacy_policy_screen.dart";
 export "package:aqua_steward/features/support/presentation/screens/support_screen.dart";
 export "package:aqua_steward/features/reading/presentation/screens/dashborad_screen.dart";
 export "package:aqua_steward/features/auth/presentation/screens/profile_screen.dart";
@@ -74,6 +73,7 @@ export "package:aqua_steward/features/team/domain/usecases/update_member_usecase
 export "package:aqua_steward/features/team/domain/usecases/get_invitations_usecase.dart";
 export "package:aqua_steward/features/team/domain/usecases/accept_invitation_usecase.dart";
 export "package:aqua_steward/features/team/domain/usecases/reject_invitation_usecase.dart";
+export "package:aqua_steward/features/team/domain/usecases/leave_deposit_usecase.dart";
 export "package:aqua_steward/features/notification/domain/usecases/register_fcm_token_usecase.dart";
 export "package:aqua_steward/features/notification/domain/usecases/unregister_fcm_token_usecase.dart";
 export "package:aqua_steward/features/notification/domain/usecases/get_notifications_usecase.dart";

@@ -1,11 +1,11 @@
 import 'package:aqua_steward/core/router/app_router.dart';
-import 'package:aqua_steward/core/services/secure_storage_service.dart';
+import 'package:aqua_steward/core/storage/secure_storage.dart';
 import 'package:aqua_steward/core/widgets/snack_bar_format.dart';
 import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class SessionService {
+class SessionStorage {
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
   static bool _isHandlingExpired = false;
@@ -15,10 +15,10 @@ class SessionService {
     if (_isHandlingExpired) return;
     _isHandlingExpired = true;
 
-    debugPrint("[SessionService] Expiración de sesión detectada: $message");
+    debugPrint("[SessionStorage] Expiración de sesión detectada: $message");
 
     // Limpiar almacenamiento seguro inmediatamente
-    await SecureStorageService.clearSession();
+    await SecureStorage.clearSession();
 
     // Se programa la navegación y notificación para el siguiente frame seguro
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -29,7 +29,7 @@ class SessionService {
           await authProvider.logout();
         } catch (e) {
           debugPrint(
-            "[SessionService] Error al cerrar sesión en AuthProvider: $e",
+            "[SessionStorage] Error al cerrar sesión en AuthProvider: $e",
           );
         }
 

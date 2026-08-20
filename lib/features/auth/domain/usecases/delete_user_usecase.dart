@@ -6,7 +6,10 @@ class DeleteUserUseCase {
 
   DeleteUserUseCase(this.Irepository);
 
-  Future<Result<void>> call({required String email}) {
-    return Irepository.deleteUser(email: email);
+  Future<Result<void>> call({
+    required String email,
+    required String token,
+  }) {
+    return Irepository.deleteUser(email: email, token: token);
   }
 }

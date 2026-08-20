@@ -54,7 +54,7 @@
   "auth_no_tiene_cuenta": "¿No tienes cuenta?",
   "auth_tiene_cuenta": "¿Tienes cuenta?",
   "auth_confirmar_codigo": "Confirmar código",
-  "auth_ingresa_codigo": "Ingresa el código de confirmación enviado a tu correo electrónico.",
+  "auth_ingresa_codigo": "Ingresa el código de confirmación enviado a tu correo electrónico. En caso de no encontrarlo, revisa la sección de spam.",
   "auth_no_recibiste": "¿No lo recibiste?",
   "auth_reenviar": "Reenviar",
   "auth_cambiar_contrasena": "Cambiar contraseña",

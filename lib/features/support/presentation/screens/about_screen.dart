@@ -1,4 +1,3 @@
-import 'package:aqua_steward/core/router/app_router.dart';
 import 'package:aqua_steward/core/theme/app_icon.dart';
 import 'package:aqua_steward/core/theme/app_sizedbox.dart';
 import 'package:aqua_steward/core/widgets/container_formart.dart';
@@ -8,6 +7,7 @@ import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:aqua_steward/main.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
@@ -22,7 +22,6 @@ class AboutScreen extends StatelessWidget {
     return ScaffoldMain(
       titleAppBar: context.l10n.titulo_acerca_de,
       children: [
-        // Identidad de la Aplicación
         Center(
           child: Column(
             children: [
@@ -120,7 +119,11 @@ class AboutScreen extends StatelessWidget {
           title: context.l10n.acerca_privacidad_titulo,
           subtitle: context.l10n.acerca_privacidad_subtitulo,
           icon: AppIcon.privacyPolicy,
-          onTap: () => Navigator.pushNamed(context, AppRouter.privacyPolicy),
+          onTap: () => launchUrl(
+            Uri.parse(
+              "https://jonathan-juarez.github.io/politica-privacidad.html",
+            ),
+          ),
         ),
 
         // Licencias de Código Abierto

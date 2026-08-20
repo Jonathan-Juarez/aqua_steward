@@ -3,8 +3,8 @@ import 'package:aqua_steward/features/notification/data/sources/notification_rem
 import 'package:aqua_steward/features/notification/domain/entities/notification.dart';
 import 'package:aqua_steward/features/notification/domain/repositories/notification_repository_interface.dart';
 
-class NotificationRepositoryImpl implements NotificationRepositoryInterface {
-  final NotificationRemoteDataSourceInterface _remoteDataSource;
+class NotificationRepositoryImpl implements INotificationRepository {
+  final INotificationRemoteDataSource _remoteDataSource;
 
   NotificationRepositoryImpl(this._remoteDataSource);
 
@@ -13,7 +13,10 @@ class NotificationRepositoryImpl implements NotificationRepositoryInterface {
     required String fcmToken,
     required String authToken,
   }) {
-    return _remoteDataSource.registerToken(fcmToken: fcmToken, authToken: authToken);
+    return _remoteDataSource.registerToken(
+      fcmToken: fcmToken,
+      authToken: authToken,
+    );
   }
 
   @override
@@ -21,7 +24,10 @@ class NotificationRepositoryImpl implements NotificationRepositoryInterface {
     required String fcmToken,
     required String authToken,
   }) {
-    return _remoteDataSource.unregisterToken(fcmToken: fcmToken, authToken: authToken);
+    return _remoteDataSource.unregisterToken(
+      fcmToken: fcmToken,
+      authToken: authToken,
+    );
   }
 
   @override
@@ -30,8 +36,14 @@ class NotificationRepositoryImpl implements NotificationRepositoryInterface {
   }
 
   @override
-  Future<Result<void>> deleteNotification({required String notificationId, required String token}) {
-    return _remoteDataSource.deleteNotification(notificationId: notificationId, token: token);
+  Future<Result<void>> deleteNotification({
+    required String notificationId,
+    required String token,
+  }) {
+    return _remoteDataSource.deleteNotification(
+      notificationId: notificationId,
+      token: token,
+    );
   }
 
   @override
@@ -40,7 +52,13 @@ class NotificationRepositoryImpl implements NotificationRepositoryInterface {
   }
 
   @override
-  Future<Result<void>> markNotificationsAsRead({required String token, String? notificationId}) {
-    return _remoteDataSource.markNotificationsAsRead(token: token, notificationId: notificationId);
+  Future<Result<void>> markNotificationsAsRead({
+    required String token,
+    String? notificationId,
+  }) {
+    return _remoteDataSource.markNotificationsAsRead(
+      token: token,
+      notificationId: notificationId,
+    );
   }
 }

@@ -7,6 +7,7 @@ import 'package:aqua_steward/features/team/domain/usecases/update_member_usecase
 import 'package:aqua_steward/features/team/domain/usecases/get_invitations_usecase.dart';
 import 'package:aqua_steward/features/team/domain/usecases/accept_invitation_usecase.dart';
 import 'package:aqua_steward/features/team/domain/usecases/reject_invitation_usecase.dart';
+import 'package:aqua_steward/features/team/domain/usecases/leave_deposit_usecase.dart';
 import 'package:flutter/material.dart';
 
 class TeamProvider extends ChangeNotifier {
@@ -17,6 +18,7 @@ class TeamProvider extends ChangeNotifier {
   final GetInvitationsUseCase getInvitationsUseCase;
   final AcceptInvitationUseCase acceptInvitationUseCase;
   final RejectInvitationUseCase rejectInvitationUseCase;
+  final LeaveDepositUseCase leaveDepositUseCase;
 
   TeamProvider({
     required this.getMembersUseCase,
@@ -26,6 +28,7 @@ class TeamProvider extends ChangeNotifier {
     required this.getInvitationsUseCase,
     required this.acceptInvitationUseCase,
     required this.rejectInvitationUseCase,
+    required this.leaveDepositUseCase,
   });
 
   List<Team> _members = [];
@@ -212,6 +215,28 @@ class TeamProvider extends ChangeNotifier {
       return result;
     } catch (e) {
       return Result.failure(e.toString());
+    }
+  }
+
+  // Abandona un depósito y notifica el resultado.
+  Future<Result<void>> leaveDeposit({
+    required String depositId,
+    required String token,
+  }) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final result = await leaveDepositUseCase.call(
+        depositId: depositId,
+        token: token,
+      );
+      return result;
+    } catch (e) {
+      return Result.failure(e.toString());
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
   }
 

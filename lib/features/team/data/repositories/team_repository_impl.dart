@@ -90,4 +90,13 @@ class TeamRepositoryImpl implements ITeamRepository {
   }) {
     return dataSource.rejectInvitation(depositId: depositId, token: token);
   }
+
+  @override
+  // Delega el abandono de un depósito al DataSource.
+  Future<Result<void>> leaveDeposit({
+    required String depositId,
+    required String token,
+  }) {
+    return dataSource.leaveDeposit(depositId: depositId, token: token);
+  }
 }

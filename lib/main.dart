@@ -1,9 +1,9 @@
 import 'package:aqua_steward/core/network/network_validator.dart';
 import 'package:aqua_steward/core/router/app_router.dart';
-import 'package:aqua_steward/core/services/session_service.dart';
+import 'package:aqua_steward/core/storage/session_storage.dart';
 import 'package:aqua_steward/core/theme/app_theme.dart';
-import 'package:aqua_steward/core/providers/language_provider.dart';
-import 'package:aqua_steward/core/providers/theme_provider.dart';
+import 'package:aqua_steward/core/storage/language_storage.dart';
+import 'package:aqua_steward/core/storage/theme_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -23,16 +23,15 @@ Future<void> main() async {
   // Se inicializa Flutter antes de acceder a plugins nativos.
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Inicializar Firebase
+  // Inicializar Firebase y el servicio de notificaciones.
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  // Inicializar Notificaciones
   await NotificationService.instance.initialize();
 
+  // Carga de información del sistema y preferencias guardadas.
   packageInfo = await PackageInfo.fromPlatform();
   final (theme, language) = await (
-    ThemeProvider.load(),
-    LanguageProvider.load(),
+    ThemeStorage.load(),
+    LanguageStorage.load(),
   ).wait;
 
   // Verificación de sesión previa antes de lanzar la interfaz
@@ -65,8 +64,8 @@ Future<void> main() async {
 }
 
 class MainApp extends StatelessWidget {
-  final ThemeProvider savedTheme;
-  final LanguageProvider savedLanguage;
+  final ThemeStorage savedTheme;
+  final LanguageStorage savedLanguage;
   final AuthProvider savedAuthProvider;
   final String initialRoute;
 
@@ -141,6 +140,7 @@ class MainApp extends StatelessWidget {
               getInvitationsUseCase: GetInvitationsUseCase(repository),
               acceptInvitationUseCase: AcceptInvitationUseCase(repository),
               rejectInvitationUseCase: RejectInvitationUseCase(repository),
+              leaveDepositUseCase: LeaveDepositUseCase(repository),
             );
           },
         ),
@@ -156,10 +156,10 @@ class MainApp extends StatelessWidget {
         ),
       ],
       // Se consume el tema y el idioma para configurar la app.
-      child: Consumer2<ThemeProvider, LanguageProvider>(
-        builder: (context, themeProvider, languageProvider, _) => MaterialApp(
+      child: Consumer2<ThemeStorage, LanguageStorage>(
+        builder: (context, themeStorage, languageStorage, _) => MaterialApp(
           // Permite controlar naveación desde cualquier parte sin BuildContext.
-          navigatorKey: SessionService.navigatorKey,
+          navigatorKey: SessionStorage.navigatorKey,
           // Define el nombre de la app al abrir aplicaciones recientes.
           title: "AquaSteward",
           //Desactiva el banner de depuración.
@@ -168,10 +168,10 @@ class MainApp extends StatelessWidget {
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           // Modo de tema actual de la app.
-          themeMode: themeProvider.themeMode,
+          themeMode: themeStorage.themeMode,
 
           // Se usa el idioma configurado.
-          locale: languageProvider.locale,
+          locale: languageStorage.locale,
           localizationsDelegates: const [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,

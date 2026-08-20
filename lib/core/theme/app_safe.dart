@@ -6,18 +6,14 @@ class AppSafe extends StatelessWidget {
   final Widget child;
   final Future<void> Function()? onRefresh;
 
-  const AppSafe({
-    super.key,
-    required this.child,
-    this.onRefresh,
-  });
+  const AppSafe({super.key, required this.child, this.onRefresh});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: AppPadding.symmetric0_16,
       child: SafeArea(
-        // Bottom false para que el SafeArea no afecte el scroll. El top no se quita porque protege el notch de la pantalla.
+        // Bottom false para que el SafeArea no afecte el scroll.
         bottom: false,
         child: LayoutBuilder(
           builder: (context, constraints) {

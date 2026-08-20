@@ -48,12 +48,21 @@ class AuthRepositoryImpl implements IAuthRepository {
     required String id,
     String? name,
     String? lastName,
+    required String token,
   }) {
-    return dataSource.update(id: id, name: name, lastName: lastName);
+    return dataSource.update(
+      id: id,
+      name: name,
+      lastName: lastName,
+      token: token,
+    );
   }
 
   @override
-  Future<Result<void>> deleteUser({required String email}) {
-    return dataSource.delete(email: email);
+  Future<Result<void>> deleteUser({
+    required String email,
+    required String token,
+  }) {
+    return dataSource.delete(email: email, token: token);
   }
 }

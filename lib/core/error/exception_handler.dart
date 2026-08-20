@@ -11,9 +11,7 @@ Result<T> handleException<T>(Object e) {
       errorString.contains("Network is unreachable") ||
       errorString.contains("TimeoutException") ||
       errorString.contains("Failed host lookup")) {
-    return Result.failure(
-      "Error de conexión. Por favor, revisa tu red e inténtalo de nuevo.",
-    );
+    return Result.failure("Error de conexión al servidor.");
   }
 
   return Result.failure("Error: $errorString");

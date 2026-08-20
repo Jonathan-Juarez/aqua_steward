@@ -425,7 +425,7 @@ abstract class AppLocalizations {
   /// No description provided for @auth_ingresa_codigo.
   ///
   /// In es, this message translates to:
-  /// **'Ingresa el código de confirmación enviado a tu correo electrónico.'**
+  /// **'Ingresa el código de confirmación enviado a tu correo electrónico. En caso de no encontrarlo, revisa la sección de spam.'**
   String get auth_ingresa_codigo;
 
   /// No description provided for @auth_no_recibiste.

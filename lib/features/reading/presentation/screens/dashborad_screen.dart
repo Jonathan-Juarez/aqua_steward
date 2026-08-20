@@ -5,7 +5,7 @@ import "package:aqua_steward/core/error/result_handler.dart";
 import "package:aqua_steward/core/theme/app_color.dart";
 import "package:aqua_steward/core/widgets/button_format.dart";
 import "package:aqua_steward/core/widgets/dialog_emergent.dart";
-import "package:aqua_steward/core/widgets/snack_bar_format.dart";
+
 import "package:aqua_steward/core/widgets/text_format.dart";
 import "package:aqua_steward/core/theme/app_icon.dart";
 import "package:aqua_steward/core/widgets/list_view_format.dart";
@@ -91,20 +91,10 @@ class _DashboardScreenState extends State<DashboardScreen>
       token: token,
     );
     if (mounted) {
-      if (result.isSuccess) {
-        // Notifica el éxito de la eliminación mediante un SnackBar.
-        SnackBarFormat(
-          context: context,
-          message: context.l10n.snackbar_deposito_eliminado,
-        ).show();
-      } else {
-        // Muestra un mensaje de error si la operación de borrado falló.
-        SnackBarFormat(
-          context: context,
-          message: result.error ?? "Error",
-          isError: true,
-        ).show();
-      }
+      context.processResult(
+        result,
+        successMessage: context.l10n.snackbar_deposito_eliminado,
+      );
     }
   }
 
@@ -345,12 +335,10 @@ class _DashboardScreenState extends State<DashboardScreen>
             });
           },
           "leave": () async {
-            final userId = context.read<AuthProvider>().currentUser?.id;
             final token = context.read<AuthProvider>().currentUser?.token ?? "";
-            if (userId != null && token.isNotEmpty) {
-              final result = await context.read<TeamProvider>().deleteMember(
+            if (token.isNotEmpty) {
+              final result = await context.read<TeamProvider>().leaveDeposit(
                 depositId: depositData["id"],
-                userId: userId,
                 token: token,
               );
               if (context.mounted) {

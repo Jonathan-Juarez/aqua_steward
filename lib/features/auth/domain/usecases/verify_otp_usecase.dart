@@ -10,12 +10,6 @@ class VerifyOtpUseCase {
     required String email,
     required String otp,
   }) async {
-    if (email.trim().isEmpty) {
-      return Result.failure("El correo electrónico no puede estar vacío");
-    }
-    if (otp.trim().isEmpty || otp.trim().length < 4) {
-      return Result.failure("Ingresa el código OTP completo");
-    }
     return await _repository.verifyOtp(email: email, otp: otp);
   }
 }

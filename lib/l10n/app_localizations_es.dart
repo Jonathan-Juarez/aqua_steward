@@ -182,7 +182,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get auth_ingresa_codigo =>
-      'Ingresa el código de confirmación enviado a tu correo electrónico.';
+      'Ingresa el código de confirmación enviado a tu correo electrónico. En caso de no encontrarlo, revisa la sección de spam.';
 
   @override
   String get auth_no_recibiste => '¿No lo recibiste?';

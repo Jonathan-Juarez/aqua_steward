@@ -144,16 +144,6 @@ class MainApp extends StatelessWidget {
             );
           },
         ),
-        ChangeNotifierProvider(
-          create: (_) {
-            final dataSource = TechDataSourceImpl();
-            final repository = TechRepositoryImpl(dataSource);
-            return TechProvider(
-              getSystemStatsUseCase: GetSystemStatsUseCase(repository),
-              getAllUsersTechUseCase: GetAllUsersTechUseCase(repository),
-            );
-          },
-        ),
       ],
       // Se consume el tema y el idioma para configurar la app.
       child: Consumer2<ThemeStorage, LanguageStorage>(

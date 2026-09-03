@@ -35,10 +35,6 @@ class AppRouter {
   static const String userManual = "/user_manual";
   static const String about = "/about";
 
-  // Panel Técnico
-  static const String techDashboard = "/tech_dashboard";
-  static const String techUsers = "/tech_users";
-
   //Rutas del sistema.
   static Map<String, WidgetBuilder> routes = {
     start: (context) => const StartScreen(),
@@ -126,9 +122,5 @@ class AppRouter {
     ),
     userManual: (context) => const UserManualScreen(),
     about: (context) => const AboutScreen(),
-
-    // Panel Técnico
-    techDashboard: (context) => const TechDashboardScreen(),
-    techUsers: (context) => const TechUsersScreen(),
   };
 }

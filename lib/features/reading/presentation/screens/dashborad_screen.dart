@@ -104,7 +104,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.only(bottom: 16),
+          padding: const EdgeInsets.only(bottom: 12),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [

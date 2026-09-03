@@ -79,14 +79,17 @@ class _ProfileScreenState extends State<ProfileScreen>
 
     return Column(
       children: [
-        Row(
-          children: [
-            TextFormat(
-              text: context.l10n.perfil_titulo,
-              context: context,
-              type: "title",
-            ),
-          ],
+        Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Row(
+            children: [
+              TextFormat(
+                text: context.l10n.perfil_titulo,
+                context: context,
+                type: "title",
+              ),
+            ],
+          ),
         ),
 
         AppSizedBox.height12,

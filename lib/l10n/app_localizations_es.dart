@@ -46,6 +46,12 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get comun_horas => 'Horas';
+
+  @override
+  String get comun_dias => 'Días';
+
+  @override
   String get logo_nombre => 'AquaSteward';
 
   @override
@@ -92,25 +98,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String get dialogo_cerrar_sesion_titulo => 'Cerrar sesión';
 
   @override
+  String get dialogo_eliminar_alertas =>
+      '¿Estás seguro de que deseas eliminar todas las alertas?';
+
+  @override
+  String get dialogo_eliminar_alertas_titulo => 'Eliminar alertas';
+
+  @override
   String get dialogo_presiona_nuevamente_salir => 'Desliza de nuevo para salir';
-
-  @override
-  String get tech_panel_titulo => 'Panel de Técnico';
-
-  @override
-  String get tech_usuarios => 'Usuarios';
-
-  @override
-  String get tech_depositos => 'Depósitos';
-
-  @override
-  String get tech_sensores_activos => 'Sensores Activos';
-
-  @override
-  String get tech_estado_sistema => 'Estado de Infraestructura';
-
-  @override
-  String get tech_ver_usuarios => 'Gestión Global de Usuarios';
 
   @override
   String get titulo_dashboard => 'Mis Depósitos';
@@ -162,7 +157,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get dispositivos_ayuda_red =>
-      'Asegúrate de que tu teléfono y el depósito estén conectados a la misma red Wi-Fi.';
+      'Asegúrate de que tu teléfono y el kit estén en la misma red Wi-Fi (2.4 GHz).';
 
   @override
   String get dispositivos_conectar => 'Seleccionar';
@@ -199,7 +194,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get auth_ingresa_codigo =>
-      'Ingresa el código de confirmación enviado a tu correo electrónico. En caso de no encontrarlo, revisa la sección de spam.';
+      'Ingresa el código de 4 dígitos enviado a tu correo (revisa también spam).';
 
   @override
   String get auth_no_recibiste => '¿No lo recibiste?';
@@ -318,11 +313,11 @@ class AppLocalizationsEs extends AppLocalizations {
       'Se envían alertas cuando el nivel se acerca al límite establecido en la configuración.';
 
   @override
-  String get soporte_faq_p4 => '4. ¿Cómo ajusto los límites y umbrales?';
+  String get soporte_faq_p4 => '4. ¿Cómo asigno límites y umbrales?';
 
   @override
   String get soporte_faq_r4 =>
-      'Ve a la sección Ajustes, mueve los controles deslizantes y guarda los cambios.';
+      'Asignando límites y umbrales al momento de crear o modificar un depósito.';
 
   @override
   String get soporte_faq_p5 => '5. ¿Qué hago si no recibo notificaciones?';
@@ -337,7 +332,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get soporte_faq_r6 =>
-      'Los sensores envían datos en tiempo real, con un tiempo de actualización de 1 minuto.';
+      'Los sensores envían datos en tiempo real, con un tiempo de actualización de 5 segundos.';
 
   @override
   String get soporte_contacto_ayuda => '¿Necesitas más ayuda?';
@@ -427,7 +422,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get reporte_cumplimiento => 'Porcentaje de Cumplimiento';
 
   @override
-  String get reporte_grafico_pastel => 'Gráfico de Pastel';
+  String get reporte_grafico_cumplimiento => 'Gráfico de barras de progreso';
 
   @override
   String get reporte_estabilidad => 'Estabilidad';
@@ -445,7 +440,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get reporte_eventos_criticos => 'Eventos Críticos';
 
   @override
-  String get reporte_tabla_logs => 'Tabla detallada de logs';
+  String get reporte_tabla_logs => 'Tabla detallada de registros';
 
   @override
   String get reporte_generar_pdf => 'Generar PDF';
@@ -458,7 +453,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get reporte_nota_tema =>
-      'Nota: El color de las gráficas se adaptarán al tema seleccionado dentro del PDF.';
+      'El color de las gráficas se adaptarán al tema seleccionado dentro del PDF.';
 
   @override
   String get alertas_filtro_todos => 'Todos';
@@ -507,6 +502,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get miembros_filtro_invitaciones => 'Invitaciones';
 
   @override
+  String get miembros_ingresar_correo => 'Ingresa el correo y asigna rol';
+
+  @override
   String get miembros_rol_admin => 'Administrador';
 
   @override
@@ -529,11 +527,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get umbrales_altura => 'Altura del depósito';
 
   @override
-  String get umbrales_espacio_sensor => 'Espacio entre sensor y depósito';
+  String get umbrales_espacio_sensor => 'Espacio entre sensor y depósito lleno';
+
+  @override
+  String get umbrales_espacio_sensor_desc =>
+      'Distancia entre el sensor de nivel instalado y el punto máximo de llenado (100%) del depósito.';
 
   @override
   String get umbrales_desc =>
-      'Si los valores son sobrepasados, se enviará una notificación.';
+      'Define los límites seguros para tu agua. Recibirás una alerta si el nivel baja o sube demasiado, si el pH sale del rango seguro (acidez o alcalinidad) o si la turbidez (suciedad o partículas suspendidas) supera el valor límite.';
 
   @override
   String get umbrales_nivel_permitido => 'Nivel permitido';
@@ -637,14 +639,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get deposito_info_kit => 'Información del kit';
 
   @override
-  String get deposito_ingresa_ip => 'Ingresa la IP del kit de agua';
+  String get deposito_ingresa_ip =>
+      'Ingresa la IP de tu kit de medición del agua. Ej. 192.168.1.25';
 
   @override
   String get deposito_ip_label => 'IP';
 
   @override
   String get deposito_ingresa_nombre =>
-      'Ingresa el nombre identificador del depósito de agua';
+      'Ingresa el nombre identificador del depósito de agua. Ej. Tinaco Principal';
 
   @override
   String get detalles_tab_registros => 'Registros';

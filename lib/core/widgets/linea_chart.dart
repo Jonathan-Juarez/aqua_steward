@@ -1,3 +1,4 @@
+import "package:aqua_steward/core/extensions/l10n_extensions.dart";
 import "package:aqua_steward/core/extensions/to_clean_string.dart";
 import "package:aqua_steward/core/theme/app_padding.dart";
 import "package:aqua_steward/core/error/result_handler.dart";
@@ -217,7 +218,9 @@ class _LineaChartState extends State<LineaChart> {
       // Eje x (horas/días)
       bottomTitles: AxisTitles(
         axisNameWidget: TextFormat(
-          text: widget.selectedFilter == "Dia" ? "Horas" : "Días",
+          text: widget.selectedFilter == "Dia"
+              ? context.l10n.comun_horas
+              : context.l10n.comun_dias,
           context: context,
           type: "label",
         ),

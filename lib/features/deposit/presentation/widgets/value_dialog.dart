@@ -1,9 +1,11 @@
 import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:aqua_steward/core/extensions/to_clean_string.dart';
 import 'package:aqua_steward/core/theme/app_icon.dart';
+import 'package:aqua_steward/core/theme/app_sizedbox.dart';
 import 'package:aqua_steward/core/utils/app_validators.dart';
 import 'package:aqua_steward/core/widgets/dialog_emergent.dart';
 import 'package:aqua_steward/core/widgets/text_field_format.dart';
+import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -15,6 +17,7 @@ class ValueDialog {
     required double min,
     required double max,
     required String unit,
+    String? description,
     bool allowDecimals = false,
     required ValueChanged<double> onSaved,
   }) {
@@ -32,16 +35,30 @@ class ValueDialog {
         formKey: formKey,
         content: Form(
           key: formKey,
-          child: TextFieldFormat(
-            maxLength: 5,
-            controller: controller,
-            keyboardType: TextInputType.number,
-            inputFormatters: [
-              if (!allowDecimals) FilteringTextInputFormatter.digitsOnly,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (description != null) ...[
+                TextFormat(
+                  text: description,
+                  context: context2,
+                  type: "bodySecondary",
+                ),
+                AppSizedBox.height12,
+              ],
+              TextFieldFormat(
+                maxLength: 6,
+                controller: controller,
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  if (!allowDecimals) FilteringTextInputFormatter.digitsOnly,
+                ],
+                labelText: context2.l10n.comun_rango(maxStr, minStr, unit),
+                icon: AppIcon.edit(context: context2),
+                validator: (val) => AppValidators.validateNumber(context2, val),
+              ),
             ],
-            labelText: context2.l10n.comun_rango(minStr, maxStr, unit),
-            icon: AppIcon.edit(context: context2),
-            validator: (val) => AppValidators.validateNumber(context2, val),
           ),
         ),
         onPressed: () {

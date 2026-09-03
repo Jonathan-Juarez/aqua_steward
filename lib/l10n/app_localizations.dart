@@ -164,6 +164,18 @@ abstract class AppLocalizations {
   /// **'Rango: {min} - {max} {unit}'**
   String comun_rango(Object max, Object min, Object unit);
 
+  /// No description provided for @comun_horas.
+  ///
+  /// In es, this message translates to:
+  /// **'Horas'**
+  String get comun_horas;
+
+  /// No description provided for @comun_dias.
+  ///
+  /// In es, this message translates to:
+  /// **'Días'**
+  String get comun_dias;
+
   /// No description provided for @logo_nombre.
   ///
   /// In es, this message translates to:
@@ -248,47 +260,23 @@ abstract class AppLocalizations {
   /// **'Cerrar sesión'**
   String get dialogo_cerrar_sesion_titulo;
 
+  /// No description provided for @dialogo_eliminar_alertas.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de que deseas eliminar todas las alertas?'**
+  String get dialogo_eliminar_alertas;
+
+  /// No description provided for @dialogo_eliminar_alertas_titulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar alertas'**
+  String get dialogo_eliminar_alertas_titulo;
+
   /// No description provided for @dialogo_presiona_nuevamente_salir.
   ///
   /// In es, this message translates to:
   /// **'Desliza de nuevo para salir'**
   String get dialogo_presiona_nuevamente_salir;
-
-  /// No description provided for @tech_panel_titulo.
-  ///
-  /// In es, this message translates to:
-  /// **'Panel de Técnico'**
-  String get tech_panel_titulo;
-
-  /// No description provided for @tech_usuarios.
-  ///
-  /// In es, this message translates to:
-  /// **'Usuarios'**
-  String get tech_usuarios;
-
-  /// No description provided for @tech_depositos.
-  ///
-  /// In es, this message translates to:
-  /// **'Depósitos'**
-  String get tech_depositos;
-
-  /// No description provided for @tech_sensores_activos.
-  ///
-  /// In es, this message translates to:
-  /// **'Sensores Activos'**
-  String get tech_sensores_activos;
-
-  /// No description provided for @tech_estado_sistema.
-  ///
-  /// In es, this message translates to:
-  /// **'Estado de Infraestructura'**
-  String get tech_estado_sistema;
-
-  /// No description provided for @tech_ver_usuarios.
-  ///
-  /// In es, this message translates to:
-  /// **'Gestión Global de Usuarios'**
-  String get tech_ver_usuarios;
 
   /// No description provided for @titulo_dashboard.
   ///
@@ -383,7 +371,7 @@ abstract class AppLocalizations {
   /// No description provided for @dispositivos_ayuda_red.
   ///
   /// In es, this message translates to:
-  /// **'Asegúrate de que tu teléfono y el depósito estén conectados a la misma red Wi-Fi.'**
+  /// **'Asegúrate de que tu teléfono y el kit estén en la misma red Wi-Fi (2.4 GHz).'**
   String get dispositivos_ayuda_red;
 
   /// No description provided for @dispositivos_conectar.
@@ -455,7 +443,7 @@ abstract class AppLocalizations {
   /// No description provided for @auth_ingresa_codigo.
   ///
   /// In es, this message translates to:
-  /// **'Ingresa el código de confirmación enviado a tu correo electrónico. En caso de no encontrarlo, revisa la sección de spam.'**
+  /// **'Ingresa el código de 4 dígitos enviado a tu correo (revisa también spam).'**
   String get auth_ingresa_codigo;
 
   /// No description provided for @auth_no_recibiste.
@@ -677,13 +665,13 @@ abstract class AppLocalizations {
   /// No description provided for @soporte_faq_p4.
   ///
   /// In es, this message translates to:
-  /// **'4. ¿Cómo ajusto los límites y umbrales?'**
+  /// **'4. ¿Cómo asigno límites y umbrales?'**
   String get soporte_faq_p4;
 
   /// No description provided for @soporte_faq_r4.
   ///
   /// In es, this message translates to:
-  /// **'Ve a la sección Ajustes, mueve los controles deslizantes y guarda los cambios.'**
+  /// **'Asignando límites y umbrales al momento de crear o modificar un depósito.'**
   String get soporte_faq_r4;
 
   /// No description provided for @soporte_faq_p5.
@@ -707,7 +695,7 @@ abstract class AppLocalizations {
   /// No description provided for @soporte_faq_r6.
   ///
   /// In es, this message translates to:
-  /// **'Los sensores envían datos en tiempo real, con un tiempo de actualización de 1 minuto.'**
+  /// **'Los sensores envían datos en tiempo real, con un tiempo de actualización de 5 segundos.'**
   String get soporte_faq_r6;
 
   /// No description provided for @soporte_contacto_ayuda.
@@ -872,11 +860,11 @@ abstract class AppLocalizations {
   /// **'Porcentaje de Cumplimiento'**
   String get reporte_cumplimiento;
 
-  /// No description provided for @reporte_grafico_pastel.
+  /// No description provided for @reporte_grafico_cumplimiento.
   ///
   /// In es, this message translates to:
-  /// **'Gráfico de Pastel'**
-  String get reporte_grafico_pastel;
+  /// **'Gráfico de barras de progreso'**
+  String get reporte_grafico_cumplimiento;
 
   /// No description provided for @reporte_estabilidad.
   ///
@@ -911,7 +899,7 @@ abstract class AppLocalizations {
   /// No description provided for @reporte_tabla_logs.
   ///
   /// In es, this message translates to:
-  /// **'Tabla detallada de logs'**
+  /// **'Tabla detallada de registros'**
   String get reporte_tabla_logs;
 
   /// No description provided for @reporte_generar_pdf.
@@ -935,7 +923,7 @@ abstract class AppLocalizations {
   /// No description provided for @reporte_nota_tema.
   ///
   /// In es, this message translates to:
-  /// **'Nota: El color de las gráficas se adaptarán al tema seleccionado dentro del PDF.'**
+  /// **'El color de las gráficas se adaptarán al tema seleccionado dentro del PDF.'**
   String get reporte_nota_tema;
 
   /// No description provided for @alertas_filtro_todos.
@@ -1022,6 +1010,12 @@ abstract class AppLocalizations {
   /// **'Invitaciones'**
   String get miembros_filtro_invitaciones;
 
+  /// No description provided for @miembros_ingresar_correo.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa el correo y asigna rol'**
+  String get miembros_ingresar_correo;
+
   /// No description provided for @miembros_rol_admin.
   ///
   /// In es, this message translates to:
@@ -1067,13 +1061,19 @@ abstract class AppLocalizations {
   /// No description provided for @umbrales_espacio_sensor.
   ///
   /// In es, this message translates to:
-  /// **'Espacio entre sensor y depósito'**
+  /// **'Espacio entre sensor y depósito lleno'**
   String get umbrales_espacio_sensor;
+
+  /// No description provided for @umbrales_espacio_sensor_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Distancia entre el sensor de nivel instalado y el punto máximo de llenado (100%) del depósito.'**
+  String get umbrales_espacio_sensor_desc;
 
   /// No description provided for @umbrales_desc.
   ///
   /// In es, this message translates to:
-  /// **'Si los valores son sobrepasados, se enviará una notificación.'**
+  /// **'Define los límites seguros para tu agua. Recibirás una alerta si el nivel baja o sube demasiado, si el pH sale del rango seguro (acidez o alcalinidad) o si la turbidez (suciedad o partículas suspendidas) supera el valor límite.'**
   String get umbrales_desc;
 
   /// No description provided for @umbrales_nivel_permitido.
@@ -1265,7 +1265,7 @@ abstract class AppLocalizations {
   /// No description provided for @deposito_ingresa_ip.
   ///
   /// In es, this message translates to:
-  /// **'Ingresa la IP del kit de agua'**
+  /// **'Ingresa la IP de tu kit de medición del agua. Ej. 192.168.1.25'**
   String get deposito_ingresa_ip;
 
   /// No description provided for @deposito_ip_label.
@@ -1277,7 +1277,7 @@ abstract class AppLocalizations {
   /// No description provided for @deposito_ingresa_nombre.
   ///
   /// In es, this message translates to:
-  /// **'Ingresa el nombre identificador del depósito de agua'**
+  /// **'Ingresa el nombre identificador del depósito de agua. Ej. Tinaco Principal'**
   String get deposito_ingresa_nombre;
 
   /// No description provided for @detalles_tab_registros.

@@ -13,6 +13,7 @@ import 'package:aqua_steward/core/widgets/scaffold_main.dart';
 import 'package:aqua_steward/core/error/result_handler.dart';
 import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:aqua_steward/core/widgets/text_field_format.dart';
+import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
 import 'package:aqua_steward/features/team/domain/entities/team.dart';
 import 'package:aqua_steward/features/team/presentation/providers/team_provider.dart';
@@ -219,6 +220,12 @@ class _MembersScreenState extends State<MembersScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                TextFormat(
+                  text: context.l10n.miembros_ingresar_correo,
+                  context: context,
+                  type: "bodySecondary",
+                ),
+                AppSizedBox.height12,
                 TextFieldFormat(
                   labelText: context.l10n.auth_correo,
                   icon: AppIcon.emailOutlined,

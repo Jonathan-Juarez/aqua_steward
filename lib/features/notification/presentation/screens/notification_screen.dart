@@ -2,6 +2,7 @@ import "package:aqua_steward/core/theme/app_border.dart";
 import "package:aqua_steward/core/theme/app_color.dart";
 import "package:aqua_steward/core/theme/app_icon.dart";
 import "package:aqua_steward/core/theme/app_padding.dart";
+import "package:aqua_steward/core/widgets/dialog_emergent.dart";
 import "package:aqua_steward/core/widgets/list_view_format.dart";
 import "package:aqua_steward/core/widgets/button_format.dart";
 import "package:aqua_steward/core/widgets/container_list_tile.dart";
@@ -152,7 +153,23 @@ class _NotificationScreenState extends State<NotificationScreen> {
           tooltip: context.l10n.alertas_marcar_leidas,
         ),
         IconButton(
-          onPressed: filteredNotifications.isNotEmpty ? _deleteAll : null,
+          onPressed: filteredNotifications.isNotEmpty
+              ? () => showDialog(
+                  context: context,
+                  builder: (dialogContext) => DialogEmergent(
+                    title: context.l10n.dialogo_eliminar_alertas_titulo,
+                    content: TextFormat(
+                      text: context.l10n.dialogo_eliminar_alertas,
+                      type: "body",
+                      context: dialogContext,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(dialogContext);
+                      _deleteAll();
+                    },
+                  ),
+                )
+              : null,
           icon: AppIcon.deleteSweep(
             color: filteredNotifications.isNotEmpty
                 ? AppColor.error

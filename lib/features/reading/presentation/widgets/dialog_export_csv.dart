@@ -54,7 +54,7 @@ class DialogExportCsv {
                   children: [
                     TextFormat(
                       text: context.l10n.csv_seleccionar_sensores,
-                      type: "titleSmall",
+                      type: "bodySecondary",
                       context: context,
                     ),
                     //Checkbox para seleccionar todos los sensores.

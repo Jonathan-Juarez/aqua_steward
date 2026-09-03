@@ -13,8 +13,6 @@ class AppSafe extends StatelessWidget {
     return Padding(
       padding: AppPadding.symmetric0_16,
       child: SafeArea(
-        // Bottom false para que el SafeArea no afecte el scroll.
-        bottom: false,
         child: LayoutBuilder(
           builder: (context, constraints) {
             final scrollContent = SingleChildScrollView(

@@ -111,7 +111,7 @@ class AppIcon {
 
   // Iconos de los gráficos al generar reportes.
   static const Icon lineChart = Icon(Icons.line_axis_rounded);
-  static const Icon pieChartOutline = Icon(Icons.pie_chart_outline);
+  static const Icon linearProgress = Icon(Icons.bar_chart_rounded);
   static const Icon speed = Icon(Icons.speed);
 
   static const Icon tableChartOutlined = Icon(Icons.table_chart_outlined);

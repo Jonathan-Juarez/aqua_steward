@@ -3,6 +3,7 @@ import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:aqua_steward/core/router/app_router.dart';
 import 'package:aqua_steward/core/storage/language_storage.dart';
 import 'package:aqua_steward/core/storage/theme_storage.dart';
+import 'package:aqua_steward/core/theme/app_color.dart';
 import 'package:aqua_steward/core/theme/app_icon.dart';
 import 'package:aqua_steward/core/theme/app_padding.dart';
 import 'package:aqua_steward/core/theme/app_sizedbox.dart';
@@ -90,59 +91,84 @@ class _ProfileScreenState extends State<ProfileScreen>
 
         AppSizedBox.height12,
 
-        // Encabezado Tarjeta Hero: Avatar interactivo + Datos de usuario
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Center(
-            child: Column(
-              children: [
-                GestureDetector(
-                  onTap: () => _showEditProfileDialog(provider),
-                  child: Stack(
-                    alignment: Alignment.bottomRight,
-                    children: [
-                      CircleAvatar(
-                        radius: 40,
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        child: TextFormat(
-                          text:
-                              "${name.isNotEmpty ? name[0] : ''}${lastName.isNotEmpty ? lastName[0] : ''}",
-                          context: context,
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(3),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Theme.of(context).colorScheme.background,
-                            width: 0.5,
+        // Encabezado Tarjeta de avatar interactivo y datos de usuario
+        ContainerFormat(
+          children: [
+            Padding(
+              padding: AppPadding.symmetric8_0,
+              child: Center(
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () => _showEditProfileDialog(provider),
+                      child: Stack(
+                        alignment: Alignment.bottomRight,
+                        children: [
+                          // Avatar del usuario
+                          Container(
+                            padding: const EdgeInsets.all(3),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: AppColor.containerContrast.withOpacity(
+                                  0.4,
+                                ),
+                                width: 2,
+                              ),
+                            ),
+                            child: CircleAvatar(
+                              radius: 38,
+                              backgroundColor: Theme.of(
+                                context,
+                              ).colorScheme.background,
+                              child: TextFormat(
+                                text:
+                                    "${name.isNotEmpty ? name[0] : ''}${lastName.isNotEmpty ? lastName[0] : ''}",
+                                context: context,
+                              ),
+                            ),
                           ),
-                        ),
-                        child: AppIcon.edit(
-                          context: context,
-                          color: Theme.of(context).colorScheme.onSurface,
-                          size: 16,
-                        ),
+
+                          // Icono de editar
+                          Container(
+                            padding: AppPadding.all8,
+                            decoration: BoxDecoration(
+                              color: AppColor.containerContrast,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Theme.of(context).colorScheme.primary,
+                                width: 1.5,
+                              ),
+                            ),
+                            child: AppIcon.edit(
+                              size: 13,
+                              color: AppColor.white,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+
+                    AppSizedBox.height12,
+                    // Nombre y apellido
+                    TextFormat(
+                      text: "$name $lastName",
+                      context: context,
+                      type: "titleSmall",
+                    ),
+
+                    AppSizedBox.height8,
+                    // Email
+                    TextFormat(
+                      text: _email,
+                      context: context,
+                      type: "bodySecondary",
+                    ),
+                  ],
                 ),
-                AppSizedBox.height8,
-                TextFormat(
-                  text: "$name $lastName",
-                  context: context,
-                  type: "titleSmall",
-                ),
-                TextFormat(
-                  text: _email,
-                  context: context,
-                  type: "bodySecondary",
-                ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
 
         // Personalización
@@ -326,16 +352,6 @@ class _ProfileScreenState extends State<ProfileScreen>
           type: "subtitle",
         ),
 
-        // Panel Técnico (Solo para usuarios con rol global de técnico)
-        if (provider.currentUser?.global_role == "technician") ...[
-          ContainerListTile(
-            title: context.l10n.tech_panel_titulo,
-            icon: AppIcon.dashboard,
-            onTap: () => Navigator.pushNamed(context, AppRouter.techDashboard),
-          ),
-          AppSizedBox.height12,
-        ],
-
         ContainerListTile(
           title: context.l10n.soporte_preguntas_frecuentes,
           onTap: () => Navigator.pushNamed(context, AppRouter.support),
@@ -354,7 +370,7 @@ class _ProfileScreenState extends State<ProfileScreen>
           onTap: () => Navigator.pushNamed(context, AppRouter.about),
         ),
 
-        const SizedBox(height: 80),
+        const SizedBox(height: 20),
       ],
     );
   }

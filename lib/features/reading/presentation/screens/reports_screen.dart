@@ -114,7 +114,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 ][index],
                 subtitle: [
                   context.l10n.reporte_tendencias,
-                  context.l10n.reporte_grafico_pastel,
+                  context.l10n.reporte_grafico_cumplimiento,
                   context.l10n.reporte_tabla_logs,
                 ][index],
                 value: [
@@ -124,7 +124,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 ][index],
                 icon: [
                   AppIcon.lineChart,
-                  AppIcon.pieChartOutline,
+                  AppIcon.linearProgress,
                   AppIcon.tableChartOutlined,
                 ][index],
                 onChanged: (val) {

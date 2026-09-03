@@ -44,6 +44,7 @@ class AppValidators {
   // Métodos de evaluación individual para los requisitos de contraseña.
   static bool hasMinLength(String pwd) => pwd.length >= 8;
   static bool hasUppercase(String pwd) => RegExp(r'[A-Z]').hasMatch(pwd);
+  static bool hasLowercase(String pwd) => RegExp(r'[a-z]').hasMatch(pwd);
   static bool hasNumber(String pwd) => RegExp(r'\d').hasMatch(pwd);
   static bool hasSpecialChar(String pwd) => RegExp(r'[\W_]').hasMatch(pwd);
 
@@ -52,7 +53,9 @@ class AppValidators {
     if (value == null || value.trim().isEmpty) {
       return context.l10n.validar_campo_requerido;
     }
-    final isValid = hasMinLength(value) &&
+    final isValid =
+        hasMinLength(value) &&
+        hasLowercase(value) &&
         hasUppercase(value) &&
         hasNumber(value) &&
         hasSpecialChar(value);

@@ -79,23 +79,32 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
     if (!context.processResult(verifyResult)) return;
 
     // Si viene del flujo de registro (name/lastName/password presentes)
-    if (widget.name != null && widget.password != null) {
+    if (widget.name != null &&
+        widget.password != null &&
+        widget.lastName != null) {
+      // Registrar usuario.
       final signupResult = await authProvider.signup(
         name: widget.name!,
-        lastName: widget.lastName ?? "",
+        lastName: widget.lastName!,
         email: targetEmail,
         password: widget.password!,
       );
 
       if (!mounted) return;
+      if (!context.processResult(signupResult)) return;
+
+      final signinResult = await authProvider.signin(
+        email: targetEmail,
+        password: widget.password!,
+      );
 
       if (context.processResult(
-        signupResult,
+        signinResult,
         successMessage: context.l10n.snackbar_usuario_registrado,
       )) {
         Navigator.pushNamedAndRemoveUntil(
           context,
-          AppRouter.start,
+          AppRouter.mainNavigation,
           (route) => false,
         );
       }

@@ -46,6 +46,10 @@ class PasswordRequirementsWidget extends StatelessWidget {
           isValid: AppValidators.hasMinLength(password),
         ),
         PasswordRequirementItem(
+          label: "Mínimo 1 minúscula (a-z)",
+          isValid: AppValidators.hasLowercase(password),
+        ),
+        PasswordRequirementItem(
           label: "Mínimo 1 mayúscula (A-Z)",
           isValid: AppValidators.hasUppercase(password),
         ),

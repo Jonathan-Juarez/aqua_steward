@@ -19,6 +19,7 @@ class ValueDialog {
     required String unit,
     String? description,
     bool allowDecimals = false,
+    Widget? illustration,
     required ValueChanged<double> onSaved,
   }) {
     final formKey = GlobalKey<FormState>();
@@ -44,6 +45,15 @@ class ValueDialog {
                   text: description,
                   context: context2,
                   type: "bodySecondary",
+                ),
+                AppSizedBox.height12,
+              ],
+              if (illustration != null) ...[
+                Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: illustration,
+                  ),
                 ),
                 AppSizedBox.height12,
               ],

@@ -114,10 +114,10 @@ class _NearbyDevicesScreenState extends State<NearbyDevicesScreen> {
                   Padding(
                     padding: AppPadding.bottom16,
                     child: ContainerListTile(
-                      onTap: () => Navigator.pop(context, device.ip),
+                      onTap: () => Navigator.pop(context, device.macAddress),
                       icon: AppIcon.sensors,
                       title: device.name,
-                      subtitle: "IP: ${device.ip}",
+                      subtitle: "MAC: ${device.macAddress}",
                     ),
                   ),
                 ButtonFormat(

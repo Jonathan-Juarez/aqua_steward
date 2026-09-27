@@ -3,6 +3,7 @@ import 'package:aqua_steward/features/deposit/domain/entities/sensor.dart';
 class Deposit {
   final String? id, name, ip, owner_id, role;
   final double? capacity, installation_height, fill_gap;
+  final double? latitude, longitude;
   final List<Sensor>? sensors;
 
   const Deposit({
@@ -12,6 +13,8 @@ class Deposit {
     this.capacity,
     this.installation_height,
     this.fill_gap,
+    this.latitude,
+    this.longitude,
     this.owner_id,
     this.role,
     this.sensors,

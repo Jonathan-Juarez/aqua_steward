@@ -40,12 +40,12 @@ class SocketService {
   void ListenerSensor(String event, String key, String parameter) {
     socket!.on(event, (data) {
       if (data != null && data is Map<String, dynamic>) {
-        final ip = data['ip'] as String?;
+        final deviceId = (data['device_id'] ?? data['ip']) as String?;
         final value = (data[key] as num?)?.toDouble();
 
-        if (ip != null && value != null) {
+        if (deviceId != null && value != null) {
           if (onDataReceived != null) {
-            onDataReceived!(ip, parameter, value);
+            onDataReceived!(deviceId, parameter, value);
           }
         }
       }

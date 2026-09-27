@@ -62,14 +62,18 @@ class AppValidators {
     return !isValid ? context.l10n.validar_contrasena_invalida : null;
   }
 
-  // Validador de IP.
-  static String? validateIP(BuildContext context, String? value) {
+  // Validador de Dirección MAC.
+  static String? validateMac(BuildContext context, String? value) {
     if (value == null || value.trim().isEmpty) {
       return context.l10n.validar_campo_requerido;
     }
-    final ipRegex = RegExp(
-      r"^((25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.)){3}(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)$",
-    );
-    return !ipRegex.hasMatch(value) ? context.l10n.validar_ip_invalida : null;
+    final trimmed = value.trim();
+    // Acepta formato MAC con separadores (XX:XX:XX:XX:XX:XX o XX-XX-XX-XX-XX-XX) o 12 caracteres hex continuos.
+    final macRegex = RegExp(r"^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$");
+    final rawHexRegex = RegExp(r"^[0-9A-Fa-f]{12}$");
+
+    final isValid = macRegex.hasMatch(trimmed) || rawHexRegex.hasMatch(trimmed);
+
+    return !isValid ? context.l10n.validar_mac_invalida : null;
   }
 }

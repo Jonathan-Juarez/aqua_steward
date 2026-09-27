@@ -33,6 +33,34 @@ class PermissionService {
     return false;
   }
 
+  // Solicita el permiso de ubicación y maneja los estados de rechazo.
+  static Future<bool> requestLocationPermission(
+    BuildContext context,
+  ) async {
+    PermissionStatus status = await Permission.locationWhenInUse.status;
+
+    if (status.isGranted) {
+      return true;
+    }
+
+    status = await Permission.locationWhenInUse.request();
+
+    if (status.isGranted) {
+      return true;
+    }
+
+    if (status.isPermanentlyDenied) {
+      if (context.mounted) {
+        _showSettingsDialog(
+          context,
+          "Permiso de ubicación",
+          "Para mostrar tu posición respecto al depósito en el mapa, habilita la ubicación en la configuración.",
+        );
+      }
+    }
+    return false;
+  }
+
   // Muestra un cuadro de diálogo invitando al usuario a abrir la configuración nativa.
   static void _showSettingsDialog(
     BuildContext context,

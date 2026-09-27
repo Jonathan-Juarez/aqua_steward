@@ -10,6 +10,8 @@ class DepositModel extends Deposit {
     super.capacity,
     super.installation_height,
     super.fill_gap,
+    super.latitude,
+    super.longitude,
     super.owner_id,
     super.role,
     super.sensors,
@@ -22,6 +24,8 @@ class DepositModel extends Deposit {
       "capacity": capacity,
       "installation_height": installation_height,
       "fill_gap": fill_gap,
+      "latitude": latitude,
+      "longitude": longitude,
       "owner_id": owner_id,
       "role": role,
       "sensors": sensors?.map((s) {
@@ -36,7 +40,7 @@ class DepositModel extends Deposit {
       }).toList(),
     };
     if (id != null && id!.isNotEmpty) {
-      map["_id"] = id; // Mongoose usa _id
+      map["id"] = id;
     }
     return map;
   }
@@ -45,15 +49,17 @@ class DepositModel extends Deposit {
 
   factory DepositModel.fromMap(Map<String, dynamic> map) {
     return DepositModel(
-      id: (map["id"] ?? map["_id"]) as String? ?? "",
-      name: map["name"] as String? ?? "",
-      ip: map["ip"] as String? ?? "",
+      id: (map["id"] ?? map["_id"])?.toString() ?? "",
+      name: map["name"]?.toString() ?? "",
+      ip: map["ip"]?.toString() ?? "",
       capacity: (map["capacity"] as num?)?.toDouble() ?? 0,
       installation_height:
           (map["installation_height"] as num?)?.toDouble() ?? 0,
       fill_gap: (map["fill_gap"] as num?)?.toDouble() ?? 0,
-      owner_id: map["owner_id"] as String? ?? "",
-      role: map["role"] as String?,
+      latitude: (map["latitude"] as num?)?.toDouble(),
+      longitude: (map["longitude"] as num?)?.toDouble(),
+      owner_id: map["owner_id"]?.toString() ?? "",
+      role: map["role"]?.toString(),
       sensors: (map["sensors"] as List<dynamic>?)
           ?.map((s) => SensorModel.fromMap(s as Map<String, dynamic>))
           .toList(),
@@ -71,6 +77,8 @@ class DepositModel extends Deposit {
       capacity: deposit.capacity,
       installation_height: deposit.installation_height,
       fill_gap: deposit.fill_gap,
+      latitude: deposit.latitude,
+      longitude: deposit.longitude,
       owner_id: deposit.owner_id,
       role: deposit.role,
       sensors: deposit.sensors?.map((s) {

@@ -22,9 +22,9 @@ class SensorModel extends Sensor {
 
   factory SensorModel.fromMap(Map<String, dynamic> map) {
     return SensorModel(
-      type: map["type"]?.toString(),
-      state: map["state"],
-      unit: map["unit"]?.toString(),
+      type: map["type"]?.toString() ?? "",
+      state: map["state"] as bool? ?? false,
+      unit: map["unit"]?.toString() ?? "",
       minValue: (map["min_value"] as num?)?.toDouble(),
       maxValue: (map["max_value"] as num?)?.toDouble(),
     );

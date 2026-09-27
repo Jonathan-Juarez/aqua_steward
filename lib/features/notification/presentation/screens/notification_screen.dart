@@ -8,8 +8,6 @@ import "package:aqua_steward/core/widgets/button_format.dart";
 import "package:aqua_steward/core/widgets/container_list_tile.dart";
 import "package:aqua_steward/core/widgets/filter_chip_format.dart";
 import "package:aqua_steward/core/widgets/scaffold_main.dart";
-
-import "package:aqua_steward/core/widgets/tab_bar_format.dart";
 import "package:aqua_steward/core/widgets/text_format.dart";
 import "package:aqua_steward/core/error/result_handler.dart";
 import "package:aqua_steward/core/extensions/l10n_extensions.dart";
@@ -23,6 +21,8 @@ import "package:provider/provider.dart";
 // Se oculta Notification para evitar conflictos de nombres.
 import "package:flutter/material.dart" hide Notification;
 
+enum NotificationFilter { all, level, ph, turbidity, team }
+
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
 
@@ -31,16 +31,8 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class _NotificationScreenState extends State<NotificationScreen> {
-  // Estado de las pestañas (0: Alertas, 1: Invitaciones).
-  int _currentTabIndex = 0;
-  // Estado de los filtros (Tipos de alertas).
-  late String _selectedType;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _selectedType = context.l10n.alertas_filtro_todos;
-  }
+  // Filtro seleccionado actualmente.
+  NotificationFilter _selectedFilter = NotificationFilter.all;
 
   @override
   void initState() {
@@ -82,29 +74,28 @@ class _NotificationScreenState extends State<NotificationScreen> {
     }
   }
 
-  Icon _getIconForType(String type) {
+  Widget _getIconForType(String type) {
     if (type == "pH") {
       return AppIcon.scienceRounded;
     } else if (type == "Turbidez") {
       return AppIcon.water;
+    } else if (type == "team_removed" || type == "team_role_changed") {
+      return AppIcon.groups2Outlined(context: context);
     } else {
       return AppIcon.waterDrop;
     }
   }
 
-  List<Notification> _getFilteredNotifications(
-    List<Notification> notifications,
-  ) {
-    // Excluir notificaciones de equipo en la pestaña de Alertas
-    final sensorNotifications = notifications
-        .where((n) => n.type != "team_removed" && n.type != "team_role_changed")
-        .toList();
-    if (_selectedType == context.l10n.alertas_filtro_todos) {
-      return sensorNotifications;
+  Color? _getColor(String type) {
+    if (type == "pH") {
+      return AppColor.parameterPH;
+    } else if (type == "Turbidez") {
+      return AppColor.parameterTurbidity;
+    } else if (type == "team_removed" || type == "team_role_changed") {
+      return null;
+    } else {
+      return AppColor.parameterAqua;
     }
-    return sensorNotifications
-        .where((notif) => notif.type == _selectedType)
-        .toList();
   }
 
   void _deleteAll() async {
@@ -121,21 +112,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
     final notifProvider = context.watch<NotificationProvider>();
-    final teamProvider = context.watch<TeamProvider>();
-    final filteredNotifications = _getFilteredNotifications(
-      notifProvider.notifications,
-    );
-
-    // Contar invitaciones pendientes + notificaciones de equipo activas
-    final activeTeamNotifs = notifProvider.notifications
-        .where(
-          (n) =>
-              (n.type == "team_removed" || n.type == "team_role_changed") &&
-              n.state == "activa",
-        )
-        .length;
-    final totalTeamCount = teamProvider.invitations.length + activeTeamNotifs;
-    final totalAlertCount = notifProvider.unreadCount;
 
     return ScaffoldMain(
       onRefresh: _onRefresh,
@@ -148,12 +124,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
           icon: AppIcon.doneAll(
             color: notifProvider.hasUnreadNotifications
                 ? AppColor.white
-                : AppColor.blackSecondary,
+                : Theme.of(context).colorScheme.onSurfaceVariant,
           ),
           tooltip: context.l10n.alertas_marcar_leidas,
         ),
         IconButton(
-          onPressed: filteredNotifications.isNotEmpty
+          onPressed: notifProvider.notifications.isNotEmpty
               ? () => showDialog(
                   context: context,
                   builder: (dialogContext) => DialogEmergent(
@@ -171,122 +147,150 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 )
               : null,
           icon: AppIcon.deleteSweep(
-            color: filteredNotifications.isNotEmpty
+            color: notifProvider.notifications.isNotEmpty
                 ? AppColor.error
-                : Theme.of(context).colorScheme.inversePrimary,
+                : Theme.of(context).colorScheme.onSurfaceVariant,
           ),
           tooltip: context.l10n.alertas_eliminar_todas,
         ),
       ],
       children: [
-        // Selector de pestaña principal.
+        // Filtros (Chips).
         Padding(
           padding: AppPadding.symmetric16_0,
-          child: TabBarFormat(
-            labels: [
-              totalAlertCount > 0
-                  ? "${context.l10n.alertas_filtro_alertas} ($totalAlertCount)"
-                  : context.l10n.alertas_filtro_alertas,
-              totalTeamCount > 0
-                  ? "${context.l10n.alertas_filtro_invitaciones} ($totalTeamCount)"
-                  : context.l10n.alertas_filtro_invitaciones,
-            ],
-            selectedIndex: _currentTabIndex,
-            onTabSelected: (index) => setState(() => _currentTabIndex = index),
-            activeColor: AppColor.containerContrast,
-          ),
-        ),
-        // Filtros (Chips) (Solo visibles en la pestaña de Alertas).
-        if (_currentTabIndex == 0)
-          Padding(
-            padding: AppPadding.symmetric16_0,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  FilterChipFormat(
-                    label: context.l10n.alertas_filtro_todos,
-                    isSelected:
-                        _selectedType == context.l10n.alertas_filtro_todos,
-                    onSelected: (val) => setState(
-                      () => _selectedType = context.l10n.alertas_filtro_todos,
-                    ),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                FilterChipFormat(
+                  label: context.l10n.alertas_filtro_todos,
+                  isSelected: _selectedFilter == NotificationFilter.all,
+                  onSelected: (val) =>
+                      setState(() => _selectedFilter = NotificationFilter.all),
+                ),
+                FilterChipFormat(
+                  label: context.l10n.alertas_filtro_nivel,
+                  isSelected: _selectedFilter == NotificationFilter.level,
+                  onSelected: (val) => setState(
+                    () => _selectedFilter = NotificationFilter.level,
                   ),
-                  FilterChipFormat(
-                    label: context.l10n.alertas_filtro_nivel,
-                    isSelected:
-                        _selectedType == context.l10n.alertas_filtro_nivel,
-                    onSelected: (val) => setState(
-                      () => _selectedType = context.l10n.alertas_filtro_nivel,
-                    ),
+                ),
+                FilterChipFormat(
+                  label: context.l10n.alertas_filtro_ph,
+                  isSelected: _selectedFilter == NotificationFilter.ph,
+                  onSelected: (val) =>
+                      setState(() => _selectedFilter = NotificationFilter.ph),
+                ),
+                FilterChipFormat(
+                  label: context.l10n.alertas_filtro_turbidez,
+                  isSelected: _selectedFilter == NotificationFilter.turbidity,
+                  onSelected: (val) => setState(
+                    () => _selectedFilter = NotificationFilter.turbidity,
                   ),
-                  FilterChipFormat(
-                    label: context.l10n.alertas_filtro_ph,
-                    isSelected: _selectedType == context.l10n.alertas_filtro_ph,
-                    onSelected: (val) => setState(
-                      () => _selectedType = context.l10n.alertas_filtro_ph,
-                    ),
-                  ),
-                  FilterChipFormat(
-                    label: context.l10n.alertas_filtro_turbidez,
-                    isSelected:
-                        _selectedType == context.l10n.alertas_filtro_turbidez,
-                    onSelected: (val) => setState(
-                      () =>
-                          _selectedType = context.l10n.alertas_filtro_turbidez,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                FilterChipFormat(
+                  label: context.l10n.alertas_filtro_invitaciones,
+                  isSelected: _selectedFilter == NotificationFilter.team,
+                  onSelected: (val) =>
+                      setState(() => _selectedFilter = NotificationFilter.team),
+                ),
+              ],
             ),
           ),
+        ),
 
-        // Lista de contenido.
+        // Lista unificada de notificaciones y equipo.
         Consumer2<TeamProvider, NotificationProvider>(
-          builder: (context, teamProvider, notificationProvider, _) {
-            if (_currentTabIndex == 1) {
-              return _buildTeamList(teamProvider, notificationProvider);
-            } else {
-              return _buildAlertsList(notificationProvider);
+          builder: (context, teamProv, notifProv, _) {
+            final List<Map<String, dynamic>> displayedInvitations;
+            final List<Notification> displayedNotifications;
+
+            switch (_selectedFilter) {
+              case NotificationFilter.all:
+                displayedInvitations = teamProv.invitations;
+                displayedNotifications = notifProv.notifications;
+                break;
+              case NotificationFilter.team:
+                displayedInvitations = teamProv.invitations;
+                displayedNotifications = notifProv.notifications
+                    .where(
+                      (n) =>
+                          n.type == "team_removed" ||
+                          n.type == "team_role_changed",
+                    )
+                    .toList();
+                break;
+              case NotificationFilter.level:
+                displayedInvitations = const [];
+                displayedNotifications = notifProv.notifications
+                    .where(
+                      (n) =>
+                          n.type == "Nivel" ||
+                          n.type == "level" ||
+                          n.type == context.l10n.alertas_filtro_nivel,
+                    )
+                    .toList();
+                break;
+              case NotificationFilter.ph:
+                displayedInvitations = const [];
+                displayedNotifications = notifProv.notifications
+                    .where(
+                      (n) =>
+                          n.type == "pH" ||
+                          n.type == "ph" ||
+                          n.type == context.l10n.alertas_filtro_ph,
+                    )
+                    .toList();
+                break;
+              case NotificationFilter.turbidity:
+                displayedInvitations = const [];
+                displayedNotifications = notifProv.notifications
+                    .where(
+                      (n) =>
+                          n.type == "Turbidez" ||
+                          n.type == "turbidity" ||
+                          n.type == context.l10n.alertas_filtro_turbidez,
+                    )
+                    .toList();
+                break;
             }
+
+            final totalCount =
+                displayedInvitations.length + displayedNotifications.length;
+            final isTeamOrAll =
+                _selectedFilter == NotificationFilter.all ||
+                _selectedFilter == NotificationFilter.team;
+            final isLoading = isTeamOrAll
+                ? (teamProv.isLoadingInvitations || notifProv.isLoading)
+                : notifProv.isLoading;
+
+            return ListViewFormat(
+              isLoading: isLoading,
+              emptyMessage: context.l10n.alertas_sin_notificaciones,
+              emptyWidget: AppIcon.notificationsOffOutlined(context: context),
+              itemCount: totalCount,
+              itemBuilder: (context, index) {
+                if (index < displayedInvitations.length) {
+                  return _buildInvitationCard(displayedInvitations[index]);
+                } else {
+                  final notif =
+                      displayedNotifications[index -
+                          displayedInvitations.length];
+                  return _buildNotificationCard(notif, notifProv);
+                }
+              },
+            );
           },
         ),
       ],
     );
   }
 
-  // Lista combinada de Invitaciones y Eventos de Equipo.
-  Widget _buildTeamList(
-    TeamProvider teamProvider,
-    NotificationProvider notifProvider,
-  ) {
-    final invitations = teamProvider.invitations;
-    final teamNotifications = notifProvider.notifications
-        .where((n) => n.type == "team_removed" || n.type == "team_role_changed")
-        .toList();
-    final totalCount = invitations.length + teamNotifications.length;
-
-    return ListViewFormat(
-      isLoading: teamProvider.isLoadingInvitations || notifProvider.isLoading,
-      emptyMessage: context.l10n.alertas_sin_invitaciones,
-      emptyWidget: AppIcon.notificationsOffOutlined(context: context),
-      itemCount: totalCount,
-      itemBuilder: (context, index) {
-        if (index < invitations.length) {
-          return _buildInvitationCard(invitations[index]);
-        } else {
-          final notif = teamNotifications[index - invitations.length];
-          return _buildTeamNotificationCard(notif, notifProvider);
-        }
-      },
-    );
-  }
-
-  Widget _buildTeamNotificationCard(
+  // Tarjeta unificada de Notificación (Alertas y Eventos de Equipo).
+  Widget _buildNotificationCard(
     Notification notif,
     NotificationProvider notifProvider,
   ) {
-    // Dismissible permite deslizar para eliminar la notificación.
     return Dismissible(
       key: Key(notif.id),
       direction: DismissDirection.startToEnd,
@@ -330,75 +334,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
           dateTime: notif.date,
           context: context,
         ).format(),
-        icon: AppIcon.groups2Outlined,
+        icon: _getIconForType(notif.type),
+        color: _getColor(notif.type),
         showTrailing: false,
       ),
-    );
-  }
-
-  // Lista de Alertas Reales.
-  Widget _buildAlertsList(NotificationProvider provider) {
-    final filtered = _getFilteredNotifications(provider.notifications);
-
-    return ListViewFormat(
-      isLoading: provider.isLoading,
-      emptyMessage: context.l10n.alertas_sin_notificaciones,
-      emptyWidget: AppIcon.notificationsOffOutlined(context: context),
-      itemCount: filtered.length,
-      itemBuilder: (context, index) {
-        final notif = filtered[index];
-        return Dismissible(
-          key: Key(notif.id),
-          direction: DismissDirection.startToEnd,
-          onDismissed: (direction) {
-            provider.deleteNotification(notif.id, _token);
-          },
-          background: Container(
-            decoration: BoxDecoration(
-              borderRadius: AppBorder.all8,
-              color: AppColor.error.withOpacity(0.2),
-            ),
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.only(left: 20),
-            child: AppIcon.deleteOutline,
-          ),
-          child: ContainerListTile(
-            onTap: notif.state == "activa"
-                ? () => provider.markNotificationsAsRead(
-                    _token,
-                    notificationId: notif.id,
-                  )
-                : null,
-            title: Row(
-              children: [
-                TextFormat(
-                  text: notif.title,
-                  context: context,
-                  type: "titleSmall",
-                ),
-                const Spacer(),
-                notif.state == "activa"
-                    ? Container(
-                        height: 8,
-                        width: 8,
-                        decoration: const BoxDecoration(
-                          color: AppColor.error,
-                          shape: BoxShape.circle,
-                        ),
-                      )
-                    : const SizedBox(),
-              ],
-            ),
-            subtitle: notif.message,
-            subsubtitle: FormaterTime(
-              dateTime: notif.date,
-              context: context,
-            ).format(),
-            icon: _getIconForType(notif.type),
-            showTrailing: false,
-          ),
-        );
-      },
     );
   }
 
@@ -418,7 +357,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         depositName,
         filterRole(role),
       ),
-      icon: AppIcon.groups2Outlined,
+      icon: AppIcon.groups2Outlined(context: context),
       showTrailing: false,
       subsubtitle: ButtonFormat(
         type: "dialog",
@@ -429,6 +368,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   }
 
   void acceptInvitation(String depositId) async {
+    if (depositId == "loading") return;
     final provider = context.read<TeamProvider>();
     final result = await provider.acceptInvitation(
       depositId: depositId,
@@ -446,6 +386,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   }
 
   void rejectInvitation(String depositId) async {
+    if (depositId == "loading") return;
     final provider = context.read<TeamProvider>();
     final result = await provider.rejectInvitation(
       depositId: depositId,

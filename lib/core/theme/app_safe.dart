@@ -5,39 +5,52 @@ import 'package:flutter/material.dart';
 class AppSafe extends StatelessWidget {
   final Widget child;
   final Future<void> Function()? onRefresh;
+  final bool isScrollable;
 
-  const AppSafe({super.key, required this.child, this.onRefresh});
+  const AppSafe({
+    super.key,
+    required this.child,
+    this.onRefresh,
+    this.isScrollable = true,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: AppPadding.symmetric0_16,
-      child: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final scrollContent = SingleChildScrollView(
-              // Permitirá deslizar o refrescar siempre.
-              physics: const AlwaysScrollableScrollPhysics(),
-              // Se asegura que el contenido no se desborde en pantallas pequeñas.
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
-                  minWidth: constraints.maxWidth,
-                ),
-                child: child,
-              ),
-            );
+    Widget content = child;
 
-            return onRefresh != null
-                ? RefreshIndicator(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    onRefresh: onRefresh!,
-                    child: scrollContent,
-                  )
-                : scrollContent;
-          },
-        ),
-      ),
-    );
+    if (isScrollable) {
+      content = LayoutBuilder(
+        builder: (context, constraints) {
+          final scrollContent = SingleChildScrollView(
+            // Permitirá deslizar o refrescar siempre.
+            physics: const AlwaysScrollableScrollPhysics(),
+            // Se asegura que el contenido no se desborde en pantallas pequeñas.
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: constraints.maxHeight,
+                minWidth: constraints.maxWidth,
+              ),
+              child: child,
+            ),
+          );
+
+          return onRefresh != null
+              ? RefreshIndicator(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  onRefresh: onRefresh!,
+                  child: scrollContent,
+                )
+              : scrollContent;
+        },
+      );
+
+      // Aplica márgenes laterales solo cuando hay scroll.
+      content = Padding(
+        padding: AppPadding.symmetric0_16,
+        child: content,
+      );
+    }
+
+    return SafeArea(child: content);
   }
 }

@@ -33,23 +33,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   Widget build(BuildContext context) {
     return ExitConfirmationScope(
       child: ScaffoldMain(
-        body: PageView(
-          controller: _pageController,
-          onPageChanged: (index) => setState(() => _currentIndex = index),
-          children: [
-            securePage(
-              DashboardScreen(switchValues: widget.switchValues),
-              onRefresh: () async {
-                final token =
-                    context.read<AuthProvider>().currentUser?.token ?? '';
-                if (token.isNotEmpty) {
-                  await context.read<DepositProvider>().getDeposits(token: token);
-                }
-              },
-            ),
-            securePage(const ProfileScreen()),
-          ],
-        ),
+        isScrollable: false,
         bottomNavigationBar: BottomBarFormat(
           selectedIndex: _currentIndex,
           onTap: (index) => _pageController.animateToPage(
@@ -58,6 +42,25 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             curve: Curves.ease,
           ),
         ),
+        children: [
+          PageView(
+            controller: _pageController,
+            onPageChanged: (index) => setState(() => _currentIndex = index),
+            children: [
+              securePage(
+                DashboardScreen(switchValues: widget.switchValues),
+                onRefresh: () async {
+                  final token =
+                      context.read<AuthProvider>().currentUser?.token ?? '';
+                  if (token.isNotEmpty) {
+                    await context.read<DepositProvider>().getDeposits(token: token);
+                  }
+                },
+              ),
+              securePage(const ProfileScreen()),
+            ],
+          ),
+        ],
       ),
     );
   }

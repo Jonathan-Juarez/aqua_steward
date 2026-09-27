@@ -35,16 +35,9 @@ class CircularProgressParameters extends StatelessWidget {
         ? sensors[index]
         : null;
 
-    minValue = sensor != null
-        ? (sensor is Map
-              ? (sensor["min_value"] as num?)?.toDouble()
-              : sensor.minValue)
-        : null;
-    maxValue = sensor != null
-        ? (sensor is Map
-              ? (sensor["max_value"] as num?)?.toDouble()
-              : sensor.maxValue)
-        : null;
+    final sMap = sensor is Map<String, dynamic> ? sensor : null;
+    minValue = sMap != null ? (sMap["min_value"] as num?)?.toDouble() : null;
+    maxValue = sMap != null ? (sMap["max_value"] as num?)?.toDouble() : null;
     currentValue = imputParameters[index];
 
     if ((minValue != null && currentValue < minValue) ||

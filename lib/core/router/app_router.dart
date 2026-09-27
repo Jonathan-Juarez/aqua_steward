@@ -20,6 +20,7 @@ class AppRouter {
 
   // Depósitos
   static const String depositScreen = "/deposit_screen";
+  static const String detailScreen = "/detail_screen";
   static const String nearbyDevices = "/nearby_devices";
 
   // Alertas
@@ -89,6 +90,14 @@ class AppRouter {
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
       return DepositScreen(
         depositData: args?["depositData"] as Map<String, dynamic>?,
+      );
+    },
+    detailScreen: (context) {
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      return DetailScreen(
+        depositData: args["depositData"] as Map<String, dynamic>,
+        initialParameterIndex: args["initialParameterIndex"] as int? ?? 0,
       );
     },
     nearbyDevices: (context) => const NearbyDevicesScreen(),

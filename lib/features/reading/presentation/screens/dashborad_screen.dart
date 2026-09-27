@@ -1,22 +1,19 @@
 import "dart:async";
-import "package:aqua_steward/core/permissions/app_permission.dart";
 import "package:aqua_steward/core/router/app_router.dart";
-import "package:aqua_steward/core/error/result_handler.dart";
 import "package:aqua_steward/core/theme/app_color.dart";
 import "package:aqua_steward/core/widgets/button_format.dart";
-import "package:aqua_steward/core/widgets/dialog_emergent.dart";
 
 import "package:aqua_steward/core/widgets/text_format.dart";
 import "package:aqua_steward/core/theme/app_icon.dart";
 import "package:aqua_steward/core/widgets/list_view_format.dart";
 import "package:aqua_steward/features/auth/presentation/providers/auth_provider.dart";
+import "package:aqua_steward/features/reading/presentation/widgets/deposit_skeleton.dart";
 import "package:aqua_steward/features/deposit/presentation/providers/deposit_provider.dart";
 import "package:aqua_steward/features/notification/presentation/providers/notification_provider.dart";
 import "package:aqua_steward/features/reading/presentation/widgets/deposit_card.dart";
-import "package:aqua_steward/features/reading/presentation/widgets/dialog_export_csv.dart";
 import "package:aqua_steward/features/team/presentation/providers/team_provider.dart";
 import "package:aqua_steward/core/services/notification_service.dart";
-import "package:aqua_steward/core/widgets/menu_button_format.dart";
+import "package:aqua_steward/features/reading/presentation/widgets/deposit_menu_button.dart";
 import "package:flutter/material.dart";
 import "package:aqua_steward/core/extensions/l10n_extensions.dart";
 import "package:provider/provider.dart";
@@ -81,22 +78,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     super.dispose();
   }
 
-  void _deleteDeposit(String depositId) async {
-    final authProvider = context.read<AuthProvider>();
-    final token = authProvider.currentUser?.token ?? "";
 
-    // Ejecuta la eliminación del depósito y gestiona el feedback según el resultado.
-    final result = await context.read<DepositProvider>().deleteDeposit(
-      depositId: depositId,
-      token: token,
-    );
-    if (mounted) {
-      context.processResult(
-        result,
-        successMessage: context.l10n.snackbar_deposito_eliminado,
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -186,6 +168,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
             return ListViewFormat(
               isLoading: provider.isLoading,
+              skeletonItem: const DepositSkeleton(),
               emptyMessage: context.l10n.dashboard_sin_depositos,
               emptyWidget: Image(
                 image: const AssetImage("assets/images/deposit.png"),
@@ -218,7 +201,15 @@ class _DashboardScreenState extends State<DashboardScreen>
                   "capacity": deposit.capacity,
                   "installation_height": deposit.installation_height,
                   "fill_gap": deposit.fill_gap,
-                  "sensors": deposit.sensors,
+                  "latitude": deposit.latitude,
+                  "longitude": deposit.longitude,
+                  "sensors": deposit.sensors?.map((s) => {
+                    "type": s.type,
+                    "state": s.state,
+                    "unit": s.unit,
+                    "min_value": s.minValue,
+                    "max_value": s.maxValue,
+                  }).toList(),
                   "peakLevel": deposit.capacity,
                   "peakPh": 14.0,
                   "peakTurbidity": 3000,
@@ -230,7 +221,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 return DepositCard(
                   depositData: depositDataMap,
                   key: ValueKey(deposit.id),
-                  menuWidget: menuDeposit(context, depositDataMap),
+                  menuWidget: DepositMenuButton(depositData: depositDataMap),
                 );
               },
             );
@@ -238,126 +229,6 @@ class _DashboardScreenState extends State<DashboardScreen>
         ),
         const SizedBox(height: 20),
       ],
-    );
-  }
-
-  Widget menuDeposit(BuildContext context, Map<String, dynamic> depositData) {
-    final String role = depositData["role"] ?? "analyst";
-
-    // Los items del menú se filtran automáticamente según los permisos del rol.
-    final List<MenuItemModel> menuItems = [
-      MenuItemModel(
-        value: "members",
-        icon: AppIcon.groups2Outlined,
-        text: context.l10n.comun_miembros,
-      ),
-      if (RolePermissions.has(role, AppPermission.editDeposit)) ...[
-        MenuItemModel(
-          value: "deposit",
-          icon: AppIcon.edit(context: context),
-          text: context.l10n.comun_deposito,
-        ),
-      ],
-      MenuItemModel(
-        value: "exportCsv",
-        icon: AppIcon.download,
-        text: context.l10n.reporte_exportar_csv,
-      ),
-      MenuItemModel(
-        value: "generatePdf",
-        icon: AppIcon.pdf,
-        text: context.l10n.reporte_generar_pdf,
-      ),
-      if (RolePermissions.has(role, AppPermission.deleteDeposit))
-        MenuItemModel(
-          value: "delete",
-          icon: AppIcon.deleteOutline,
-          text: context.l10n.comun_eliminar,
-          textStyle: "bodyRed",
-        ),
-      if (role != "owner")
-        MenuItemModel(
-          value: "leave",
-          icon: AppIcon.deleteOutline,
-          text: context.l10n.comun_abandonar,
-          textStyle: "bodyRed",
-        ),
-    ];
-
-    return MenuButtonFormat(
-      items: menuItems,
-      onSelected: (value) {
-        // Mapa donde la clave es un String y el valor es una función.
-        final Map<String, VoidCallback> action = {
-          "exportCsv": () {
-            DialogExportCsv.show(context: context, depositData: depositData);
-          },
-          "generatePdf": () {
-            Navigator.pushNamed(
-              context,
-              AppRouter.generateReports,
-              arguments: {"depositData": depositData},
-            );
-          },
-          "members": () {
-            Navigator.pushNamed(
-              context,
-              AppRouter.members,
-              arguments: {"depositId": depositData["id"]},
-            );
-          },
-          "deposit": () {
-            Navigator.pushNamed(
-              context,
-              AppRouter.depositScreen,
-              arguments: {"depositData": depositData},
-            );
-          },
-          "delete": () {
-            setState(() {
-              showDialog(
-                context: context,
-                builder: (context) => DialogEmergent(
-                  title: context.l10n.dialogo_eliminar_deposito_titulo,
-                  content: TextFormat(
-                    text: context.l10n.dialogo_eliminar_deposito,
-                    context: context,
-                    type: "body",
-                  ),
-                  onPressed: () {
-                    _deleteDeposit(depositData["id"]);
-                    Navigator.pop(context);
-                  },
-                  formKey: null,
-                  isLoading: false,
-                ),
-              );
-            });
-          },
-          "leave": () async {
-            final token = context.read<AuthProvider>().currentUser?.token ?? "";
-            if (token.isNotEmpty) {
-              final result = await context.read<TeamProvider>().leaveDeposit(
-                depositId: depositData["id"],
-                token: token,
-              );
-              if (context.mounted) {
-                context.processResult(
-                  result,
-                  successMessage: context.l10n.snackbar_abandonar_deposito,
-                );
-                if (result.isSuccess) {
-                  // Refrescar depósitos
-                  context.read<DepositProvider>().getDeposits(token: token);
-                }
-              }
-            }
-          },
-        };
-
-        // Si el value (string) se recibe en el mapa, se llama la función.
-        action[value]?.call();
-      },
     );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:aqua_steward/core/extensions/to_clean_string.dart';
 import 'package:aqua_steward/core/theme/app_border.dart';
-import 'package:aqua_steward/core/theme/app_sizedbox.dart';
 import 'package:aqua_steward/core/widgets/scaffold_main.dart';
 import 'package:aqua_steward/core/theme/app_color.dart';
 import 'dart:typed_data';
@@ -22,36 +21,27 @@ class PdfScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScaffoldMain(
       titleAppBar: context.l10n.titulo_vista_previa_pdf,
+      isScrollable: false,
       children: [
-        AppSizedBox.height12,
-        // Contenedor del visor
-        SizedBox(
-          height: MediaQuery.of(context).size.height * 0.84,
-          child: PdfPreview(
-            build: (format) => _generatePdf(dataPdf),
-            // Apaga la barra de herramientas fea por defecto
-            useActions: true,
-            pdfFileName: '${dataPdf["filename"]}.pdf',
-            // Desactiva la opción de cambiar orientación.
-            canChangeOrientation: false,
-            // Desactiva la opción de cambiar formato de página.
-            canChangePageFormat: false,
-            // Desactiva la opción de depuración.
-            canDebug: false,
-            // Decoración del contenedor del visor.
-            scrollViewDecoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(8),
-                topRight: Radius.circular(8),
-              ),
-              color: Theme.of(context).colorScheme.primary,
-            ),
-
-            pdfPreviewPageDecoration: const BoxDecoration(
-              color: AppColor.white, // Fondo del papel
-              borderRadius: AppBorder.all8,
-              boxShadow: [BoxShadow(color: Colors.black45, blurRadius: 4)],
-            ),
+        PdfPreview(
+          build: (format) => _generatePdf(dataPdf),
+          // Barra de acciones (imprimir, compartir)
+          useActions: true,
+          pdfFileName: '${dataPdf["filename"]}.pdf',
+          // Desactiva la opción de cambiar orientación.
+          canChangeOrientation: false,
+          // Desactiva la opción de cambiar formato de página.
+          canChangePageFormat: false,
+          // Desactiva la opción de depuración.
+          canDebug: false,
+          // Decoración del contenedor del visor.
+          scrollViewDecoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          pdfPreviewPageDecoration: const BoxDecoration(
+            color: AppColor.white, // Fondo del papel
+            borderRadius: AppBorder.all8,
+            boxShadow: [BoxShadow(color: Colors.black45, blurRadius: 4)],
           ),
         ),
       ],
@@ -95,7 +85,7 @@ class PdfScreen extends StatelessWidget {
 
     final depositData = dataPdf["depositData"] as Map<String, dynamic>? ?? {};
     final depositName = depositData["name"] ?? "Desconocido";
-    final depositIp = depositData["ip"] ?? "Sin IP";
+    final depositMac = depositData["ip"] ?? "Sin MAC";
     final depositCapacity = depositData["capacity"] ?? 0;
     final ReportStats? reportStats = dataPdf["reportStats"] as ReportStats?;
 
@@ -217,7 +207,7 @@ class PdfScreen extends StatelessWidget {
                   pw.Column(
                     children: [
                       pw.Text(
-                        'IP Conexión',
+                        'Dirección MAC',
                         style: const pw.TextStyle(
                           fontSize: 8,
                           color: PdfColors.grey700,
@@ -225,7 +215,7 @@ class PdfScreen extends StatelessWidget {
                       ),
                       pw.SizedBox(height: 2),
                       pw.Text(
-                        depositIp,
+                        depositMac,
                         style: pw.TextStyle(
                           fontSize: 10,
                           fontWeight: pw.FontWeight.bold,

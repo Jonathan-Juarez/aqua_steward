@@ -11,6 +11,7 @@ export "package:aqua_steward/features/deposit/presentation/screens/deposit_scree
 export "package:aqua_steward/features/deposit/presentation/screens/nearby_devices_screen.dart";
 export "package:aqua_steward/features/reading/presentation/screens/reports_screen.dart";
 export "package:aqua_steward/features/reading/presentation/screens/pdf_screen.dart";
+export "package:aqua_steward/features/reading/presentation/screens/detail_screen.dart";
 export "package:aqua_steward/features/support/presentation/screens/about_screen.dart";
 export "package:aqua_steward/features/support/presentation/screens/contact_screen.dart";
 export "package:aqua_steward/features/support/presentation/screens/support_screen.dart";

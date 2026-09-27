@@ -248,6 +248,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
             context: context,
             type: "subtitle",
           ),
+          TextFormat(
+            text: context.l10n.reporte_nota_eventos_criticos,
+            context: context,
+            type: "bodySecondary",
+          ),
+          AppSizedBox.height12,
           ContainerFormat(
             children: [
               SliderFormat(
@@ -268,10 +274,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
         AppSizedBox.height12,
 
         ButtonFormat(
-          label: _isCapturing
-              ? "Preparando PDF..."
-              : context.l10n.reporte_generar_pdf,
-          onConfirm: _isCapturing ? () {} : _onGeneratePdf,
+          isLoading: _isCapturing,
+          label: context.l10n.reporte_generar_pdf,
+          onConfirm: _onGeneratePdf,
         ),
       ],
     );

@@ -1,4 +1,5 @@
 import 'package:aqua_steward/core/router/app_router.dart';
+import 'package:aqua_steward/core/theme/app_icon.dart';
 import 'package:aqua_steward/core/theme/app_safe.dart';
 import 'package:aqua_steward/core/theme/app_sizedbox.dart';
 import 'package:animate_do/animate_do.dart';
@@ -11,9 +12,9 @@ class ScaffoldMain extends StatefulWidget {
   //Llave global para el formulario.
   final GlobalKey<FormState>? formKey;
   final List<Widget>? actions;
-  final Widget? body;
   final Widget? bottomNavigationBar;
   final Future<void> Function()? onRefresh;
+  final bool isScrollable;
 
   const ScaffoldMain({
     super.key,
@@ -21,9 +22,9 @@ class ScaffoldMain extends StatefulWidget {
     this.titleAppBar,
     this.formKey,
     this.actions,
-    this.body,
     this.bottomNavigationBar,
     this.onRefresh,
+    this.isScrollable = true,
   });
 
   @override
@@ -33,11 +34,9 @@ class ScaffoldMain extends StatefulWidget {
 class _ScaffoldMainState extends State<ScaffoldMain> {
   @override
   Widget build(BuildContext context) {
-    // Se usa body si es proporcionado. De lo contrario, se construye el contenido a partir de children.
+    // Se usa AppSafe para todo el contenido garantizando coherencia visual y de comportamiento.
     final Widget content;
-    if (widget.body != null) {
-      content = widget.body!;
-    } else {
+    if (widget.isScrollable) {
       content = AppSafe(
         onRefresh: widget.onRefresh,
         child: FadeInDown(
@@ -48,6 +47,9 @@ class _ScaffoldMainState extends State<ScaffoldMain> {
           ),
         ),
       );
+    } else {
+      // Contenido directo sin scroll vertical (usado en PageView y PdfPreview)
+      content = AppSafe(isScrollable: false, child: widget.children.first);
     }
 
     return Scaffold(
@@ -63,10 +65,8 @@ class _ScaffoldMainState extends State<ScaffoldMain> {
           ? FloatingActionButton(
               onPressed: () =>
                   Navigator.pushNamed(context, AppRouter.depositScreen),
-
               shape: const CircleBorder(),
-
-              child: const Icon(Icons.add),
+              child: AppIcon.add,
             )
           : null,
       floatingActionButtonLocation: widget.titleAppBar == null

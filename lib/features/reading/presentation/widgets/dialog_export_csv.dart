@@ -30,7 +30,7 @@ class DialogExportCsv {
     // Inicializar mapa de sensores seleccionados
     final Map<String, bool> selectedSensors = {};
     for (var sensor in sensors) {
-      final type = sensor is Map ? sensor["type"] : sensor.type;
+      final type = (sensor as Map<String, dynamic>)["type"]?.toString();
       if (type != null) {
         selectedSensors[type] = true;
       }
@@ -78,7 +78,8 @@ class DialogExportCsv {
                       contentPadding: EdgeInsets.zero,
                     ),
                     ...sensors.map((sensor) {
-                      final type = sensor is Map ? sensor["type"] : sensor.type;
+                      final type = (sensor as Map<String, dynamic>)["type"]
+                          ?.toString();
                       final String displayName = switch (type) {
                         "HC-SR04" => context.l10n.sensor_nivel,
                         "PH-4502C" => context.l10n.sensor_ph,
@@ -97,7 +98,7 @@ class DialogExportCsv {
                         activeColor: AppColor.success,
                         onChanged: (val) {
                           setStateDialog(() {
-                            selectedSensors[type] = val ?? false;
+                            selectedSensors[type!] = val ?? false;
                           });
                         },
                         controlAffinity: ListTileControlAffinity.leading,

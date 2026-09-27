@@ -1,19 +1,15 @@
 import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
-import 'package:aqua_steward/core/extensions/to_clean_string.dart';
+import 'package:aqua_steward/core/router/app_router.dart';
 import 'package:aqua_steward/core/theme/app_border.dart';
-import 'package:aqua_steward/core/theme/app_color.dart';
 import 'package:aqua_steward/core/theme/app_padding.dart';
 import 'package:aqua_steward/core/theme/app_sizedbox.dart';
 import 'package:aqua_steward/core/widgets/container_formart.dart';
-import 'package:aqua_steward/core/widgets/filter_chip_format.dart';
-import 'package:aqua_steward/core/widgets/linea_chart.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:aqua_steward/features/reading/presentation/widgets/circular_progress_parameters.dart';
 import 'package:aqua_steward/features/reading/presentation/widgets/deposit_level.dart';
-import 'package:aqua_steward/features/reading/presentation/widgets/state_parameters.dart';
 import 'package:flutter/material.dart';
 
-class DepositCard extends StatefulWidget {
+class DepositCard extends StatelessWidget {
   final Map<String, dynamic> depositData;
   final Widget menuWidget;
 
@@ -23,44 +19,32 @@ class DepositCard extends StatefulWidget {
     required this.menuWidget,
   });
 
-  @override
-  State<DepositCard> createState() => _DepositCardState();
-}
-
-class _DepositCardState extends State<DepositCard> {
-  int? _selectedParameterIndex;
-  String _selectedFilter = "Dia";
-
-  static const List<Color> _sensorColors = [
-    AppColor.parameterAqua,
-    AppColor.parameterPH,
-    AppColor.parameterTurbidity,
-  ];
-
   bool _isSensorActive(dynamic sensors, int index) {
     if (sensors == null || sensors is! List || index >= sensors.length) {
       return true;
     }
     final sensor = sensors[index];
-    return (sensor is Map ? sensor["state"] : sensor.state) ?? true;
+    return (sensor is Map ? sensor["state"] as bool? : null) ?? true;
   }
 
-  Widget _buildSensorItem({required int index, required Widget child}) {
-    final isSelected = _selectedParameterIndex == index;
+  Widget _buildSensorItem({
+    required BuildContext context,
+    required int index,
+    required Widget child,
+  }) {
     return InkWell(
       borderRadius: AppBorder.all8,
       onTap: () {
-        setState(() {
-          _selectedParameterIndex = isSelected ? null : index;
-        });
+        Navigator.pushNamed(
+          context,
+          AppRouter.detailScreen,
+          arguments: {
+            "depositData": depositData,
+            "initialParameterIndex": index,
+          },
+        );
       },
-      child: Container(
-        decoration: isSelected
-            ? BoxDecoration(
-                border: Border.all(color: _sensorColors[index], width: 2.0),
-                borderRadius: AppBorder.all8,
-              )
-            : null,
+      child: Padding(
         padding: AppPadding.all8,
         child: child,
       ),
@@ -69,7 +53,6 @@ class _DepositCardState extends State<DepositCard> {
 
   @override
   Widget build(BuildContext context) {
-    final depositData = widget.depositData;
     final sensors = depositData["sensors"];
 
     final double inputLevel = (depositData["inputLevel"] as num).toDouble();
@@ -118,7 +101,7 @@ class _DepositCardState extends State<DepositCard> {
                 context: context,
                 type: "titleSmall",
               ),
-              widget.menuWidget,
+              menuWidget,
             ],
           ),
         ),
@@ -134,6 +117,7 @@ class _DepositCardState extends State<DepositCard> {
                     children: [
                       Expanded(
                         child: _buildSensorItem(
+                          context: context,
                           index: 0,
                           child: DepositLevel(level: inputLevel),
                         ),
@@ -141,13 +125,17 @@ class _DepositCardState extends State<DepositCard> {
                       AppSizedBox.width8,
                       Expanded(
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             for (int i = 1; i < 3; i++)
                               if (_isSensorActive(sensors, i))
-                                _buildSensorItem(
-                                  index: i,
-                                  child: buildCircular(i),
+                                Expanded(
+                                  child: _buildSensorItem(
+                                    context: context,
+                                    index: i,
+                                    child: buildCircular(i),
+                                  ),
                                 ),
                           ],
                         ),
@@ -159,6 +147,7 @@ class _DepositCardState extends State<DepositCard> {
               // Caso 2: Solo nivel
               ? Center(
                   child: _buildSensorItem(
+                    context: context,
                     index: 0,
                     child: DepositLevel(level: inputLevel),
                   ),
@@ -170,6 +159,7 @@ class _DepositCardState extends State<DepositCard> {
                       if (_isSensorActive(sensors, i))
                         Expanded(
                           child: _buildSensorItem(
+                            context: context,
                             index: i,
                             child: buildCircular(i),
                           ),
@@ -177,150 +167,7 @@ class _DepositCardState extends State<DepositCard> {
                   ],
                 ),
         ),
-
-        // Detalle expandible
-        if (_selectedParameterIndex != null &&
-            _isSensorActive(sensors, _selectedParameterIndex!)) ...[
-          AppSizedBox.height12,
-          _buildParameterDetail(
-            context,
-            index: _selectedParameterIndex!,
-            currentValue: inputParameters[_selectedParameterIndex!],
-            peakValue: peakParameters[_selectedParameterIndex!],
-          ),
-        ],
       ],
-    );
-  }
-
-  Widget _buildParameterDetail(
-    BuildContext context, {
-    required int index,
-    required double currentValue,
-    required double peakValue,
-  }) {
-    final depositData = widget.depositData;
-    final sensorType = const ["HC-SR04", "PH-4502C", "TS300B"][index];
-    final unit = const ["%", "pH", "NTU"][index];
-    final color = _sensorColors[index];
-    final maxY = index == 2 ? peakValue : const [100.0, 14.0, 0.0][index];
-
-    double? minVal;
-    double? maxVal;
-    final sensors = depositData["sensors"];
-    if (sensors is List) {
-      for (final s in sensors) {
-        final type = s is Map ? s["type"] : s.type;
-        if (type == sensorType) {
-          minVal = s is Map ? (s["min_value"] as num?)?.toDouble() : s.minValue;
-          maxVal = s is Map ? (s["max_value"] as num?)?.toDouble() : s.maxValue;
-          break;
-        }
-      }
-    }
-
-    final rangeMin = minVal?.toCleanString();
-    final rangeMax = maxVal?.toCleanString();
-    final stateText = StateParameters.show(context, currentValue, unit);
-
-    final filters = [
-      ("Dia", context.l10n.detalles_diario),
-      ("Semana", context.l10n.detalles_semanal),
-      ("Mes", context.l10n.detalles_mensual),
-    ];
-
-    return Padding(
-      padding: AppPadding.symmetric0_8,
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: ContainerFormat(
-                  children: [
-                    if (unit != "%") ...[
-                      TextFormat(
-                        text: context.l10n.dashboard_estado,
-                        context: context,
-                        type: "body",
-                      ),
-                      TextFormat(
-                        text: stateText,
-                        context: context,
-                        type: "titleSmall",
-                      ),
-                    ] else ...[
-                      TextFormat(
-                        text: "${context.l10n.detalles_capacidad}:",
-                        context: context,
-                        type: "body",
-                      ),
-                      TextFormat(
-                        text: "${peakValue.toCleanString()} L",
-                        context: context,
-                        type: "titleSmall",
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              AppSizedBox.width8,
-              Expanded(
-                child: ContainerFormat(
-                  children: [
-                    TextFormat(
-                      alignCenter: true,
-                      text: "${context.l10n.comun_umbrales}:",
-                      context: context,
-                      type: "body",
-                    ),
-                    TextFormat(
-                      alignCenter: true,
-                      text: unit != "NTU"
-                          ? "${rangeMin ?? ""} - ${rangeMax ?? ""} $unit"
-                          : "${rangeMax ?? ""} $unit",
-                      context: context,
-                      type: "titleSmall",
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          AppSizedBox.height12,
-
-          // Filtros
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              for (int i = 0; i < filters.length; i++) ...[
-                if (i > 0) AppSizedBox.width8,
-                FilterChipFormat(
-                  label: filters[i].$2,
-                  isSelected: _selectedFilter == filters[i].$1,
-                  onSelected: (_) {
-                    if (_selectedFilter != filters[i].$1) {
-                      setState(() => _selectedFilter = filters[i].$1);
-                    }
-                  },
-                ),
-              ],
-            ],
-          ),
-          AppSizedBox.height12,
-
-          // Gráfico
-          LineaChart(
-            key: ValueKey("$sensorType-$_selectedFilter"),
-            depositId: depositData["id"] ?? "",
-            sensorType: sensorType,
-            color: color,
-            maxY: maxY,
-            unit: unit,
-            selectedFilter: _selectedFilter,
-          ),
-        ],
-      ),
     );
   }
 }

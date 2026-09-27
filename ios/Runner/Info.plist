@@ -53,5 +53,7 @@
 		<array>
 			<string>_aquasteward._tcp</string>
 		</array>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>AquaSteward necesita acceso a tu ubicación para mostrar tu posición respecto al depósito en el mapa.</string>
 	</dict>
 </plist>

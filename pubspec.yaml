@@ -1,7 +1,7 @@
 name: aqua_steward
 description: "Un sistema diseñado para el monitoreo del nivel y calidad del agua en tiempo real mediante tecnología IoT, promoviendo una gestión eficiente y responsable del recurso hídrico."
 publish_to: 'none'
-version: 1.0.1+2
+version: 1.0.2+4
 
 environment:
   sdk: ^3.8.1
@@ -35,6 +35,12 @@ dependencies:
   connectivity_plus: ^7.3.1
   fluid_progress_indicator: ^1.0.1
   multicast_dns: ^0.3.3+1
+  hugeicons: ^1.2.0
+  skeletonizer: ^3.0.0
+  flutter_map: ^8.3.2
+  flutter_map_location_marker: ^10.2.0
+  latlong2: ^0.9.1
+  geolocator: ^14.0.2
 
 
 dev_dependencies:
@@ -51,6 +57,7 @@ flutter:
   assets:
     - assets/images/logo_transparente_AquaSteward.png
     - assets/images/deposit.png
+    - assets/images/espacioSensor.webp
 
 # Ejecutar dart run flutter_launcher_icons para configurar el ícono de la app
 flutter_launcher_icons:

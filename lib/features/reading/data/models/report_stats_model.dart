@@ -10,7 +10,7 @@ class ComplianceStatModel extends ComplianceStat {
 
   factory ComplianceStatModel.fromJson(Map<String, dynamic> json) {
     return ComplianceStatModel(
-      sensorType: json['sensorType'] ?? '',
+      sensorType: json['sensorType']?.toString() ?? '',
       percentage: (json['percentage'] as num?)?.toDouble() ?? 100.0,
       totalReadings: (json['totalReadings'] as num?)?.toInt() ?? 0,
       inRange: (json['inRange'] as num?)?.toInt() ?? 0,
@@ -29,12 +29,12 @@ class ReportAlertItemModel extends ReportAlertItem {
 
   factory ReportAlertItemModel.fromJson(Map<String, dynamic> json) {
     return ReportAlertItemModel(
-      id: json['id'] ?? '',
+      id: (json['id'] ?? json['_id'])?.toString() ?? '',
       date: json['date'] != null
           ? DateTime.parse(json['date']).toLocal()
           : DateTime.now(),
-      type: json['type'] ?? '',
-      description: json['description'] ?? '',
+      type: json['type']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
       triggerValue: (json['triggerValue'] as num?)?.toDouble(),
     );
   }

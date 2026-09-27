@@ -12,12 +12,12 @@ class TeamModel extends Team {
 
   factory TeamModel.fromMap(Map<String, dynamic> map) {
     return TeamModel(
-      id: map['user_id'] ?? map['id'],
-      email: map['email'],
-      name: map['name'],
-      last_name: map['last_name'],
-      role: map['role'],
-      status: map['status'],
+      id: (map['user_id'] ?? map['id'])?.toString() ?? '',
+      email: map['email']?.toString() ?? '',
+      name: map['name']?.toString() ?? '',
+      last_name: map['last_name']?.toString() ?? '',
+      role: map['role']?.toString() ?? '',
+      status: map['status']?.toString() ?? 'pending',
     );
   }
 }

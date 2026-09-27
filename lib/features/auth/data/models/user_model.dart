@@ -61,16 +61,15 @@ class UserModel extends User {
   // Deserializar, convirtiendo un mapa a un objeto UserModel.
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      id: (map["_id"] ?? map["id"]) as String? ?? "",
-      name: map["name"] as String? ?? "",
-      last_name: map["last_name"] as String? ?? "",
-      email: map["email"] as String? ?? "",
-      password: map["password"] as String? ?? "",
-      role: map["role"] as String? ?? "",
-      global_role:
-          (map["global_role"] ?? map["globalRole"]) as String? ?? "user",
-      depositID: map["depositID"] as String? ?? "",
-      token: map["token"] as String? ?? "",
+      id: (map["id"] ?? map["_id"])?.toString() ?? "",
+      name: map["name"]?.toString() ?? "",
+      last_name: map["last_name"]?.toString() ?? "",
+      email: map["email"]?.toString() ?? "",
+      password: map["password"]?.toString() ?? "",
+      role: map["role"]?.toString() ?? "",
+      global_role: map["global_role"]?.toString() ?? "user",
+      depositID: map["depositID"]?.toString() ?? "",
+      token: map["token"]?.toString() ?? "",
     );
   }
 

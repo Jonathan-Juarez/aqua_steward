@@ -24,13 +24,13 @@ class NotificationModel extends Notification {
     }
 
     return NotificationModel(
-      id: map['id'] ?? '',
-      title: map['title'] ?? 'Alerta',
-      message: map['message'] ?? '',
-      type: map['type'] ?? 'General',
+      id: (map['id'] ?? map['_id'])?.toString() ?? '',
+      title: map['title']?.toString() ?? 'Alerta',
+      message: map['message']?.toString() ?? '',
+      type: map['type']?.toString() ?? 'General',
       date: parsedDate,
-      state: map['state'],
-      depositId: map['deposit_id'],
+      state: map['state']?.toString(),
+      depositId: map['deposit_id']?.toString(),
     );
   }
 

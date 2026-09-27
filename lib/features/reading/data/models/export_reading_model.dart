@@ -11,11 +11,11 @@ class ExportReadingModel extends ExportReading {
 
   factory ExportReadingModel.fromJson(Map<String, dynamic> json) {
     return ExportReadingModel(
-      timestamp: DateTime.parse(json['timestamp']),
+      timestamp: DateTime.parse(json['timestamp'].toString()),
       value: (json['value'] as num).toDouble(),
-      unit: json['unit'] as String? ?? '',
-      sensorType: json['sensorType'] as String? ?? '',
-      depositName: json['depositName'] as String? ?? '',
+      unit: json['unit']?.toString() ?? '',
+      sensorType: json['sensorType']?.toString() ?? '',
+      depositName: json['depositName']?.toString() ?? '',
     );
   }
 

@@ -6,7 +6,8 @@ import 'package:flutter/services.dart';
 
 class TextFieldFormat extends StatefulWidget {
   final String? labelText;
-  final Icon? icon;
+  final String? hintText;
+  final Widget? icon;
   final Widget? suffixIcon;
   final TextInputType? keyboardType;
   final TextEditingController? controller;
@@ -21,6 +22,7 @@ class TextFieldFormat extends StatefulWidget {
     this.focusNode,
     super.key,
     this.labelText,
+    this.hintText,
     this.icon,
     this.suffixIcon,
     this.keyboardType,
@@ -76,19 +78,20 @@ class _TextFieldFormatState extends State<TextFieldFormat> {
         maxLines: widget.maxLines,
         minLines: widget.minLines,
         decoration: InputDecoration(
-          prefixIcon: widget.icon,
+          prefixIcon: widget.icon != null
+              ? Padding(padding: AppPadding.symmetric16_0, child: widget.icon)
+              : null,
           label: Text(widget.labelText ?? ""),
+          hintText: widget.hintText,
           suffixIcon: widget.icon == AppIcon.password
               ? ButtonFormat(
                   type: "icon",
                   onConfirm: () => setState(() {
                     _obscureText = !(_obscureText ?? true);
                   }),
-                  icon: Icon(
-                    (_obscureText ?? true)
-                        ? Icons.visibility
-                        : Icons.visibility_off,
-                  ),
+                  icon: (_obscureText ?? true)
+                      ? AppIcon.visibility
+                      : AppIcon.visibilityOff,
                 )
               : widget.suffixIcon,
         ),

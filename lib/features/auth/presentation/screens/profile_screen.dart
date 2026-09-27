@@ -235,7 +235,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 children: [
                   Row(
                     children: [
-                      const IconFormat(icon: Icon(Icons.language_outlined)),
+                      const IconFormat(icon: AppIcon.languageOutlined),
                       AppSizedBox.width8,
                       TextFormat(
                         text: context.l10n.perfil_idioma,

@@ -1,156 +1,237 @@
 import 'package:aqua_steward/core/theme/app_color.dart';
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 // El tamaño predeterminado de los iconos es 24px.
 class AppIcon {
   // Iconos de botones de la pantalla de inicio.
-  static Icon notificationsOutlined({BuildContext? context}) => Icon(
-    Icons.notifications_outlined,
+  static Widget notificationsOutlined({BuildContext? context}) => HugeIcon(
+    icon: HugeIcons.strokeRoundedNotification01,
     color: Theme.of(context!).colorScheme.onSurface,
   );
 
-  static const Icon supportOutline = Icon(Icons.help_outline);
+  static const Widget supportOutline = HugeIcon(
+    icon: HugeIcons.strokeRoundedHelpCircle,
+  );
 
-  static const Icon contact = Icon(Icons.contact_support);
+  static const Widget contact = HugeIcon(
+    icon: HugeIcons.strokeRoundedCustomerSupport,
+  );
 
-  static const Icon manual = Icon(Icons.menu_book_rounded);
-  static const Icon infoOutlined = Icon(Icons.info_outlined);
-  static const Icon privacyPolicy = Icon(Icons.privacy_tip_outlined);
-  static const Icon code = Icon(Icons.code);
-  static const Icon launch = Icon(Icons.launch, size: 20);
+  static const Widget manual = HugeIcon(icon: HugeIcons.strokeRoundedBook01);
+  static const Widget infoOutlined = HugeIcon(
+    icon: HugeIcons.strokeRoundedInfo,
+  );
+  static const Widget privacyPolicy = HugeIcon(
+    icon: HugeIcons.strokeRoundedShield01,
+  );
+  static const Widget code = HugeIcon(icon: HugeIcons.strokeRoundedCode);
+  static const Widget launch = HugeIcon(
+    icon: HugeIcons.strokeRoundedExternalLink,
+    size: 20,
+  );
 
-  static Icon personAdd({Color? color}) =>
-      Icon(Icons.person_add_alt_1_outlined, color: color);
+  static Widget personAdd({Color? color}) =>
+      HugeIcon(icon: HugeIcons.strokeRoundedUserAdd01, color: color);
 
   // Iconos de bottomNavigationBar.
-  static const Icon homeOutlined = Icon(
-    Icons.home_outlined,
+  static const Widget homeOutlined = HugeIcon(
+    icon: HugeIcons.strokeRoundedHome07,
+    color: AppColor.whiteSecondary,
+  );
+  static const Widget home = HugeIcon(
+    icon: HugeIcons.strokeRoundedHome07,
     color: AppColor.white,
   );
-  static const Icon home = Icon(Icons.home, color: AppColor.white);
-  static const Icon person = Icon(Icons.person, color: AppColor.white);
-  static Icon personOutlined({Color? color, BuildContext? context}) => Icon(
-    Icons.person_outlined,
-    color: color ?? Theme.of(context!).colorScheme.onSurface,
+  static const Widget person = HugeIcon(
+    icon: HugeIcons.strokeRoundedUser,
+    color: AppColor.white,
   );
+  static Widget personOutlined({Color? color, BuildContext? context}) =>
+      HugeIcon(
+        icon: HugeIcons.strokeRoundedUser,
+        color: color ?? Theme.of(context!).colorScheme.onSurface,
+      );
 
   // Iconos de auth
-  static const Icon password = Icon(Icons.password);
-  static const Icon emailOutlined = Icon(Icons.email_outlined);
-  static Icon addCircleOutline({BuildContext? context}) => Icon(
-    Icons.add_circle_outline_rounded,
+  static const Widget password = HugeIcon(
+    icon: HugeIcons.strokeRoundedLockPassword,
+  );
+  static const Widget emailOutlined = HugeIcon(
+    icon: HugeIcons.strokeRoundedMail01,
+  );
+  static const Widget visibility = HugeIcon(icon: HugeIcons.strokeRoundedEye);
+  static const Widget visibilityOff = HugeIcon(
+    icon: HugeIcons.strokeRoundedEyeClosed,
+  );
+  static const Widget add = HugeIcon(icon: HugeIcons.strokeRoundedAdd01);
+  static Widget addCircleOutline({BuildContext? context}) => HugeIcon(
+    icon: HugeIcons.strokeRoundedAddCircle,
     size: 16,
     color: Theme.of(context!).colorScheme.onSurface.withOpacity(0.5),
   );
-  static const Icon checkCircle = Icon(
-    Icons.check_circle,
+  static const Widget checkCircle = HugeIcon(
+    icon: HugeIcons.strokeRoundedCheckmarkCircle02,
     color: AppColor.success,
     size: 16,
   );
-  static const Icon cancel = Icon(
-    Icons.cancel,
+  static const Widget cancel = HugeIcon(
+    icon: HugeIcons.strokeRoundedCancelCircle,
     color: AppColor.error,
     size: 16,
   );
 
   // Iconos de parámetros
-  static const Icon waterDrop = Icon(
-    Icons.water_drop,
+  static const Widget waterDrop = HugeIcon(
+    icon: HugeIcons.strokeRoundedDroplet,
     color: AppColor.parameterAqua,
   );
-  static const Icon water = Icon(
-    Icons.water,
+  static const Widget water = HugeIcon(
+    icon: HugeIcons.strokeRoundedWaves,
     color: AppColor.parameterTurbidity,
   );
-  static const Icon scienceRounded = Icon(
-    Icons.science_rounded,
+  static const Widget scienceRounded = HugeIcon(
+    icon: HugeIcons.strokeRoundedFlaskConical,
     color: AppColor.parameterPH,
   );
 
   // Íconos de la sección perfil.
-  static const Icon lockOutline = Icon(Icons.lock_outline);
-  static const Icon logoutOutlined = Icon(Icons.logout_outlined);
-  static const Icon noAccounts = Icon(Icons.no_accounts);
-  static const Icon languageOutlined = Icon(Icons.language_outlined);
-  static const Icon dashboard = Icon(Icons.dashboard);
+  static const Widget lockOutline = HugeIcon(
+    icon: HugeIcons.strokeRoundedLockKey,
+  );
+  static const Widget logoutOutlined = HugeIcon(
+    icon: HugeIcons.strokeRoundedLogout01,
+  );
+  static const Widget noAccounts = HugeIcon(
+    icon: HugeIcons.strokeRoundedUserBlock01,
+  );
+  static const Widget languageOutlined = HugeIcon(
+    icon: HugeIcons.strokeRoundedLanguages,
+  );
 
   // Sección técnico
-  static Icon personOff({BuildContext? context}) => Icon(
-    Icons.person_off,
+  static Widget personOff({BuildContext? context}) => HugeIcon(
+    icon: HugeIcons.strokeRoundedUserBlock01,
     size: 50,
     color: Theme.of(context!).colorScheme.onSurfaceVariant,
   );
 
   // Sección de alertas.
-  static Icon doneAll({Color? color}) => Icon(Icons.done_all, color: color);
-  static Icon deleteSweep({Color? color}) =>
-      Icon(Icons.delete_sweep, color: color ?? AppColor.error);
-  static Icon notificationsOffOutlined({BuildContext? context}) => Icon(
-    Icons.notifications_off_outlined,
-    size: 50,
-    color: Theme.of(context!).colorScheme.onSurfaceVariant,
-  );
-
-  // Iconos de en la sección agregar depósito
-  static const Icon wifi = Icon(Icons.wifi);
-  static Icon wifiOff({double? size}) =>
-      Icon(Icons.wifi_off_rounded, size: size ?? 20);
-  static Icon wifiFind({double? size}) =>
-      Icon(Icons.wifi_find_rounded, size: size ?? 20);
-  static const Icon sensors = Icon(Icons.sensors_rounded);
-  static const Icon waterDamageOutlined = Icon(Icons.water_damage_outlined);
-  static const Icon localDrinkOutlined = Icon(Icons.local_drink_outlined);
-  static const Icon heightOutlined = Icon(Icons.height_outlined);
-  static const Icon straightenOutlined = Icon(Icons.straighten_outlined);
-
-  // Iconos de calendario
-  static Icon calendarMonth({Color? color, BuildContext? context}) => Icon(
-    Icons.calendar_month,
-    color: color ?? Theme.of(context!).colorScheme.onSurface,
-  );
-
-  // Iconos de los gráficos al generar reportes.
-  static const Icon lineChart = Icon(Icons.line_axis_rounded);
-  static const Icon linearProgress = Icon(Icons.bar_chart_rounded);
-  static const Icon speed = Icon(Icons.speed);
-
-  static const Icon tableChartOutlined = Icon(Icons.table_chart_outlined);
-
-  // Iconos de en la sección de reporte.
-  static const Icon addChart = Icon(Icons.add_chart);
-  static const Icon pdf = Icon(Icons.picture_as_pdf);
-  static const Icon download = Icon(Icons.file_download_outlined);
-
-  // Icono de contenedor list tile.
-  static Icon arrowRight({Color? color}) =>
-      Icon(Icons.keyboard_arrow_right_outlined, color: color ?? AppColor.error);
-
-  // Icono de menú desplegable de depósitos.
-  static const Icon moreHoriz = Icon(Icons.more_horiz);
-  // Iconos de configuración de depósitos.
-  static const Icon dataThresholdingOutlined = Icon(
-    Icons.data_thresholding_outlined,
-    size: 20,
-  );
-  static const Icon groups2Outlined = Icon(Icons.groups_2_outlined, size: 20);
-  static Icon edit({Color? color, BuildContext? context, double? size}) => Icon(
-    Icons.edit,
-    size: size ?? 20,
-    color: color ?? Theme.of(context!).colorScheme.onSurface,
-  );
+  static Widget doneAll({Color? color}) =>
+      HugeIcon(icon: HugeIcons.strokeRoundedTickDouble01, color: color);
   static const Icon deleteOutline = Icon(
     Icons.delete_outline,
     color: AppColor.error,
     size: 20,
   );
+  static Icon deleteSweep({Color? color}) =>
+      Icon(Icons.delete_sweep_outlined, color: color ?? AppColor.error);
+  static Widget notificationsOffOutlined({BuildContext? context}) => HugeIcon(
+    icon: HugeIcons.strokeRoundedNotificationOff01,
+    size: 50,
+    color: Theme.of(context!).colorScheme.onSurfaceVariant,
+  );
+
+  // Iconos de en la sección agregar depósito
+  static const Widget wifi = HugeIcon(icon: HugeIcons.strokeRoundedWifi01);
+  static Widget wifiOff({double? size}) =>
+      HugeIcon(icon: HugeIcons.strokeRoundedWifiOff01, size: size ?? 20);
+  static Widget wifiFind({double? size}) =>
+      HugeIcon(icon: HugeIcons.strokeRoundedWifi01, size: size ?? 20);
+  static const Widget sensors = HugeIcon(icon: HugeIcons.strokeRoundedCpu);
+  static const Widget waterDamageOutlined = HugeIcon(
+    icon: HugeIcons.strokeRoundedDroplet,
+  );
+  static const Widget localDrinkOutlined = HugeIcon(
+    icon: HugeIcons.strokeRoundedPolyTank,
+  );
+  static const Widget heightOutlined = HugeIcon(
+    icon: HugeIcons.strokeRoundedParagraphSpacing,
+  );
+  static const Widget straightenOutlined = HugeIcon(
+    icon: HugeIcons.strokeRoundedRuler,
+  );
+
+  // Iconos de calendario
+  static Widget calendarMonth({Color? color, BuildContext? context}) =>
+      HugeIcon(
+        icon: HugeIcons.strokeRoundedCalendar01,
+        color: color ?? Theme.of(context!).colorScheme.onSurface,
+      );
+
+  // Iconos de los gráficos al generar reportes.
+  static const Widget lineChart = HugeIcon(
+    icon: HugeIcons.strokeRoundedAnalytics01,
+  );
+  static const Widget linearProgress = HugeIcon(
+    icon: HugeIcons.strokeRoundedBarChart,
+  );
+  static const Widget speed = HugeIcon(
+    icon: HugeIcons.strokeRoundedDashboardSpeed01,
+  );
+
+  static const Widget tableChartOutlined = HugeIcon(
+    icon: HugeIcons.strokeRoundedGridTable,
+  );
+
+  // Iconos de en la sección de reporte.
+  static const Widget addChart = HugeIcon(
+    icon: HugeIcons.strokeRoundedAnalytics01,
+  );
+  static Widget pdf({BuildContext? context}) => HugeIcon(
+    icon: HugeIcons.strokeRoundedPdf02,
+    color: Theme.of(context!).colorScheme.onSurface,
+  );
+  static Widget csv({BuildContext? context}) => HugeIcon(
+    icon: HugeIcons.strokeRoundedCsv02,
+    color: Theme.of(context!).colorScheme.onSurface,
+  );
+
+  // Icono de contenedor list tile.
+  static Widget arrowRight({Color? color}) => HugeIcon(
+    icon: HugeIcons.strokeRoundedArrowRight01,
+    color: color ?? AppColor.error,
+  );
+
+  // Icono de ubicación
+  static const Widget locationOnOutlined = HugeIcon(
+    icon: HugeIcons.strokeRoundedLocation03,
+    size: 20,
+  );
+
+  // Icono de menú desplegable de depósitos.
+  static const Widget moreHoriz = HugeIcon(
+    icon: HugeIcons.strokeRoundedMoreHorizontal,
+  );
+  // Iconos de configuración de depósitos.
+  static const Widget dataThresholdingOutlined = HugeIcon(
+    icon: HugeIcons.strokeRoundedAnalytics02,
+    size: 20,
+  );
+  static Widget groups2Outlined({BuildContext? context}) => HugeIcon(
+    icon: HugeIcons.strokeRoundedUserGroup02,
+    size: 20,
+    color: Theme.of(context!).colorScheme.onSurface,
+  );
+  static Widget edit({Color? color, BuildContext? context, double? size}) =>
+      HugeIcon(
+        icon: HugeIcons.strokeRoundedEdit03,
+        size: size ?? 20,
+        color: color ?? Theme.of(context!).colorScheme.onSurface,
+      );
 
   // Iconos de menú desplegable de tema.
-  static const Icon colorLensOutlined = Icon(Icons.color_lens_outlined);
-  static const Icon systemMode = Icon(Icons.settings_display);
-  static const Icon lightMode = Icon(Icons.light_mode);
-  static const Icon darkMode = Icon(Icons.dark_mode);
+  static const Widget colorLensOutlined = HugeIcon(
+    icon: HugeIcons.strokeRoundedPaintBoard,
+  );
+
+  static const Widget systemMode = HugeIcon(
+    icon: HugeIcons.strokeRoundedComputer,
+  );
+  static const Widget lightMode = HugeIcon(icon: HugeIcons.strokeRoundedSun01);
+  static const Widget darkMode = HugeIcon(icon: HugeIcons.strokeRoundedMoon);
 
   // Íconos del pdf.
-  static const Icon print = Icon(Icons.print);
-  static const Icon share = Icon(Icons.share);
+  static const Widget print = HugeIcon(icon: HugeIcons.strokeRoundedPrinter);
+  static const Widget share = HugeIcon(icon: HugeIcons.strokeRoundedShare01);
 }

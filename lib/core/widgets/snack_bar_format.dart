@@ -1,5 +1,5 @@
 import 'package:aqua_steward/core/theme/app_border.dart';
-import 'package:aqua_steward/core/theme/app_color.dart' show AppColor;
+import 'package:aqua_steward/core/theme/app_color.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:flutter/material.dart';
 

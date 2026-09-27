@@ -7,7 +7,7 @@ import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:flutter/material.dart';
 
 class ButtonFormat extends StatelessWidget {
-  final Icon? icon;
+  final Widget? icon;
   final String? label;
   final VoidCallback? onCancel;
   final VoidCallback? onConfirm;
@@ -56,7 +56,7 @@ class ButtonFormat extends StatelessWidget {
                 const SizedBox(
                   width: 18,
                   height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+                  child: CircularProgressIndicator(),
                 ),
               ],
             ],
@@ -67,10 +67,15 @@ class ButtonFormat extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
-              child: ElevatedButton(
+              child: OutlinedButton(
                 onPressed: onCancel,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColor.error,
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurfaceVariant.withOpacity(0.3),
+                    width: 1,
+                  ),
                   shape: const RoundedRectangleBorder(
                     borderRadius: AppBorder.all8,
                   ),
@@ -82,7 +87,7 @@ class ButtonFormat extends StatelessWidget {
                   fit: BoxFit.scaleDown,
                   child: TextFormat(
                     text: context.l10n.comun_cancelar,
-                    type: "bodySmallWhite",
+                    type: "bodySmall",
                     context: context,
                   ),
                 ),
@@ -93,17 +98,18 @@ class ButtonFormat extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: onConfirm,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColor.success,
+                  backgroundColor: AppColor.containerContrast,
                   shape: const RoundedRectangleBorder(
                     borderRadius: AppBorder.all8,
                   ),
                   minimumSize: const Size(0, 35),
                   padding: const EdgeInsets.symmetric(horizontal: 4),
+                  elevation: 0,
                 ),
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
                   child: TextFormat(
-                    text: context.l10n.comun_confirmar,
+                    text: label ?? context.l10n.comun_confirmar,
                     type: "bodySmallWhite",
                     context: context,
                   ),

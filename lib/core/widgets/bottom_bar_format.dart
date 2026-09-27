@@ -1,18 +1,14 @@
 import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:aqua_steward/core/theme/app_color.dart';
 import 'package:aqua_steward/core/theme/app_icon.dart';
-import 'package:aqua_steward/core/theme/app_text.dart';
+import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:flutter/material.dart';
 
 class BottomBarFormat extends StatelessWidget {
   final Function(int index)? onTap;
   final int selectedIndex;
 
-  const BottomBarFormat({
-    super.key,
-    this.onTap,
-    this.selectedIndex = 0,
-  });
+  const BottomBarFormat({super.key, this.onTap, this.selectedIndex = 0});
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +16,33 @@ class BottomBarFormat extends StatelessWidget {
     final List<Map<String, dynamic>> items = [
       {
         "icon": selectedIndex == 0 ? AppIcon.home : AppIcon.homeOutlined,
-        "label": context.l10n.button_inicio,
+        "text": selectedIndex == 0
+            ? TextFormat(
+                text: context.l10n.button_inicio,
+                type: "bodySmallWhite",
+                context: context,
+              )
+            : TextFormat(
+                text: context.l10n.button_inicio,
+                type: "bodySmallGray",
+                context: context,
+              ),
       },
       {
         "icon": selectedIndex == 1
             ? AppIcon.person
-            : AppIcon.personOutlined(color: AppColor.white),
-        "label": context.l10n.button_perfil,
+            : AppIcon.personOutlined(color: AppColor.whiteSecondary),
+        "text": selectedIndex == 1
+            ? TextFormat(
+                text: context.l10n.button_perfil,
+                type: "bodySmallWhite",
+                context: context,
+              )
+            : TextFormat(
+                text: context.l10n.button_perfil,
+                type: "bodySmallGray",
+                context: context,
+              ),
       },
     ];
 
@@ -47,7 +63,7 @@ class BottomBarFormat extends StatelessWidget {
                 index: i,
                 selectedIndex: selectedIndex,
                 icon: items[i]["icon"],
-                label: items[i]["label"],
+                text: items[i]["text"],
               ),
             ),
         ],
@@ -59,8 +75,8 @@ class BottomBarFormat extends StatelessWidget {
     required BuildContext context,
     required int index,
     required int selectedIndex,
-    required Icon icon,
-    required String label,
+    required Widget icon,
+    required Widget text,
   }) {
     return InkWell(
       onTap: () {
@@ -70,10 +86,7 @@ class BottomBarFormat extends StatelessWidget {
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          icon,
-          Text(label, style: AppText.smallWhite),
-        ],
+        children: [icon, text],
       ),
     );
   }

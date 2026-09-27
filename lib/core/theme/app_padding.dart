@@ -27,5 +27,4 @@ class AppPadding {
     vertical: 0,
     horizontal: 8,
   );
-  static const EdgeInsetsGeometry right8 = EdgeInsets.only(right: 8);
 }

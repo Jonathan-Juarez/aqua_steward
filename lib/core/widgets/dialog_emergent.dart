@@ -25,7 +25,7 @@ class DialogEmergent extends StatelessWidget {
       shape: const RoundedRectangleBorder(borderRadius: AppBorder.all8),
       backgroundColor: Theme.of(context).colorScheme.primary,
       title: TextFormat(text: title, type: "titleSmall", context: context),
-      content: content,
+      content: SingleChildScrollView(child: content),
       actions: [
         ButtonFormat(
           type: "dialog",

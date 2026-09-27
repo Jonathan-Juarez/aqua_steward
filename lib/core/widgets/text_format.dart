@@ -1,3 +1,4 @@
+import 'package:aqua_steward/core/theme/app_color.dart';
 import 'package:aqua_steward/core/theme/app_padding.dart';
 import 'package:aqua_steward/core/theme/app_text.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +48,11 @@ class TextFormat extends StatelessWidget {
         return Text(text, style: Theme.of(context).textTheme.bodySmall);
       case "bodySmallWhite":
         return Text(text, style: AppText.smallWhite);
+      case "bodySmallGray":
+        return Text(
+          text,
+          style: AppText.smallWhite.copyWith(color: AppColor.whiteSecondary),
+        );
       case "label":
         return Text(text, style: Theme.of(context).textTheme.labelMedium);
       default:

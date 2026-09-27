@@ -8,12 +8,13 @@ import 'package:flutter/material.dart';
 class ContainerListTile extends StatefulWidget {
   final Function()? onTap;
   final dynamic title;
-  final Icon? icon;
+  final Widget? icon;
   final Widget? leading;
   final String? subtitle;
   final dynamic subsubtitle;
   final Widget? trailing;
   final bool showTrailing;
+  final Color? color;
   const ContainerListTile({
     super.key,
     this.onTap,
@@ -24,6 +25,7 @@ class ContainerListTile extends StatefulWidget {
     this.subsubtitle,
     this.trailing,
     this.showTrailing = true,
+    this.color,
   });
 
   @override
@@ -39,14 +41,12 @@ class _ContainerListTileState extends State<ContainerListTile> {
         ListTile(
           leading:
               widget.leading ??
-              (widget.icon != null ? IconFormat(icon: widget.icon!) : null),
+              (widget.icon != null
+                  ? IconFormat(icon: widget.icon!, color: widget.color)
+                  : null),
           title: widget.title is Widget
               ? widget.title
-              : TextFormat(
-                  text: widget.title,
-                  context: context,
-                  type: "body",
-                ),
+              : TextFormat(text: widget.title, context: context, type: "body"),
           subtitle: widget.subsubtitle != null
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

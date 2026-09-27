@@ -21,7 +21,7 @@ class UserManualScreen extends StatelessWidget {
         ),
         FAQItem(
           question: context.l10n.manual_roles_titulo,
-          icon: const IconFormat(icon: AppIcon.groups2Outlined),
+          icon: IconFormat(icon: AppIcon.groups2Outlined(context: context)),
           answer: context.l10n.manual_roles_desc,
         ),
         FAQItem(

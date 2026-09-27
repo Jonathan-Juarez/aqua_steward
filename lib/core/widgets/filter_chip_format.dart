@@ -1,7 +1,6 @@
 import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:aqua_steward/core/theme/app_border.dart';
 import 'package:aqua_steward/core/theme/app_color.dart';
-import 'package:aqua_steward/core/theme/app_padding.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:flutter/material.dart';
 
@@ -20,13 +19,13 @@ class FilterChipFormat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: AppPadding.right8,
+      padding: const EdgeInsets.only(right: 6),
       child: InkWell(
         borderRadius: AppBorder.all8,
         // Al hacer clic, invierte el estado.
         onTap: () => onSelected(!isSelected),
         child: Container(
-          padding: AppPadding.all8,
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
           decoration: BoxDecoration(
             color: isSelected
                 ? colorsFilter(context)

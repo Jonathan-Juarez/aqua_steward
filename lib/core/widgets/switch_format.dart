@@ -8,7 +8,7 @@ class SwitchFormat extends StatefulWidget {
   final String title;
   final String subtitle;
   final bool value;
-  final Icon icon;
+  final Widget icon;
   final ValueChanged<bool> onChanged;
   const SwitchFormat({
     super.key,

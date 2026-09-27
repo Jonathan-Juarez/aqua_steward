@@ -21,7 +21,7 @@ class MenuItemModel {
 class MenuButtonFormat extends StatelessWidget {
   final List<MenuItemModel> items;
   final ValueChanged<String> onSelected;
-  final Icon? iconMenu;
+  final Widget? iconMenu;
   final Widget? child;
 
   const MenuButtonFormat({

@@ -926,6 +926,12 @@ abstract class AppLocalizations {
   /// **'El color de las gráficas se adaptarán al tema seleccionado dentro del PDF.'**
   String get reporte_nota_tema;
 
+  /// No description provided for @reporte_nota_eventos_criticos.
+  ///
+  /// In es, this message translates to:
+  /// **'Define el número máximo de registros de alertas que se incluirán en la tabla del reporte PDF.'**
+  String get reporte_nota_eventos_criticos;
+
   /// No description provided for @alertas_filtro_todos.
   ///
   /// In es, this message translates to:
@@ -961,12 +967,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Sin notificaciones'**
   String get alertas_sin_notificaciones;
-
-  /// No description provided for @alertas_sin_invitaciones.
-  ///
-  /// In es, this message translates to:
-  /// **'Sin novedades de equipo'**
-  String get alertas_sin_invitaciones;
 
   /// No description provided for @alertas_filtro_alertas.
   ///
@@ -1100,6 +1100,12 @@ abstract class AppLocalizations {
   /// **'Sensores instalados'**
   String get deposito_sensores_instalados;
 
+  /// No description provided for @deposito_sensores_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Selecciona los sensores que tiene tu kit. Solo recibirás las mediciones y notificaciones de los sensores activos.'**
+  String get deposito_sensores_desc;
+
   /// No description provided for @deposito_sensor_nivel_nombre.
   ///
   /// In es, this message translates to:
@@ -1153,18 +1159,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Abandonó con éxito el depósito'**
   String get snackbar_abandonar_deposito;
-
-  /// No description provided for @snackbar_alertas_activas.
-  ///
-  /// In es, this message translates to:
-  /// **'Recibirás lecturas y alertas'**
-  String get snackbar_alertas_activas;
-
-  /// No description provided for @snackbar_alertas_inactivas.
-  ///
-  /// In es, this message translates to:
-  /// **'No recibirás lecturas y alertas'**
-  String get snackbar_alertas_inactivas;
 
   /// No description provided for @snackbar_deposito_creado.
   ///
@@ -1262,23 +1256,65 @@ abstract class AppLocalizations {
   /// **'Información del kit'**
   String get deposito_info_kit;
 
-  /// No description provided for @deposito_ingresa_ip.
+  /// No description provided for @deposito_buscar_dispositivo.
   ///
   /// In es, this message translates to:
-  /// **'Ingresa la IP de tu kit de medición del agua. Ej. 192.168.1.25'**
-  String get deposito_ingresa_ip;
+  /// **'Buscar dispositivo cercano'**
+  String get deposito_buscar_dispositivo;
+
+  /// No description provided for @deposito_kit_seleccionado.
+  ///
+  /// In es, this message translates to:
+  /// **'Kit vinculado'**
+  String get deposito_kit_seleccionado;
+
+  /// No description provided for @deposito_cambiar_dispositivo.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar'**
+  String get deposito_cambiar_dispositivo;
+
+  /// No description provided for @deposito_ingreso_manual_mac.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribir dirección MAC'**
+  String get deposito_ingreso_manual_mac;
+
+  /// No description provided for @deposito_ocultar_manual_mac.
+  ///
+  /// In es, this message translates to:
+  /// **'Ocultar campo MAC'**
+  String get deposito_ocultar_manual_mac;
+
+  /// No description provided for @deposito_manual_mac_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Si tu kit no aparece en la búsqueda, puedes escribir su dirección MAC manualmente. Es un código único impreso en el dispositivo.'**
+  String get deposito_manual_mac_desc;
 
   /// No description provided for @deposito_ip_label.
   ///
   /// In es, this message translates to:
-  /// **'IP'**
+  /// **'Dirección MAC'**
   String get deposito_ip_label;
+
+  /// No description provided for @deposito_ip_hint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. A4:CF:12:89:B0:12'**
+  String get deposito_ip_hint;
 
   /// No description provided for @deposito_ingresa_nombre.
   ///
   /// In es, this message translates to:
-  /// **'Ingresa el nombre identificador del depósito de agua. Ej. Tinaco Principal'**
+  /// **'Nombre para identificar tu depósito de agua.'**
   String get deposito_ingresa_nombre;
+
+  /// No description provided for @deposito_nombre_hint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Tinaco Principal'**
+  String get deposito_nombre_hint;
 
   /// No description provided for @detalles_tab_registros.
   ///
@@ -1346,11 +1382,11 @@ abstract class AppLocalizations {
   /// **'Contraseña no cumple los requisitos'**
   String get validar_contrasena_invalida;
 
-  /// No description provided for @validar_ip_invalida.
+  /// No description provided for @validar_mac_invalida.
   ///
   /// In es, this message translates to:
-  /// **'IP inválida'**
-  String get validar_ip_invalida;
+  /// **'Dirección MAC inválida'**
+  String get validar_mac_invalida;
 
   /// No description provided for @acerca_version.
   ///
@@ -1367,7 +1403,7 @@ abstract class AppLocalizations {
   /// No description provided for @acerca_proposito_desc.
   ///
   /// In es, this message translates to:
-  /// **'AquaSteward es un sistema diseñado para el monitoreo del nivel y calidad del agua en tiempo real mediante Internet de las Cosas, promoviendo una gestión eficiente y responsable del recurso hídrico.'**
+  /// **'AquaSteward es un sistema diseñado para el monitoreo del nivel y calidad del agua en tiempo real utilizando Internet de las Cosas, promoviendo una gestión eficiente y responsable de los recursos hídricos.'**
   String get acerca_proposito_desc;
 
   /// No description provided for @acerca_creditos_titulo.
@@ -1403,7 +1439,7 @@ abstract class AppLocalizations {
   /// No description provided for @acerca_creditos_facultad_nombre.
   ///
   /// In es, this message translates to:
-  /// **'Ingeniería en Desarollo de Software'**
+  /// **'Ingeniería en Desarrollo de Software'**
   String get acerca_creditos_facultad_nombre;
 
   /// No description provided for @acerca_software_titulo.
@@ -1445,7 +1481,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacidad_sec1_desc.
   ///
   /// In es, this message translates to:
-  /// **'Para proporcionar las funciones de monitoreo y gestión de agua, la aplicación recopila la siguiente información proporcionada por el usuario al registrarse y configurar el sistema:\n• Datos de Cuenta: Nombre completo, correo electrónico y contraseña cifrada de forma segura.\n• Datos de Depósitos y Dispositivos IoT: Nombres de depósitos, dimensiones físicas, límites de alertas y la dirección IP del kit con los sensores.\n• Lecturas de Calidad de Agua: Mediciones periódicas de nivel de agua, pH y turbidez.\n• Datos de Equipo: Direcciones de correo e invitaciones para colaborar con otros miembros bajo roles específicos (propietario, administrador o analista).'**
+  /// **'Para proporcionar las funciones de monitoreo y gestión de agua, la aplicación recopila la siguiente información proporcionada por el usuario al registrarse y configurar el sistema:\n• Datos de Cuenta: Nombre completo, correo electrónico y contraseña cifrada de forma segura.\n• Datos de Depósitos y Dispositivos IoT: Nombres de depósitos, dimensiones físicas, límites de alertas y el identificador o dirección MAC del kit con los sensores.\n• Lecturas de Calidad de Agua: Mediciones periódicas de nivel de agua, pH y turbidez.\n• Datos de Equipo: Direcciones de correo e invitaciones para colaborar con otros miembros bajo roles específicos (propietario, administrador o analista).'**
   String get privacidad_sec1_desc;
 
   /// No description provided for @privacidad_sec2_titulo.
@@ -1675,6 +1711,78 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Muy turbio'**
   String get estado_muy_turbio;
+
+  /// No description provided for @pantalla_detalles_titulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Detalle del depósito'**
+  String get pantalla_detalles_titulo;
+
+  /// No description provided for @ubicacion_deposito.
+  ///
+  /// In es, this message translates to:
+  /// **'Ubicación del depósito'**
+  String get ubicacion_deposito;
+
+  /// No description provided for @ubicacion_no_disponible.
+  ///
+  /// In es, this message translates to:
+  /// **'Ubicación no disponible'**
+  String get ubicacion_no_disponible;
+
+  /// No description provided for @permiso_ubicacion_titulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Permiso de ubicación'**
+  String get permiso_ubicacion_titulo;
+
+  /// No description provided for @permiso_ubicacion_contenido.
+  ///
+  /// In es, this message translates to:
+  /// **'Para mostrar tu posición respecto al depósito en el mapa, habilita la ubicación en la configuración.'**
+  String get permiso_ubicacion_contenido;
+
+  /// No description provided for @deposito_ubicacion_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Guarda las coordenadas geográficas del depósito para visualizarlo en el mapa.'**
+  String get deposito_ubicacion_desc;
+
+  /// No description provided for @ubicacion_configurada.
+  ///
+  /// In es, this message translates to:
+  /// **'Coordenadas guardadas'**
+  String get ubicacion_configurada;
+
+  /// No description provided for @deposito_sin_ubicacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin ubicación establecida'**
+  String get deposito_sin_ubicacion;
+
+  /// No description provided for @ubicacion_obtener.
+  ///
+  /// In es, this message translates to:
+  /// **'Obtener mi ubicación'**
+  String get ubicacion_obtener;
+
+  /// No description provided for @ubicacion_actualizar.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizar'**
+  String get ubicacion_actualizar;
+
+  /// No description provided for @ubicacion_obtenida_exito.
+  ///
+  /// In es, this message translates to:
+  /// **'Ubicación obtenida con éxito'**
+  String get ubicacion_obtenida_exito;
+
+  /// No description provided for @ubicacion_error_obtener.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo obtener la ubicación actual'**
+  String get ubicacion_error_obtener;
 }
 
 class _AppLocalizationsDelegate

@@ -451,6 +451,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'The color of the graphics will adapt to the theme selected within the PDF.';
 
   @override
+  String get reporte_nota_eventos_criticos =>
+      'Defines the maximum number of alert records that will be included in the PDF report table.';
+
+  @override
   String get alertas_filtro_todos => 'All';
 
   @override
@@ -467,9 +471,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get alertas_sin_notificaciones => 'No notifications';
-
-  @override
-  String get alertas_sin_invitaciones => 'No team updates';
 
   @override
   String get alertas_filtro_alertas => 'Alerts';
@@ -546,6 +547,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deposito_sensores_instalados => 'Installed sensors';
 
   @override
+  String get deposito_sensores_desc =>
+      'Select the sensors included in your kit. You will only receive measurements and notifications from active sensors.';
+
+  @override
   String get deposito_sensor_nivel_nombre => 'Level sensor';
 
   @override
@@ -571,13 +576,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get snackbar_abandonar_deposito => 'Successfully left the deposit';
-
-  @override
-  String get snackbar_alertas_activas => 'You will receive readings and alerts';
-
-  @override
-  String get snackbar_alertas_inactivas =>
-      'You will not receive readings and alerts';
 
   @override
   String get snackbar_deposito_creado => 'Deposit successfully created';
@@ -632,15 +630,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deposito_info_kit => 'Kit information';
 
   @override
-  String get deposito_ingresa_ip =>
-      'Enter the IP of your water monitoring kit. E.g. 192.168.1.25';
+  String get deposito_buscar_dispositivo => 'Search nearby device';
 
   @override
-  String get deposito_ip_label => 'IP';
+  String get deposito_kit_seleccionado => 'Linked kit';
 
   @override
-  String get deposito_ingresa_nombre =>
-      'Enter an identifier name for the water deposit. E.g. Main Tank';
+  String get deposito_cambiar_dispositivo => 'Change';
+
+  @override
+  String get deposito_ingreso_manual_mac => 'Enter MAC address';
+
+  @override
+  String get deposito_ocultar_manual_mac => 'Hide MAC field';
+
+  @override
+  String get deposito_manual_mac_desc =>
+      'If your kit doesn\'t appear in the search, you can enter its MAC address manually. It\'s a unique code printed on the device.';
+
+  @override
+  String get deposito_ip_label => 'MAC Address';
+
+  @override
+  String get deposito_ip_hint => 'E.g. A4:CF:12:89:B0:12';
+
+  @override
+  String get deposito_ingresa_nombre => 'Name to identify your water deposit.';
+
+  @override
+  String get deposito_nombre_hint => 'E.g. Main Tank';
 
   @override
   String get detalles_tab_registros => 'Records';
@@ -677,7 +695,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Password does not meet requirements';
 
   @override
-  String get validar_ip_invalida => 'Invalid IP';
+  String get validar_mac_invalida => 'Invalid MAC address';
 
   @override
   String acerca_version(String version, String build) {
@@ -732,7 +750,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacidad_sec1_desc =>
-      'To provide water monitoring and management features, the application collects the following information provided by the user when registering and setting up the system:\n• Account Data: Full name, email address, and securely encrypted password.\n• Tank and IoT Device Data: Tank names, physical dimensions, alert thresholds, and the IP address of the sensor kit.\n• Water Quality Readings: Periodic measurements of water level, pH, and turbidity.\n• Team Data: Email addresses and invitations to collaborate with other members under specific roles (owner, administrator, or analyst).';
+      'To provide water monitoring and management features, the application collects the following information provided by the user when registering and setting up the system:\n• Account Data: Full name, email address, and securely encrypted password.\n• Tank and IoT Device Data: Tank names, physical dimensions, alert thresholds, and the MAC address or ID of the sensor kit.\n• Water Quality Readings: Periodic measurements of water level, pH, and turbidity.\n• Team Data: Email addresses and invitations to collaborate with other members under specific roles (owner, administrator, or analyst).';
 
   @override
   String get privacidad_sec2_titulo => '2. How is the information used?';
@@ -894,4 +912,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get estado_muy_turbio => 'Very turbid';
+
+  @override
+  String get pantalla_detalles_titulo => 'Deposit details';
+
+  @override
+  String get ubicacion_deposito => 'Deposit location';
+
+  @override
+  String get ubicacion_no_disponible => 'Location not available';
+
+  @override
+  String get permiso_ubicacion_titulo => 'Location permission';
+
+  @override
+  String get permiso_ubicacion_contenido =>
+      'To display your position relative to the deposit on the map, enable location in settings.';
+
+  @override
+  String get deposito_ubicacion_desc =>
+      'Save geographic coordinates of the deposit to view it on the map.';
+
+  @override
+  String get ubicacion_configurada => 'Saved coordinates';
+
+  @override
+  String get deposito_sin_ubicacion => 'No location set';
+
+  @override
+  String get ubicacion_obtener => 'Get my location';
+
+  @override
+  String get ubicacion_actualizar => 'Update';
+
+  @override
+  String get ubicacion_obtenida_exito => 'Location obtained successfully';
+
+  @override
+  String get ubicacion_error_obtener => 'Could not get current location';
 }

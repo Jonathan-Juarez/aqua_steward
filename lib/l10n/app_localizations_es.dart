@@ -456,6 +456,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'El color de las gráficas se adaptarán al tema seleccionado dentro del PDF.';
 
   @override
+  String get reporte_nota_eventos_criticos =>
+      'Define el número máximo de registros de alertas que se incluirán en la tabla del reporte PDF.';
+
+  @override
   String get alertas_filtro_todos => 'Todos';
 
   @override
@@ -472,9 +476,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get alertas_sin_notificaciones => 'Sin notificaciones';
-
-  @override
-  String get alertas_sin_invitaciones => 'Sin novedades de equipo';
 
   @override
   String get alertas_filtro_alertas => 'Alertas';
@@ -550,6 +551,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get deposito_sensores_instalados => 'Sensores instalados';
 
   @override
+  String get deposito_sensores_desc =>
+      'Selecciona los sensores que tiene tu kit. Solo recibirás las mediciones y notificaciones de los sensores activos.';
+
+  @override
   String get deposito_sensor_nivel_nombre => 'Sensor de nivel';
 
   @override
@@ -575,12 +580,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get snackbar_abandonar_deposito => 'Abandonó con éxito el depósito';
-
-  @override
-  String get snackbar_alertas_activas => 'Recibirás lecturas y alertas';
-
-  @override
-  String get snackbar_alertas_inactivas => 'No recibirás lecturas y alertas';
 
   @override
   String get snackbar_deposito_creado => 'Depósito creado exitosamente';
@@ -639,15 +638,36 @@ class AppLocalizationsEs extends AppLocalizations {
   String get deposito_info_kit => 'Información del kit';
 
   @override
-  String get deposito_ingresa_ip =>
-      'Ingresa la IP de tu kit de medición del agua. Ej. 192.168.1.25';
+  String get deposito_buscar_dispositivo => 'Buscar dispositivo cercano';
 
   @override
-  String get deposito_ip_label => 'IP';
+  String get deposito_kit_seleccionado => 'Kit vinculado';
+
+  @override
+  String get deposito_cambiar_dispositivo => 'Cambiar';
+
+  @override
+  String get deposito_ingreso_manual_mac => 'Escribir dirección MAC';
+
+  @override
+  String get deposito_ocultar_manual_mac => 'Ocultar campo MAC';
+
+  @override
+  String get deposito_manual_mac_desc =>
+      'Si tu kit no aparece en la búsqueda, puedes escribir su dirección MAC manualmente. Es un código único impreso en el dispositivo.';
+
+  @override
+  String get deposito_ip_label => 'Dirección MAC';
+
+  @override
+  String get deposito_ip_hint => 'Ej. A4:CF:12:89:B0:12';
 
   @override
   String get deposito_ingresa_nombre =>
-      'Ingresa el nombre identificador del depósito de agua. Ej. Tinaco Principal';
+      'Nombre para identificar tu depósito de agua.';
+
+  @override
+  String get deposito_nombre_hint => 'Ej. Tinaco Principal';
 
   @override
   String get detalles_tab_registros => 'Registros';
@@ -684,7 +704,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Contraseña no cumple los requisitos';
 
   @override
-  String get validar_ip_invalida => 'IP inválida';
+  String get validar_mac_invalida => 'Dirección MAC inválida';
 
   @override
   String acerca_version(String version, String build) {
@@ -696,7 +716,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get acerca_proposito_desc =>
-      'AquaSteward es un sistema diseñado para el monitoreo del nivel y calidad del agua en tiempo real mediante Internet de las Cosas, promoviendo una gestión eficiente y responsable del recurso hídrico.';
+      'AquaSteward es un sistema diseñado para el monitoreo del nivel y calidad del agua en tiempo real utilizando Internet de las Cosas, promoviendo una gestión eficiente y responsable de los recursos hídricos.';
 
   @override
   String get acerca_creditos_titulo => 'Créditos y Desarrollo';
@@ -715,7 +735,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get acerca_creditos_facultad_nombre =>
-      'Ingeniería en Desarollo de Software';
+      'Ingeniería en Desarrollo de Software';
 
   @override
   String get acerca_software_titulo => 'Licencias';
@@ -739,7 +759,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get privacidad_sec1_desc =>
-      'Para proporcionar las funciones de monitoreo y gestión de agua, la aplicación recopila la siguiente información proporcionada por el usuario al registrarse y configurar el sistema:\n• Datos de Cuenta: Nombre completo, correo electrónico y contraseña cifrada de forma segura.\n• Datos de Depósitos y Dispositivos IoT: Nombres de depósitos, dimensiones físicas, límites de alertas y la dirección IP del kit con los sensores.\n• Lecturas de Calidad de Agua: Mediciones periódicas de nivel de agua, pH y turbidez.\n• Datos de Equipo: Direcciones de correo e invitaciones para colaborar con otros miembros bajo roles específicos (propietario, administrador o analista).';
+      'Para proporcionar las funciones de monitoreo y gestión de agua, la aplicación recopila la siguiente información proporcionada por el usuario al registrarse y configurar el sistema:\n• Datos de Cuenta: Nombre completo, correo electrónico y contraseña cifrada de forma segura.\n• Datos de Depósitos y Dispositivos IoT: Nombres de depósitos, dimensiones físicas, límites de alertas y el identificador o dirección MAC del kit con los sensores.\n• Lecturas de Calidad de Agua: Mediciones periódicas de nivel de agua, pH y turbidez.\n• Datos de Equipo: Direcciones de correo e invitaciones para colaborar con otros miembros bajo roles específicos (propietario, administrador o analista).';
 
   @override
   String get privacidad_sec2_titulo => '2. ¿Cómo se utiliza la información?';
@@ -904,4 +924,43 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get estado_muy_turbio => 'Muy turbio';
+
+  @override
+  String get pantalla_detalles_titulo => 'Detalle del depósito';
+
+  @override
+  String get ubicacion_deposito => 'Ubicación del depósito';
+
+  @override
+  String get ubicacion_no_disponible => 'Ubicación no disponible';
+
+  @override
+  String get permiso_ubicacion_titulo => 'Permiso de ubicación';
+
+  @override
+  String get permiso_ubicacion_contenido =>
+      'Para mostrar tu posición respecto al depósito en el mapa, habilita la ubicación en la configuración.';
+
+  @override
+  String get deposito_ubicacion_desc =>
+      'Guarda las coordenadas geográficas del depósito para visualizarlo en el mapa.';
+
+  @override
+  String get ubicacion_configurada => 'Coordenadas guardadas';
+
+  @override
+  String get deposito_sin_ubicacion => 'Sin ubicación establecida';
+
+  @override
+  String get ubicacion_obtener => 'Obtener mi ubicación';
+
+  @override
+  String get ubicacion_actualizar => 'Actualizar';
+
+  @override
+  String get ubicacion_obtenida_exito => 'Ubicación obtenida con éxito';
+
+  @override
+  String get ubicacion_error_obtener =>
+      'No se pudo obtener la ubicación actual';
 }

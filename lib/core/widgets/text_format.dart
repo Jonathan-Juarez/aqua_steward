@@ -22,7 +22,11 @@ class TextFormat extends StatelessWidget {
       case "title":
         return Text(text, style: Theme.of(context).textTheme.titleMedium);
       case "titleSmall":
-        return Text(text, style: Theme.of(context).textTheme.titleSmall);
+        return Text(
+          text,
+          style: Theme.of(context).textTheme.titleSmall,
+          textAlign: alignCenter == true ? TextAlign.center : null,
+        );
       case "subtitle":
         return Padding(
           padding: AppPadding.symmetric16_0,

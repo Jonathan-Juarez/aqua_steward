@@ -160,6 +160,7 @@ class _DetailScreenState extends State<DetailScreen> {
         // 3. Detalle del sensor seleccionado (Estado, Umbrales, Filtros y Gráfico)
         Consumer<DepositProvider>(
           builder: (context, provider, child) {
+            final id = depositData["id"] as String? ?? "";
             double currentLitters =
                 (depositData["inputLevel"] as num?)?.toDouble() ?? 0.0;
             double currentPh =
@@ -167,7 +168,12 @@ class _DetailScreenState extends State<DetailScreen> {
             double currentTurbidity =
                 (depositData["inputTurbidity"] as num?)?.toDouble() ?? 0.0;
 
-            if (ip.isNotEmpty && provider.realTimeData.containsKey(ip)) {
+            final realTime = provider.getRealTimeDataForDeposit(ip: ip, id: id);
+            if (realTime != null) {
+              currentLitters = realTime['level'] ?? currentLitters;
+              currentPh = realTime['ph'] ?? currentPh;
+              currentTurbidity = realTime['turbidity'] ?? currentTurbidity;
+            } else if (ip.isNotEmpty && provider.realTimeData.containsKey(ip)) {
               currentLitters =
                   provider.realTimeData[ip]!['level'] ?? currentLitters;
               currentPh = provider.realTimeData[ip]!['ph'] ?? currentPh;
@@ -250,24 +256,47 @@ class _DetailScreenState extends State<DetailScreen> {
             Expanded(
               child: ContainerFormat(
                 children: [
+                  TextFormat(
+                    alignCenter: true,
+                    text: context.l10n.detalles_valor_actual,
+                    context: context,
+                    type: "body",
+                  ),
+                  TextFormat(
+                    alignCenter: true,
+                    text: "${currentValue.toCleanString()} $unit",
+                    context: context,
+                    type: "titleSmall",
+                  ),
+                ],
+              ),
+            ),
+            AppSizedBox.width8,
+            Expanded(
+              child: ContainerFormat(
+                children: [
                   if (unit != "%") ...[
                     TextFormat(
+                      alignCenter: true,
                       text: context.l10n.dashboard_estado,
                       context: context,
                       type: "body",
                     ),
                     TextFormat(
+                      alignCenter: true,
                       text: stateText,
                       context: context,
                       type: "titleSmall",
                     ),
                   ] else ...[
                     TextFormat(
+                      alignCenter: true,
                       text: "${context.l10n.detalles_capacidad}:",
                       context: context,
                       type: "body",
                     ),
                     TextFormat(
+                      alignCenter: true,
                       text: "${peakValue.toCleanString()} L",
                       context: context,
                       type: "titleSmall",
@@ -276,18 +305,22 @@ class _DetailScreenState extends State<DetailScreen> {
                 ],
               ),
             ),
-            AppSizedBox.width8,
-            Expanded(
-              child: ContainerFormat(
+          ],
+        ),
+        AppSizedBox.height8,
+        ContainerFormat(
+          children: [
+            Padding(
+              padding: AppPadding.all8,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextFormat(
-                    alignCenter: true,
                     text: "${context.l10n.comun_umbrales}:",
                     context: context,
                     type: "body",
                   ),
                   TextFormat(
-                    alignCenter: true,
                     text: unit != "NTU"
                         ? "${rangeMin ?? ""} - ${rangeMax ?? ""} $unit"
                         : "${rangeMax ?? ""} $unit",

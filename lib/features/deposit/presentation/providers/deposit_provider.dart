@@ -31,6 +31,31 @@ class DepositProvider extends ChangeNotifier {
   // Se asignan valores en tiempo real a los depósitos suscritos.
   Map<String, Map<String, double>> get realTimeData => _realTimeData;
 
+  /// Obtiene los datos en tiempo real de un depósito buscando por IP o ID.
+  Map<String, double>? getRealTimeDataForDeposit({String? ip, String? id}) {
+    if (ip != null && ip.isNotEmpty && _realTimeData.containsKey(ip)) {
+      return _realTimeData[ip];
+    }
+    if (id != null && id.isNotEmpty && _realTimeData.containsKey(id)) {
+      return _realTimeData[id];
+    }
+    return null;
+  }
+
+  /// Obtiene el valor en tiempo real de un sensor específico para un depósito.
+  double getSensorRealTimeValue({
+    String? ip,
+    String? id,
+    required String sensorType,
+    double fallback = 0.0,
+  }) {
+    final data = getRealTimeDataForDeposit(ip: ip, id: id);
+    if (data != null && data.containsKey(sensorType)) {
+      return data[sensorType] ?? fallback;
+    }
+    return fallback;
+  }
+
   void _initSocket() async {
     // Se inicia el temporizador para notificar a los escuchadores para evitar el parpadeo de la UI.
     _socketTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {

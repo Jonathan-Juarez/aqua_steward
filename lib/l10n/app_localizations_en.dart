@@ -673,6 +673,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get detalles_capacidad => 'Capacity';
 
   @override
+  String get detalles_valor_actual => 'Current value';
+
+  @override
   String get detalles_diario => 'Day';
 
   @override

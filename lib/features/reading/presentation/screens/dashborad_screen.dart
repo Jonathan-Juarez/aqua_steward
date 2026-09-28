@@ -185,8 +185,16 @@ class _DashboardScreenState extends State<DashboardScreen>
                 double currentPh = 0.0;
                 double currentTurbidity = 0.0;
 
-                // Recupera los datos de sensores en tiempo real desde el mapa global del provider.
-                if (ip.isNotEmpty && provider.realTimeData.containsKey(ip)) {
+                // Recupera los datos de sensores en tiempo real desde el provider.
+                final realTime = provider.getRealTimeDataForDeposit(
+                  ip: ip,
+                  id: deposit.id,
+                );
+                if (realTime != null) {
+                  currentLitters = realTime['level'] ?? 0.0;
+                  currentPh = realTime['ph'] ?? 0.0;
+                  currentTurbidity = realTime['turbidity'] ?? 0.0;
+                } else if (ip.isNotEmpty && provider.realTimeData.containsKey(ip)) {
                   currentLitters = provider.realTimeData[ip]!['level'] ?? 0.0;
                   currentPh = provider.realTimeData[ip]!['ph'] ?? 0.0;
                   currentTurbidity =

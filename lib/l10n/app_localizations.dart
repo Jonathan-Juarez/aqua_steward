@@ -1340,6 +1340,12 @@ abstract class AppLocalizations {
   /// **'Capacidad'**
   String get detalles_capacidad;
 
+  /// No description provided for @detalles_valor_actual.
+  ///
+  /// In es, this message translates to:
+  /// **'Valor actual'**
+  String get detalles_valor_actual;
+
   /// No description provided for @detalles_diario.
   ///
   /// In es, this message translates to:

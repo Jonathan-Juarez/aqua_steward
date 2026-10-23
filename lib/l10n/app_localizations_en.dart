@@ -58,7 +58,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logo_slogan => 'Smart Water Monitoring';
 
   @override
-  String get button_inicio => 'Home';
+  String get button_deposito => 'Tanks';
 
   @override
   String get button_perfil => 'Profile';
@@ -81,6 +81,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dialogo_eliminar_deposito_titulo => 'Delete deposit';
+
+  @override
+  String get dialogo_abandonar_equipo =>
+      'Are you sure you want to leave this team?';
+
+  @override
+  String get dialogo_abandonar_equipo_titulo => 'Leave team';
 
   @override
   String get dialogo_eliminar_cuenta =>
@@ -106,7 +113,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialogo_presiona_nuevamente_salir => 'Swipe again to exit';
 
   @override
-  String get titulo_dashboard => 'My Deposits';
+  String get titulo_dashboard => 'Deposits';
 
   @override
   String get titulo_soporte => 'Support';
@@ -115,7 +122,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get titulo_acerca_de => 'About';
 
   @override
-  String get titulo_perfil => 'My profile';
+  String get titulo_perfil => 'Profile';
 
   @override
   String get titulo_manual_usuario => 'User manual';
@@ -204,7 +211,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get auth_cambiar_contrasena => 'Change password';
 
   @override
-  String get perfil_titulo => 'My profile';
+  String get perfil_titulo => 'Profile';
 
   @override
   String get perfil_nombre => 'Name';
@@ -261,6 +268,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dashboard_sin_depositos => 'No deposits added';
+
+  @override
+  String get dashboard_agregar_deposito => 'Add deposit';
+
+  @override
+  String get dashboard_nota_tarjetas => 'Tap on a card to view its details';
 
   @override
   String get sensor_nivel => 'Level';

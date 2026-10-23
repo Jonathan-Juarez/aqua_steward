@@ -188,11 +188,11 @@ abstract class AppLocalizations {
   /// **'Monitoreo Inteligente del Agua'**
   String get logo_slogan;
 
-  /// No description provided for @button_inicio.
+  /// No description provided for @button_deposito.
   ///
   /// In es, this message translates to:
-  /// **'Inicio'**
-  String get button_inicio;
+  /// **'Depósitos'**
+  String get button_deposito;
 
   /// No description provided for @button_perfil.
   ///
@@ -215,7 +215,7 @@ abstract class AppLocalizations {
   /// No description provided for @dialogo_salida.
   ///
   /// In es, this message translates to:
-  /// **'¿Estás seguro de que quieres salir de este espacio?'**
+  /// **'¿Estás seguro que deseas salir de este espacio?'**
   String get dialogo_salida;
 
   /// No description provided for @dialogo_salida_titulo.
@@ -227,7 +227,7 @@ abstract class AppLocalizations {
   /// No description provided for @dialogo_eliminar_deposito.
   ///
   /// In es, this message translates to:
-  /// **'¿Estás seguro de que deseas eliminar este depósito?'**
+  /// **'¿Estás seguro que deseas eliminar este depósito?'**
   String get dialogo_eliminar_deposito;
 
   /// No description provided for @dialogo_eliminar_deposito_titulo.
@@ -236,10 +236,22 @@ abstract class AppLocalizations {
   /// **'Eliminar depósito'**
   String get dialogo_eliminar_deposito_titulo;
 
+  /// No description provided for @dialogo_abandonar_equipo.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro que deseas abandonar este equipo?'**
+  String get dialogo_abandonar_equipo;
+
+  /// No description provided for @dialogo_abandonar_equipo_titulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Abandonar equipo'**
+  String get dialogo_abandonar_equipo_titulo;
+
   /// No description provided for @dialogo_eliminar_cuenta.
   ///
   /// In es, this message translates to:
-  /// **'¿Estás seguro de que deseas eliminar tu cuenta?'**
+  /// **'¿Estás seguro que deseas eliminar tu cuenta?'**
   String get dialogo_eliminar_cuenta;
 
   /// No description provided for @dialogo_eliminar_cuenta_titulo.
@@ -251,7 +263,7 @@ abstract class AppLocalizations {
   /// No description provided for @dialogo_cerrar_sesion.
   ///
   /// In es, this message translates to:
-  /// **'¿Estás seguro de que quieres cerrar sesión?'**
+  /// **'¿Estás seguro que deseas cerrar sesión?'**
   String get dialogo_cerrar_sesion;
 
   /// No description provided for @dialogo_cerrar_sesion_titulo.
@@ -263,7 +275,7 @@ abstract class AppLocalizations {
   /// No description provided for @dialogo_eliminar_alertas.
   ///
   /// In es, this message translates to:
-  /// **'¿Estás seguro de que deseas eliminar todas las alertas?'**
+  /// **'¿Estás seguro que deseas eliminar todas las alertas?'**
   String get dialogo_eliminar_alertas;
 
   /// No description provided for @dialogo_eliminar_alertas_titulo.
@@ -281,7 +293,7 @@ abstract class AppLocalizations {
   /// No description provided for @titulo_dashboard.
   ///
   /// In es, this message translates to:
-  /// **'Mis Depósitos'**
+  /// **'Depósitos'**
   String get titulo_dashboard;
 
   /// No description provided for @titulo_soporte.
@@ -299,7 +311,7 @@ abstract class AppLocalizations {
   /// No description provided for @titulo_perfil.
   ///
   /// In es, this message translates to:
-  /// **'Mi perfil'**
+  /// **'Perfil'**
   String get titulo_perfil;
 
   /// No description provided for @titulo_manual_usuario.
@@ -467,7 +479,7 @@ abstract class AppLocalizations {
   /// No description provided for @perfil_titulo.
   ///
   /// In es, this message translates to:
-  /// **'Mi perfil'**
+  /// **'Perfil'**
   String get perfil_titulo;
 
   /// No description provided for @perfil_nombre.
@@ -577,6 +589,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No hay depósitos agregados'**
   String get dashboard_sin_depositos;
+
+  /// No description provided for @dashboard_agregar_deposito.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar depósito'**
+  String get dashboard_agregar_deposito;
+
+  /// No description provided for @dashboard_nota_tarjetas.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca una tarjeta para consultar sus detalles'**
+  String get dashboard_nota_tarjetas;
 
   /// No description provided for @sensor_nivel.
   ///

@@ -58,7 +58,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get logo_slogan => 'Monitoreo Inteligente del Agua';
 
   @override
-  String get button_inicio => 'Inicio';
+  String get button_deposito => 'Depósitos';
 
   @override
   String get button_perfil => 'Perfil';
@@ -71,35 +71,41 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get dialogo_salida =>
-      '¿Estás seguro de que quieres salir de este espacio?';
+      '¿Estás seguro que deseas salir de este espacio?';
 
   @override
   String get dialogo_salida_titulo => 'Salir de AquaSteward';
 
   @override
   String get dialogo_eliminar_deposito =>
-      '¿Estás seguro de que deseas eliminar este depósito?';
+      '¿Estás seguro que deseas eliminar este depósito?';
 
   @override
   String get dialogo_eliminar_deposito_titulo => 'Eliminar depósito';
 
   @override
+  String get dialogo_abandonar_equipo =>
+      '¿Estás seguro que deseas abandonar este equipo?';
+
+  @override
+  String get dialogo_abandonar_equipo_titulo => 'Abandonar equipo';
+
+  @override
   String get dialogo_eliminar_cuenta =>
-      '¿Estás seguro de que deseas eliminar tu cuenta?';
+      '¿Estás seguro que deseas eliminar tu cuenta?';
 
   @override
   String get dialogo_eliminar_cuenta_titulo => 'Eliminar cuenta';
 
   @override
-  String get dialogo_cerrar_sesion =>
-      '¿Estás seguro de que quieres cerrar sesión?';
+  String get dialogo_cerrar_sesion => '¿Estás seguro que deseas cerrar sesión?';
 
   @override
   String get dialogo_cerrar_sesion_titulo => 'Cerrar sesión';
 
   @override
   String get dialogo_eliminar_alertas =>
-      '¿Estás seguro de que deseas eliminar todas las alertas?';
+      '¿Estás seguro que deseas eliminar todas las alertas?';
 
   @override
   String get dialogo_eliminar_alertas_titulo => 'Eliminar alertas';
@@ -108,7 +114,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get dialogo_presiona_nuevamente_salir => 'Desliza de nuevo para salir';
 
   @override
-  String get titulo_dashboard => 'Mis Depósitos';
+  String get titulo_dashboard => 'Depósitos';
 
   @override
   String get titulo_soporte => 'Soporte';
@@ -117,7 +123,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get titulo_acerca_de => 'Acerca de';
 
   @override
-  String get titulo_perfil => 'Mi perfil';
+  String get titulo_perfil => 'Perfil';
 
   @override
   String get titulo_manual_usuario => 'Manual de usuario';
@@ -206,7 +212,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get auth_cambiar_contrasena => 'Cambiar contraseña';
 
   @override
-  String get perfil_titulo => 'Mi perfil';
+  String get perfil_titulo => 'Perfil';
 
   @override
   String get perfil_nombre => 'Nombre';
@@ -263,6 +269,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get dashboard_sin_depositos => 'No hay depósitos agregados';
+
+  @override
+  String get dashboard_agregar_deposito => 'Agregar depósito';
+
+  @override
+  String get dashboard_nota_tarjetas =>
+      'Toca una tarjeta para consultar sus detalles';
 
   @override
   String get sensor_nivel => 'Nivel';

@@ -19,6 +19,7 @@ class TeamProvider extends ChangeNotifier {
   final AcceptInvitationUseCase acceptInvitationUseCase;
   final RejectInvitationUseCase rejectInvitationUseCase;
   final LeaveDepositUseCase leaveDepositUseCase;
+  final String Function()? readToken;
 
   TeamProvider({
     required this.getMembersUseCase,
@@ -29,6 +30,7 @@ class TeamProvider extends ChangeNotifier {
     required this.acceptInvitationUseCase,
     required this.rejectInvitationUseCase,
     required this.leaveDepositUseCase,
+    this.readToken,
   });
 
   List<Team> _members = [];
@@ -46,8 +48,9 @@ class TeamProvider extends ChangeNotifier {
   // Carga la lista de miembros del equipo de un depósito y notifica a la vista.
   Future<Result<List<Team>>> getMembers({
     required String depositId,
-    required String token,
+    String? token,
   }) async {
+    final effectiveToken = token ?? readToken?.call() ?? "";
     _isLoading = true;
     // Se evita notificar si el widget todavía se está construyendo para no causar error.
     Future.microtask(() => notifyListeners());
@@ -55,7 +58,7 @@ class TeamProvider extends ChangeNotifier {
     try {
       final result = await getMembersUseCase.call(
         depositId: depositId,
-        token: token,
+        token: effectiveToken,
       );
       if (result.isSuccess) {
         _members = result.data!;
@@ -74,8 +77,9 @@ class TeamProvider extends ChangeNotifier {
     required String depositId,
     required String email,
     required String role,
-    required String token,
+    String? token,
   }) async {
+    final effectiveToken = token ?? readToken?.call() ?? "";
     _isLoading = true;
     notifyListeners();
 
@@ -84,11 +88,11 @@ class TeamProvider extends ChangeNotifier {
         depositId: depositId,
         email: email,
         role: role,
-        token: token,
+        token: effectiveToken,
       );
       if (result.isSuccess) {
         // Refresca la lista para reflejar el nuevo miembro.
-        await getMembers(depositId: depositId, token: token);
+        await getMembers(depositId: depositId, token: effectiveToken);
       }
       return result;
     } catch (e) {
@@ -103,8 +107,9 @@ class TeamProvider extends ChangeNotifier {
   Future<Result<void>> deleteMember({
     required String depositId,
     required String userId,
-    required String token,
+    String? token,
   }) async {
+    final effectiveToken = token ?? readToken?.call() ?? "";
     _isLoading = true;
     notifyListeners();
 
@@ -112,7 +117,7 @@ class TeamProvider extends ChangeNotifier {
       final result = await deleteMemberUseCase.call(
         depositId: depositId,
         userId: userId,
-        token: token,
+        token: effectiveToken,
       );
       if (result.isSuccess) {
         // Elimina de la lista local para feedback visual inmediato.
@@ -132,8 +137,9 @@ class TeamProvider extends ChangeNotifier {
     required String depositId,
     required String userId,
     required String role,
-    required String token,
+    String? token,
   }) async {
+    final effectiveToken = token ?? readToken?.call() ?? "";
     _isLoading = true;
     notifyListeners();
 
@@ -142,11 +148,11 @@ class TeamProvider extends ChangeNotifier {
         depositId: depositId,
         userId: userId,
         role: role,
-        token: token,
+        token: effectiveToken,
       );
       if (result.isSuccess) {
         // Refresca la lista para reflejar el cambio de rol.
-        await getMembers(depositId: depositId, token: token);
+        await getMembers(depositId: depositId, token: effectiveToken);
       }
       return result;
     } catch (e) {
@@ -159,13 +165,14 @@ class TeamProvider extends ChangeNotifier {
 
   // Obtiene las invitaciones pendientes del usuario autenticado.
   Future<Result<List<Map<String, dynamic>>>> getInvitations({
-    required String token,
+    String? token,
   }) async {
+    final effectiveToken = token ?? readToken?.call() ?? "";
     _isLoadingInvitations = true;
     Future.microtask(() => notifyListeners());
 
     try {
-      final result = await getInvitationsUseCase.call(token: token);
+      final result = await getInvitationsUseCase.call(token: effectiveToken);
       if (result.isSuccess) {
         _invitations = result.data!;
       }
@@ -181,12 +188,13 @@ class TeamProvider extends ChangeNotifier {
   // Acepta una invitación y refresca la lista de invitaciones.
   Future<Result<void>> acceptInvitation({
     required String depositId,
-    required String token,
+    String? token,
   }) async {
+    final effectiveToken = token ?? readToken?.call() ?? "";
     try {
       final result = await acceptInvitationUseCase.call(
         depositId: depositId,
-        token: token,
+        token: effectiveToken,
       );
       if (result.isSuccess) {
         _invitations.removeWhere((inv) => inv["deposit_id"] == depositId);
@@ -201,12 +209,13 @@ class TeamProvider extends ChangeNotifier {
   // Rechaza una invitación y la elimina de la lista local.
   Future<Result<void>> rejectInvitation({
     required String depositId,
-    required String token,
+    String? token,
   }) async {
+    final effectiveToken = token ?? readToken?.call() ?? "";
     try {
       final result = await rejectInvitationUseCase.call(
         depositId: depositId,
-        token: token,
+        token: effectiveToken,
       );
       if (result.isSuccess) {
         _invitations.removeWhere((inv) => inv["deposit_id"] == depositId);
@@ -221,15 +230,16 @@ class TeamProvider extends ChangeNotifier {
   // Abandona un depósito y notifica el resultado.
   Future<Result<void>> leaveDeposit({
     required String depositId,
-    required String token,
+    String? token,
   }) async {
+    final effectiveToken = token ?? readToken?.call() ?? "";
     _isLoading = true;
     notifyListeners();
 
     try {
       final result = await leaveDepositUseCase.call(
         depositId: depositId,
-        token: token,
+        token: effectiveToken,
       );
       return result;
     } catch (e) {

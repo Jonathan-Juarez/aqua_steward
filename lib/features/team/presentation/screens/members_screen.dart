@@ -1,19 +1,15 @@
 import 'package:aqua_steward/core/permissions/app_permission.dart';
 import 'package:aqua_steward/core/theme/app_icon.dart';
 import 'package:aqua_steward/core/theme/app_padding.dart';
-import 'package:aqua_steward/core/theme/app_sizedbox.dart';
 import 'package:aqua_steward/core/widgets/list_view_format.dart';
-import 'package:aqua_steward/core/utils/app_validators.dart';
 import 'package:aqua_steward/core/widgets/button_format.dart';
 import 'package:aqua_steward/core/widgets/container_list_tile.dart';
-import 'package:aqua_steward/core/widgets/dialog_emergent.dart';
 import 'package:aqua_steward/core/widgets/filter_chip_format.dart';
 import 'package:aqua_steward/core/widgets/menu_button_format.dart';
 import 'package:aqua_steward/core/widgets/scaffold_main.dart';
 import 'package:aqua_steward/core/error/result_handler.dart';
 import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
-import 'package:aqua_steward/core/widgets/text_field_format.dart';
-import 'package:aqua_steward/core/widgets/text_format.dart';
+import 'package:aqua_steward/features/team/presentation/widgets/dialog_invite.dart';
 import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
 import 'package:aqua_steward/features/team/domain/entities/team.dart';
 import 'package:aqua_steward/features/team/presentation/providers/team_provider.dart';
@@ -31,12 +27,6 @@ class MembersScreen extends StatefulWidget {
 
 class _MembersScreenState extends State<MembersScreen> {
   int _selectedIndex = 0;
-  final _emailController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-  String _selectedRole = "analyst";
-
-  // Getter reutilizable para el token del usuario autenticado.
-  String get _token => context.read<AuthProvider>().currentUser?.token ?? "";
 
   // Rol del usuario autenticado en el depósito actual.
   String get _currentRole {
@@ -52,19 +42,10 @@ class _MembersScreenState extends State<MembersScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_token.isNotEmpty) {
-        context.read<TeamProvider>().getMembers(
-          depositId: widget.depositId,
-          token: _token,
-        );
-      }
+      context.read<TeamProvider>().getMembers(
+        depositId: widget.depositId,
+      );
     });
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    super.dispose();
   }
 
   @override
@@ -73,9 +54,7 @@ class _MembersScreenState extends State<MembersScreen> {
 
     return ScaffoldMain(
       onRefresh: () async {
-        if (_token.isNotEmpty) {
-          await provider.getMembers(depositId: widget.depositId, token: _token);
-        }
+        await provider.getMembers(depositId: widget.depositId);
       },
       titleAppBar: context.l10n.comun_miembros,
       children: [
@@ -102,7 +81,10 @@ class _MembersScreenState extends State<MembersScreen> {
                   icon: AppIcon.personAdd(
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
-                  onConfirm: inviteDialog,
+                  onConfirm: () => DialogInvite.show(
+                    context: context,
+                    depositId: widget.depositId,
+                  ),
                 ),
             ],
           ),
@@ -160,7 +142,6 @@ class _MembersScreenState extends State<MembersScreen> {
           final result = await provider.deleteMember(
             depositId: widget.depositId,
             userId: member.id!,
-            token: _token,
           );
           if (!mounted) return;
           context.processResult(
@@ -172,7 +153,6 @@ class _MembersScreenState extends State<MembersScreen> {
             depositId: widget.depositId,
             userId: member.id!,
             role: value,
-            token: _token,
           );
           if (!mounted) return;
           context.processResult(result);
@@ -183,70 +163,6 @@ class _MembersScreenState extends State<MembersScreen> {
         title: name,
         subtitle: role,
         icon: AppIcon.personOutlined(context: context),
-      ),
-    );
-  }
-
-  // Diálogo para invitar miembro
-  void inviteDialog() {
-    _emailController.clear();
-    _selectedRole = "analyst";
-
-    showDialog(
-      context: context,
-      builder: (dialogContext) => StatefulBuilder(
-        builder: (context, setDialogState) => DialogEmergent(
-          formKey: _formKey,
-          title: context.l10n.comun_miembros,
-          onPressed: () async {
-            final provider = context.read<TeamProvider>();
-
-            final result = await provider.inviteMember(
-              depositId: widget.depositId,
-              email: _emailController.text,
-              role: _selectedRole,
-              token: _token,
-            );
-            if (!mounted) return;
-
-            Navigator.pop(dialogContext);
-            context.processResult(
-              result,
-              successMessage: context.l10n.snackbar_miembro_invitado_exitoso,
-            );
-          },
-          content: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextFormat(
-                  text: context.l10n.miembros_ingresar_correo,
-                  context: context,
-                  type: "bodySecondary",
-                ),
-                AppSizedBox.height12,
-                TextFieldFormat(
-                  labelText: context.l10n.auth_correo,
-                  icon: AppIcon.emailOutlined,
-                  keyboardType: TextInputType.emailAddress,
-                  controller: _emailController,
-                  maxLength: 40,
-                  validator: (val) => AppValidators.validateEmail(context, val),
-                ),
-                AppSizedBox.height12,
-                // Selector de rol.
-                MenuButtonFormat(
-                  items: roleMenuItems(showDelete: false),
-                  onSelected: (value) {
-                    setDialogState(() => _selectedRole = value);
-                  },
-                  child: ContainerListTile(title: _labelForRole(_selectedRole)),
-                ),
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }

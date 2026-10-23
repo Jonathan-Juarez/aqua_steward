@@ -21,42 +21,39 @@ class FAQItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: AppPadding.bottom16,
-      child: ContainerFormat(
-        children: [
-          ExpansionTile(
-            leading: icon,
-            iconColor: Theme.of(context).iconTheme.color,
-            title: TextFormat(text: question, context: context, type: "body"),
-            children: [
-              Padding(
-                padding: AppPadding.symmetric0_16,
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: widget != null
-                      ? Column(
-                          children: [
-                            TextFormat(
-                              text: answer,
-                              context: context,
-                              type: "bodySecondary",
-                            ),
-                            AppSizedBox.height12,
-                            widget!,
-                          ],
-                        )
-                      : TextFormat(
-                          text: answer,
-                          context: context,
-                          type: "bodySecondary",
-                        ),
-                ),
+    return ContainerFormat(
+      children: [
+        ExpansionTile(
+          leading: icon,
+          iconColor: Theme.of(context).iconTheme.color,
+          title: TextFormat(text: question, context: context, type: "body"),
+          children: [
+            Padding(
+              padding: AppPadding.symmetric0_16,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: widget != null
+                    ? Column(
+                        children: [
+                          TextFormat(
+                            text: answer,
+                            context: context,
+                            type: "bodySecondary",
+                          ),
+                          AppSizedBox.height12,
+                          widget!,
+                        ],
+                      )
+                    : TextFormat(
+                        text: answer,
+                        context: context,
+                        type: "bodySecondary",
+                      ),
               ),
-            ],
-          ),
-        ],
-      ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

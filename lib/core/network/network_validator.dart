@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:aqua_steward/core/widgets/snack_bar_format.dart';
-import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
 import 'package:aqua_steward/features/deposit/presentation/providers/deposit_provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -82,12 +81,9 @@ class _NetworkValidatorState extends State<NetworkValidator> {
     isError: true,
   ).show();
 
-  // Refresca los depósitos usando el token actual del AuthProvider.
+  // Refresca los depósitos cuando se restablece la conexión.
   void _refreshDeposits() {
-    final token = context.read<AuthProvider>().currentUser?.token ?? '';
-    if (token.isNotEmpty) {
-      context.read<DepositProvider>().getDeposits(token: token);
-    }
+    context.read<DepositProvider>().getDeposits();
   }
 
   @override

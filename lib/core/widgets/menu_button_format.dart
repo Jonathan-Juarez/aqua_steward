@@ -21,14 +21,12 @@ class MenuItemModel {
 class MenuButtonFormat extends StatelessWidget {
   final List<MenuItemModel> items;
   final ValueChanged<String> onSelected;
-  final Widget? iconMenu;
   final Widget? child;
 
   const MenuButtonFormat({
     super.key,
     required this.items,
     required this.onSelected,
-    this.iconMenu = AppIcon.moreHoriz,
     this.child,
   });
 
@@ -36,7 +34,7 @@ class MenuButtonFormat extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
       offset: const Offset(0.1, 0),
-      icon: child != null ? null : iconMenu,
+      icon: child != null ? null : AppIcon.moreHoriz,
       borderRadius: AppBorder.all8,
       onSelected: onSelected,
       child: child,

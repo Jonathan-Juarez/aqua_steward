@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class PermissionService {
-
   // Solicita el permiso de notificaciones y maneja los estados de rechazo.
   static Future<bool> requestNotificationPermission(
     BuildContext context,
@@ -34,9 +33,7 @@ class PermissionService {
   }
 
   // Solicita el permiso de ubicación y maneja los estados de rechazo.
-  static Future<bool> requestLocationPermission(
-    BuildContext context,
-  ) async {
+  static Future<bool> requestLocationPermission(BuildContext context) async {
     PermissionStatus status = await Permission.locationWhenInUse.status;
 
     if (status.isGranted) {
@@ -67,16 +64,13 @@ class PermissionService {
     String title,
     String content,
   ) {
-    showDialog(
-      context: context,
-      builder: (context) => DialogEmergent(
-        title: title,
-        content: TextFormat(text: content, type: "body", context: context),
-        onPressed: () {
-          Navigator.pop(context);
-          openAppSettings(); // Abre la pantalla de permisos nativa (Android/iOS)
-        },
-      ),
-    );
+    DialogEmergent(
+      title: title,
+      content: TextFormat(text: content, type: "body", context: context),
+      onPressed: () {
+        Navigator.pop(context);
+        openAppSettings(); // Abre la pantalla de permisos nativa (Android/iOS)
+      },
+    ).show(context);
   }
 }

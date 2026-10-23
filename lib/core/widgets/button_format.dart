@@ -43,11 +43,7 @@ class ButtonFormat extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               // Muestra el icono si se proporciona uno.
-              if (icon != null && !isLoading) ...[
-                icon!,
-                AppSizedBox.width8,
-                Text(label!, style: Theme.of(context).textTheme.titleSmall),
-              ],
+              if (icon != null && !isLoading) ...[icon!, AppSizedBox.width8],
               if (!isLoading)
                 Text(label!, style: Theme.of(context).textTheme.titleSmall),
 
@@ -68,7 +64,7 @@ class ButtonFormat extends StatelessWidget {
           children: [
             Expanded(
               child: OutlinedButton(
-                onPressed: onCancel,
+                onPressed: isLoading ? null : onCancel,
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(
                     color: Theme.of(
@@ -96,7 +92,7 @@ class ButtonFormat extends StatelessWidget {
             AppSizedBox.width8,
             Expanded(
               child: ElevatedButton(
-                onPressed: onConfirm,
+                onPressed: isLoading ? null : formValidate,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColor.containerContrast,
                   shape: const RoundedRectangleBorder(
@@ -108,11 +104,20 @@ class ButtonFormat extends StatelessWidget {
                 ),
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
-                  child: TextFormat(
-                    text: label ?? context.l10n.comun_confirmar,
-                    type: "bodySmallWhite",
-                    context: context,
-                  ),
+                  child: isLoading
+                      ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColor.white,
+                          ),
+                        )
+                      : TextFormat(
+                          text: label ?? context.l10n.comun_confirmar,
+                          type: "bodySmallWhite",
+                          context: context,
+                        ),
                 ),
               ),
             ),

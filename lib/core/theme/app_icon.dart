@@ -5,11 +5,6 @@ import 'package:hugeicons/hugeicons.dart';
 // El tamaño predeterminado de los iconos es 24px.
 class AppIcon {
   // Iconos de botones de la pantalla de inicio.
-  static Widget notificationsOutlined({BuildContext? context}) => HugeIcon(
-    icon: HugeIcons.strokeRoundedNotification01,
-    color: Theme.of(context!).colorScheme.onSurface,
-  );
-
   static const Widget supportOutline = HugeIcon(
     icon: HugeIcons.strokeRoundedHelpCircle,
   );
@@ -35,12 +30,20 @@ class AppIcon {
       HugeIcon(icon: HugeIcons.strokeRoundedUserAdd01, color: color);
 
   // Iconos de bottomNavigationBar.
-  static const Widget homeOutlined = HugeIcon(
-    icon: HugeIcons.strokeRoundedHome07,
+  static const Widget depositInactive = HugeIcon(
+    icon: HugeIcons.strokeRoundedPolyTank,
     color: AppColor.whiteSecondary,
   );
-  static const Widget home = HugeIcon(
-    icon: HugeIcons.strokeRoundedHome07,
+  static const Widget depositActive = HugeIcon(
+    icon: HugeIcons.strokeRoundedPolyTank,
+    color: AppColor.white,
+  );
+  static const Widget notificationOutlined = HugeIcon(
+    icon: HugeIcons.strokeRoundedNotification01,
+    color: AppColor.whiteSecondary,
+  );
+  static const Widget notification = HugeIcon(
+    icon: HugeIcons.strokeRoundedNotification01,
     color: AppColor.white,
   );
   static const Widget person = HugeIcon(
@@ -142,9 +145,7 @@ class AppIcon {
   static const Widget waterDamageOutlined = HugeIcon(
     icon: HugeIcons.strokeRoundedDroplet,
   );
-  static const Widget localDrinkOutlined = HugeIcon(
-    icon: HugeIcons.strokeRoundedPolyTank,
-  );
+  static const Widget deposit = HugeIcon(icon: HugeIcons.strokeRoundedPolyTank);
   static const Widget heightOutlined = HugeIcon(
     icon: HugeIcons.strokeRoundedParagraphSpacing,
   );

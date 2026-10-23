@@ -1,14 +1,14 @@
+import 'dart:async';
 import 'package:aqua_steward/core/theme/app_border.dart';
 import 'package:aqua_steward/core/widgets/button_format.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:flutter/material.dart';
 
-class DialogEmergent extends StatelessWidget {
+class DialogEmergent extends StatefulWidget {
   final String title;
   final Widget content;
-  final VoidCallback onPressed;
+  final FutureOr<void> Function() onPressed;
   final GlobalKey<FormState>? formKey;
-  final bool isLoading;
 
   const DialogEmergent({
     super.key,
@@ -16,25 +16,50 @@ class DialogEmergent extends StatelessWidget {
     required this.content,
     required this.onPressed,
     this.formKey,
-    this.isLoading = false,
   });
+
+  // Muestra el diálogo en pantalla y retorna el resultado al cerrarse.
+  Future<T?> show<T>(BuildContext context) {
+    return showDialog<T>(context: context, builder: (_) => this);
+  }
+
+  @override
+  State<DialogEmergent> createState() => _DialogEmergentState();
+}
+
+class _DialogEmergentState extends State<DialogEmergent> {
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: const RoundedRectangleBorder(borderRadius: AppBorder.all8),
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      title: TextFormat(text: title, type: "titleSmall", context: context),
-      content: SingleChildScrollView(child: content),
-      actions: [
-        ButtonFormat(
-          type: "dialog",
-          onCancel: () => Navigator.pop(context),
-          onConfirm: onPressed,
-          formKey: formKey,
-          isLoading: isLoading,
+    return PopScope(
+      canPop: !_isLoading,
+      child: AlertDialog(
+        shape: const RoundedRectangleBorder(borderRadius: AppBorder.all8),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        title: TextFormat(
+          text: widget.title,
+          type: "titleSmall",
+          context: context,
         ),
-      ],
+        content: SingleChildScrollView(child: widget.content),
+        actions: [
+          ButtonFormat(
+            type: "dialog",
+            onCancel: () => Navigator.pop(context),
+            onConfirm: () async {
+              setState(() => _isLoading = true);
+              try {
+                await widget.onPressed();
+              } finally {
+                if (mounted) setState(() => _isLoading = false);
+              }
+            },
+            formKey: widget.formKey,
+            isLoading: _isLoading,
+          ),
+        ],
+      ),
     );
   }
 }

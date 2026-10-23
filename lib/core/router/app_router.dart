@@ -88,15 +88,13 @@ class AppRouter {
     depositScreen: (context) {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
-      return DepositScreen(
-        depositData: args?["depositData"] as Map<String, dynamic>?,
-      );
+      return DepositScreen(deposit: args?["deposit"] as Deposit?);
     },
     detailScreen: (context) {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
       return DetailScreen(
-        depositData: args["depositData"] as Map<String, dynamic>,
+        deposit: args["deposit"] as Deposit,
         initialParameterIndex: args["initialParameterIndex"] as int? ?? 0,
       );
     },
@@ -109,9 +107,7 @@ class AppRouter {
     generateReports: (context) {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
-      return ReportsScreen(
-        depositData: args?["depositData"] as Map<String, dynamic>?,
-      );
+      return ReportsScreen(deposit: args?["deposit"] as Deposit?);
     },
     pdfPreview: (context) {
       final args =

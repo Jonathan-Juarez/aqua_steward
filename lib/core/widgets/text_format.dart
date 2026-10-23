@@ -30,7 +30,13 @@ class TextFormat extends StatelessWidget {
       case "subtitle":
         return Padding(
           padding: AppPadding.symmetric16_0,
-          child: Text(text, style: Theme.of(context).textTheme.titleSmall),
+          child: Center(
+            child: Text(
+              text,
+              style: Theme.of(context).textTheme.titleSmall,
+              textAlign: TextAlign.center,
+            ),
+          ),
         );
       case "body":
         return Text(

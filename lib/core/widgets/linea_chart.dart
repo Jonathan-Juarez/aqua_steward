@@ -6,7 +6,6 @@ import "package:aqua_steward/core/widgets/text_format.dart";
 import "package:fl_chart/fl_chart.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
-import "package:aqua_steward/features/auth/presentation/providers/auth_provider.dart";
 import "package:aqua_steward/features/reading/presentation/providers/reading_provider.dart";
 
 class LineaChart extends StatefulWidget {
@@ -57,14 +56,11 @@ class _LineaChartState extends State<LineaChart> {
 
   Future<void> cargarDatos() async {
     try {
-      final authProvider = context.read<AuthProvider>();
       final readingProvider = context.read<ReadingProvider>();
-      final token = authProvider.currentUser?.token ?? "";
 
       final result = await readingProvider.getReadings(
         widget.depositId,
         widget.sensorType,
-        token,
         widget.selectedFilter,
       );
 

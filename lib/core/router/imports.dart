@@ -76,3 +76,6 @@ export "package:aqua_steward/features/notification/domain/usecases/get_notificat
 export "package:aqua_steward/features/notification/domain/usecases/delete_notification_usecase.dart";
 export "package:aqua_steward/features/notification/domain/usecases/delete_all_notifications_usecase.dart";
 export "package:aqua_steward/features/notification/domain/usecases/mark_notifications_as_read_usecase.dart";
+
+// Entidades
+export "package:aqua_steward/features/deposit/domain/entities/deposit.dart";

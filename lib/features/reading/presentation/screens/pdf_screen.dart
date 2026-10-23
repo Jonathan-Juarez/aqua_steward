@@ -9,7 +9,7 @@ import 'package:printing/printing.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:intl/intl.dart';
-
+import 'package:aqua_steward/features/deposit/domain/entities/deposit.dart';
 import 'package:aqua_steward/features/reading/domain/entities/report_stats.dart';
 
 class PdfScreen extends StatelessWidget {
@@ -83,10 +83,11 @@ class PdfScreen extends StatelessWidget {
     final List<Uint8List?> chartsImages =
         (dataPdf["chartsImages"] as List<dynamic>?)?.cast<Uint8List?>() ?? [];
 
+    final deposit = dataPdf["deposit"] as Deposit?;
     final depositData = dataPdf["depositData"] as Map<String, dynamic>? ?? {};
-    final depositName = depositData["name"] ?? "Desconocido";
-    final depositMac = depositData["ip"] ?? "Sin MAC";
-    final depositCapacity = depositData["capacity"] ?? 0;
+    final depositName = deposit?.name ?? depositData["name"] ?? "Desconocido";
+    final depositMac = deposit?.ip ?? depositData["ip"] ?? "Sin MAC";
+    final depositCapacity = deposit?.capacity ?? depositData["capacity"] ?? 0;
     final ReportStats? reportStats = dataPdf["reportStats"] as ReportStats?;
 
     String getDateRangeText(String? filter) {

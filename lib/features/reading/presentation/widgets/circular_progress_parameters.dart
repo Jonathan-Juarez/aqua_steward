@@ -1,51 +1,34 @@
+import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:aqua_steward/core/theme/app_color.dart';
 import 'package:aqua_steward/core/theme/app_icon.dart';
 import 'package:aqua_steward/core/theme/app_padding.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
+import 'package:aqua_steward/features/deposit/domain/entities/deposit_snapshot.dart';
 import 'package:flutter/material.dart';
 
 class CircularProgressParameters extends StatelessWidget {
   final int index;
-  final List<double> peakParameters;
-  final List<double> imputParameters;
-  final List<String> parametersLabel;
-  final List<String> unit;
-  final Map<String, dynamic> depositData;
+  final DepositSnapshot snapshot;
 
   const CircularProgressParameters({
     super.key,
     required this.index,
-    required this.peakParameters,
-    required this.imputParameters,
-    required this.parametersLabel,
-    required this.unit,
-    required this.depositData,
+    required this.snapshot,
   });
 
   @override
   Widget build(BuildContext context) {
-    late double? minValue;
-    late double? maxValue;
-    late double currentValue;
-    // Determinamos si el valor está fuera de los umbrales definidos en depositData.
-    bool hasError = false;
-    final sensors = depositData["sensors"];
-    final sensor =
-        (sensors != null && sensors is List && index < sensors.length)
-        ? sensors[index]
-        : null;
-
-    final sMap = sensor is Map<String, dynamic> ? sensor : null;
-    minValue = sMap != null ? (sMap["min_value"] as num?)?.toDouble() : null;
-    maxValue = sMap != null ? (sMap["max_value"] as num?)?.toDouble() : null;
-    currentValue = imputParameters[index];
-
-    if ((minValue != null && currentValue < minValue) ||
-        (maxValue != null && currentValue > maxValue)) {
-      hasError = true;
-    }
+    final parametersLabel = [
+      context.l10n.sensor_nivel,
+      context.l10n.sensor_ph,
+      context.l10n.sensor_turbidez,
+    ];
+    final unit = snapshot.unitAt(index);
+    final value = snapshot.valueAt(index);
 
     return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Padding(
           padding: AppPadding.all16,
@@ -56,13 +39,10 @@ class CircularProgressParameters extends StatelessWidget {
                 width: 50,
                 height: 50,
                 child: CircularProgressIndicator(
-                  value: peakParameters[index] == 0
-                      ? 0.0
-                      : (imputParameters[index] /
-                            (unit[index] == "%" ? 100 : peakParameters[index])),
+                  value: snapshot.progressAt(index),
                   strokeWidth: 5,
                   valueColor: AlwaysStoppedAnimation(
-                    hasError
+                    snapshot.isOutOfRange(index)
                         ? AppColor.warning
                         : index == 0
                         ? AppColor.parameterAqua
@@ -81,18 +61,11 @@ class CircularProgressParameters extends StatelessWidget {
           ),
         ),
         // Texto que muestra el valor actual del parámetro.
-        if (unit[index] != "pH")
-          TextFormat(
-            text: "${imputParameters[index]} ${unit[index]}",
-            context: context,
-            type: "body",
-          ),
-        if (unit[index] == "pH")
-          TextFormat(
-            text: imputParameters[index].toString(),
-            context: context,
-            type: "body",
-          ),
+        TextFormat(
+          text: unit == "pH" ? value.toString() : "$value $unit",
+          context: context,
+          type: "body",
+        ),
         TextFormat(
           text: parametersLabel[index],
           context: context,

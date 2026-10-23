@@ -18,15 +18,17 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
+import 'package:aqua_steward/core/widgets/responsive_grid.dart';
+import 'package:aqua_steward/features/deposit/domain/entities/deposit.dart';
+import 'package:aqua_steward/features/deposit/domain/entities/sensor.dart';
 import 'package:aqua_steward/features/reading/domain/entities/report_stats.dart';
 import 'package:aqua_steward/features/reading/presentation/providers/reading_provider.dart';
 import 'package:provider/provider.dart';
 
 class ReportsScreen extends StatefulWidget {
-  final Map<String, dynamic>? depositData;
+  final Deposit? deposit;
 
-  const ReportsScreen({super.key, this.depositData});
+  const ReportsScreen({super.key, this.deposit});
 
   @override
   State<ReportsScreen> createState() => _ReportsScreenState();
@@ -49,18 +51,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
   double _limitCriticalEvents = 50;
 
   bool _isSensorActive(String sensorType) {
-    final sensors = widget.depositData?["sensors"];
-    if (sensors == null || sensors is! List) return true;
-    for (final s in sensors) {
-      if (s == null) continue;
-      final dynamic sObj = s;
-      final type = sObj is Map ? sObj["type"] : sObj.type;
-      if (type == sensorType) {
-        final state = sObj is Map ? sObj["state"] : sObj.state;
-        return state == true;
-      }
-    }
-    return true;
+    return widget.deposit?.isSensorActive(sensorType) ?? true;
   }
 
   @override
@@ -142,7 +133,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
         ),
 
         // En caso de estar activo el switch de estadisticas, se muestra la vista previa del reporte general.
-        if (_includeStats && widget.depositData != null) ...[
+        if (_includeStats && widget.deposit != null) ...[
           TextFormat(
             text: context.l10n.reporte_estadisticas,
             context: context,
@@ -155,94 +146,41 @@ class _ReportsScreenState extends State<ReportsScreen> {
           ),
           AppSizedBox.height12,
 
-          // Gráfico 1: Nivel (HC-SR04)
-          if (_isSensorActive("HC-SR04")) ...[
-            TextFormat(
-              text: context.l10n.sensor_nivel,
-              context: context,
-              type: "body",
-            ),
-            AppSizedBox.height8,
-            RepaintBoundary(
-              key: _chartKeyLevel,
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: LineaChart(
-                  depositId: widget.depositData!["id"] ?? "",
-                  sensorType: "HC-SR04",
+          ResponsiveGrid(
+            items: [
+              if (_isSensorActive(SensorTypes.level))
+                _buildChartCard(
+                  title: context.l10n.sensor_nivel,
+                  chartKey: _chartKeyLevel,
+                  sensorType: SensorTypes.level,
                   color: AppColor.parameterAqua,
                   maxY: 100.0,
                   unit: "%",
-                  selectedFilter: _selectedFilter,
                 ),
-              ),
-            ),
-            AppSizedBox.height12,
-          ],
-
-          // Gráfico 2: pH (PH-4502C)
-          if (_isSensorActive("PH-4502C")) ...[
-            TextFormat(
-              text: context.l10n.sensor_ph,
-              context: context,
-              type: "body",
-            ),
-            AppSizedBox.height8,
-            RepaintBoundary(
-              key: _chartKeyPh,
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: LineaChart(
-                  depositId: widget.depositData!["id"] ?? "",
-                  sensorType: "PH-4502C",
+              if (_isSensorActive(SensorTypes.ph))
+                _buildChartCard(
+                  title: context.l10n.sensor_ph,
+                  chartKey: _chartKeyPh,
+                  sensorType: SensorTypes.ph,
                   color: AppColor.parameterPH,
                   maxY: 14.0,
                   unit: "pH",
-                  selectedFilter: _selectedFilter,
                 ),
-              ),
-            ),
-            AppSizedBox.height12,
-          ],
-
-          // Gráfico 3: Turbidez (TS300B)
-          if (_isSensorActive("TS300B")) ...[
-            TextFormat(
-              text: context.l10n.sensor_turbidez,
-              context: context,
-              type: "body",
-            ),
-            AppSizedBox.height8,
-            RepaintBoundary(
-              key: _chartKeyTurbidity,
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: LineaChart(
-                  depositId: widget.depositData!["id"] ?? "",
-                  sensorType: "TS300B",
+              if (_isSensorActive(SensorTypes.turbidity))
+                _buildChartCard(
+                  title: context.l10n.sensor_turbidez,
+                  chartKey: _chartKeyTurbidity,
+                  sensorType: SensorTypes.turbidity,
                   color: AppColor.parameterTurbidity,
                   maxY: 3000.0,
                   unit: "NTU",
-                  selectedFilter: _selectedFilter,
                 ),
-              ),
-            ),
-          ],
+            ],
+          ),
+          AppSizedBox.height12,
         ],
 
-        if (_includeCriticalEvents && widget.depositData != null) ...[
+        if (_includeCriticalEvents && widget.deposit != null) ...[
           TextFormat(
             text: context.l10n.reporte_eventos_criticos,
             context: context,
@@ -306,13 +244,13 @@ class _ReportsScreenState extends State<ReportsScreen> {
     if (_includeStats) {
       // Breve espera para asegurar que los gráficos se han renderizado
       await Future.delayed(const Duration(milliseconds: 500));
-      final img1 = _isSensorActive("HC-SR04")
+      final img1 = _isSensorActive(SensorTypes.level)
           ? await _captureChartImage(_chartKeyLevel)
           : null;
-      final img2 = _isSensorActive("PH-4502C")
+      final img2 = _isSensorActive(SensorTypes.ph)
           ? await _captureChartImage(_chartKeyPh)
           : null;
-      final img3 = _isSensorActive("TS300B")
+      final img3 = _isSensorActive(SensorTypes.turbidity)
           ? await _captureChartImage(_chartKeyTurbidity)
           : null;
       capturedImages = [img1, img2, img3];
@@ -320,14 +258,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
     ReportStats? reportStats;
     if ((_includeCompliance || _includeCriticalEvents) &&
-        widget.depositData != null) {
-      final depositId = widget.depositData!["id"] ?? "";
-      final token = context.read<AuthProvider>().currentUser?.token ?? "";
+        widget.deposit != null) {
+      final depositId = widget.deposit!.id ?? "";
       final readingProvider = context.read<ReadingProvider>();
 
       final result = await readingProvider.getReportStats(
         depositId: depositId,
-        token: token,
         filter: _selectedFilter,
       );
 
@@ -343,7 +279,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
       _isCapturing = false;
     });
 
-    final String depositName = widget.depositData?["name"] ?? "";
+    final String depositName = widget.deposit?.name ?? "";
     final String filename = depositName.isNotEmpty
         ? "${context.l10n.titulo_reporte_pdf}_$depositName"
         : context.l10n.titulo_reporte_pdf;
@@ -353,7 +289,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
       AppRouter.pdfPreview,
       arguments: {
         "filename": filename,
-        "depositData": widget.depositData,
+        "deposit": widget.deposit,
         "selectedFilter": _selectedFilter,
         "includeStats": _includeStats,
         "includeCompliance": _includeCompliance,
@@ -362,6 +298,46 @@ class _ReportsScreenState extends State<ReportsScreen> {
         "reportStats": reportStats,
         "limitCriticalEvents": _limitCriticalEvents.toInt(),
       },
+    );
+  }
+
+  // Genera la tarjeta con su contenedor y encabezado para cada gráfico en la cuadrícula
+  Widget _buildChartCard({
+    required String title,
+    required GlobalKey chartKey,
+    required String sensorType,
+    required Color color,
+    required double maxY,
+    required String unit,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextFormat(
+          text: title,
+          context: context,
+          type: "body",
+        ),
+        AppSizedBox.height8,
+        RepaintBoundary(
+          key: chartKey,
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: LineaChart(
+              depositId: widget.deposit!.id ?? "",
+              sensorType: sensorType,
+              color: color,
+              maxY: maxY,
+              unit: unit,
+              selectedFilter: _selectedFilter,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

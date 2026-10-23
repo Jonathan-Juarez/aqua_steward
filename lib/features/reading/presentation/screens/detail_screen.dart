@@ -1,5 +1,6 @@
 import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:aqua_steward/core/extensions/to_clean_string.dart';
+import 'package:aqua_steward/core/theme/app_breakpoint.dart';
 import 'package:aqua_steward/core/theme/app_color.dart';
 import 'package:aqua_steward/core/theme/app_padding.dart';
 import 'package:aqua_steward/core/theme/app_sizedbox.dart';
@@ -10,6 +11,8 @@ import 'package:aqua_steward/core/widgets/linea_chart.dart';
 import 'package:aqua_steward/core/widgets/scaffold_main.dart';
 import 'package:aqua_steward/core/widgets/tab_bar_format.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
+import 'package:aqua_steward/features/deposit/domain/entities/deposit.dart';
+import 'package:aqua_steward/features/deposit/domain/entities/deposit_snapshot.dart';
 import 'package:aqua_steward/features/deposit/presentation/providers/deposit_provider.dart';
 import 'package:aqua_steward/features/reading/presentation/widgets/deposit_menu_button.dart';
 import 'package:aqua_steward/features/reading/presentation/widgets/map_deposit.dart';
@@ -20,12 +23,12 @@ import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
 class DetailScreen extends StatefulWidget {
-  final Map<String, dynamic> depositData;
+  final Deposit deposit;
   final int initialParameterIndex;
 
   const DetailScreen({
     super.key,
-    required this.depositData,
+    required this.deposit,
     this.initialParameterIndex = 0,
   });
 
@@ -34,12 +37,9 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-  late int _selectedTabIndex;
+  late int _selectedSensorIndex;
   String _selectedFilter = "Dia";
   late final MapController _mapController;
-  // Coordenadas del depósito
-  late final double? _depositLatitude;
-  late final double? _depositLongitude;
 
   static const List<Color> _sensorColors = [
     AppColor.parameterAqua,
@@ -47,19 +47,11 @@ class _DetailScreenState extends State<DetailScreen> {
     AppColor.parameterTurbidity,
   ];
 
-  static const List<String> _sensorTypes = ["HC-SR04", "PH-4502C", "TS300B"];
-
-  static const List<String> _unitParameters = ["%", "pH", "NTU"];
-
   @override
   void initState() {
     super.initState();
-    _selectedTabIndex = widget.initialParameterIndex.clamp(0, 2);
+    _selectedSensorIndex = widget.initialParameterIndex.clamp(0, 2);
     _mapController = MapController();
-
-    // Inicializar coordenadas del depósito desde los datos recibidos
-    _depositLatitude = (widget.depositData["latitude"] as num?)?.toDouble();
-    _depositLongitude = (widget.depositData["longitude"] as num?)?.toDouble();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       PermissionService.requestLocationPermission(context);
@@ -72,140 +64,169 @@ class _DetailScreenState extends State<DetailScreen> {
     super.dispose();
   }
 
-  /// Verifica si el depósito tiene coordenadas válidas almacenadas.
-  bool get _hasValidCoordinates =>
-      _depositLatitude != null &&
-      _depositLongitude != null &&
-      _depositLatitude != 0.0 &&
-      _depositLongitude != 0.0;
-
-  /// Resuelve las coordenadas del depósito o devuelve CDMX como predeterminado.
-  LatLng get _depositLocation => _hasValidCoordinates
-      ? LatLng(_depositLatitude!, _depositLongitude!)
-      : const LatLng(19.4326, -99.1332);
-
   @override
   Widget build(BuildContext context) {
-    final depositData = widget.depositData;
-    final depositName = depositData["name"] as String? ?? "";
-    final ip = depositData["ip"] as String? ?? "";
-    final depositLocation = _depositLocation;
+    final depositId = widget.deposit.id;
+    final isTablet = AppBreakpoint.isTablet(context);
 
-    final labels = [
-      context.l10n.sensor_nivel,
-      context.l10n.sensor_ph,
-      context.l10n.sensor_turbidez,
-    ];
+    // Solo se reconstruye si cambia el depósito, no con cada lectura en vivo.
+    final Deposit deposit = context.select<DepositProvider, Deposit>(
+      (provider) => provider.snapshotById(depositId)?.deposit ?? widget.deposit,
+    );
+
+    final depositName = deposit.name ?? "";
+    final title = depositName.isNotEmpty
+        ? depositName
+        : context.l10n.pantalla_detalles_titulo;
+
+    final snapshot = context.read<DepositProvider>().snapshotOf(deposit);
+    final activeIndices = snapshot.activeSensorIndices;
+    final currentSensorIndex = activeIndices.contains(_selectedSensorIndex)
+        ? _selectedSensorIndex
+        : activeIndices.first;
 
     return ScaffoldMain(
-      titleAppBar: depositName.isNotEmpty
-          ? depositName
-          : context.l10n.pantalla_detalles_titulo,
+      titleAppBar: title,
       actions: [
         DepositMenuButton(
-          depositData: depositData,
+          deposit: deposit,
           onDepositDeleted: () => Navigator.pop(context),
           onDepositLeft: () => Navigator.pop(context),
         ),
       ],
       children: [
-        // 1. Ubicación del depósito como widget general
+        if (isTablet)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 5,
+                child: _buildLocationSection(
+                  context,
+                  deposit: deposit,
+                  isTablet: true,
+                ),
+              ),
+              AppSizedBox.width16,
+              Expanded(
+                flex: 7,
+                child: _buildSensorSection(
+                  context,
+                  snapshot: snapshot,
+                  currentSensorIndex: currentSensorIndex,
+                  isTablet: true,
+                ),
+              ),
+            ],
+          )
+        else ...[
+          _buildLocationSection(context, deposit: deposit, isTablet: false),
+          AppSizedBox.height12,
+          _buildSensorSection(
+            context,
+            snapshot: snapshot,
+            currentSensorIndex: currentSensorIndex,
+            isTablet: false,
+          ),
+        ],
+      ],
+    );
+  }
+
+  // Sección con el mapa interactivo y coordenadas del depósito
+  Widget _buildLocationSection(
+    BuildContext context, {
+    required Deposit deposit,
+    required bool isTablet,
+  }) {
+    final hasCoordinates = deposit.hasValidCoordinates;
+    final location = hasCoordinates
+        ? LatLng(deposit.latitude!, deposit.longitude!)
+        : const LatLng(19.4326, -99.1332);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
         TextFormat(
           text: context.l10n.ubicacion_deposito,
           context: context,
           type: "subtitle",
+          alignCenter: true,
         ),
         ContainerFormat(
           children: [
             AppSizedBox.height8,
             SizedBox(
-              height: 220,
+              height: isTablet ? 340 : 220,
               width: double.infinity,
               child: MapDeposit(
                 mapController: _mapController,
-                depositLocation: depositLocation,
-                depositName: depositName,
+                depositLocation: location,
+                depositName: deposit.name ?? "",
                 interactive: true,
                 showUserLocation: true,
               ),
             ),
             AppSizedBox.height8,
-            if (_hasValidCoordinates)
+            if (hasCoordinates)
               Padding(
                 padding: AppPadding.symmetric0_8,
                 child: TextFormat(
                   text:
-                      "${_depositLatitude!.toStringAsFixed(4)}, ${_depositLongitude!.toStringAsFixed(4)}",
+                      "${deposit.latitude!.toStringAsFixed(4)}, ${deposit.longitude!.toStringAsFixed(4)}",
                   context: context,
                   type: "bodySecondary",
                 ),
               ),
           ],
         ),
-        AppSizedBox.height12,
+      ],
+    );
+  }
 
-        // 2. Filtro TabBarFormat para cambiar entre nivel, pH y turbidez
+  // Sección interactiva del sensor: barra de pestañas activas, métricas y gráfico
+  Widget _buildSensorSection(
+    BuildContext context, {
+    required DepositSnapshot snapshot,
+    required int currentSensorIndex,
+    required bool isTablet,
+  }) {
+    final labels = [
+      context.l10n.sensor_nivel,
+      context.l10n.sensor_ph,
+      context.l10n.sensor_turbidez,
+    ];
+    final activeIndices = snapshot.activeSensorIndices;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextFormat(
+          text: context.l10n.detalles_historial,
+          context: context,
+          type: "subtitle",
+        ),
+        // Filtro TabBarFormat con únicamente los sensores activos
         TabBarFormat(
-          labels: labels,
-          selectedIndex: _selectedTabIndex,
-          onTabSelected: (index) {
+          labels: activeIndices.map((i) => labels[i]).toList(),
+          selectedIndex: activeIndices.indexOf(currentSensorIndex),
+          onTabSelected: (tab) {
             setState(() {
-              _selectedTabIndex = index;
+              _selectedSensorIndex = activeIndices[tab];
             });
           },
-          activeColor: _sensorColors[_selectedTabIndex],
+          activeColor: _sensorColors[currentSensorIndex],
         ),
         AppSizedBox.height12,
 
-        // 3. Detalle del sensor seleccionado (Estado, Umbrales, Filtros y Gráfico)
+        // Detalle del sensor seleccionado con datos en tiempo real
         Consumer<DepositProvider>(
           builder: (context, provider, child) {
-            final id = depositData["id"] as String? ?? "";
-            double currentLitters =
-                (depositData["inputLevel"] as num?)?.toDouble() ?? 0.0;
-            double currentPh =
-                (depositData["inputPh"] as num?)?.toDouble() ?? 0.0;
-            double currentTurbidity =
-                (depositData["inputTurbidity"] as num?)?.toDouble() ?? 0.0;
-
-            final realTime = provider.getRealTimeDataForDeposit(ip: ip, id: id);
-            if (realTime != null) {
-              currentLitters = realTime['level'] ?? currentLitters;
-              currentPh = realTime['ph'] ?? currentPh;
-              currentTurbidity = realTime['turbidity'] ?? currentTurbidity;
-            } else if (ip.isNotEmpty && provider.realTimeData.containsKey(ip)) {
-              currentLitters =
-                  provider.realTimeData[ip]!['level'] ?? currentLitters;
-              currentPh = provider.realTimeData[ip]!['ph'] ?? currentPh;
-              currentTurbidity =
-                  provider.realTimeData[ip]!['turbidity'] ?? currentTurbidity;
-            }
-
-            final List<double> inputParameters = [
-              currentLitters,
-              currentPh,
-              currentTurbidity,
-            ];
-
-            final double peakLevel =
-                (depositData["peakLevel"] as num?)?.toDouble() ??
-                (depositData["capacity"] as num?)?.toDouble() ??
-                100.0;
-            final double peakPh =
-                (depositData["peakPh"] as num?)?.toDouble() ?? 14.0;
-            final double peakTurbidity =
-                (depositData["peakTurbidity"] as num?)?.toDouble() ?? 3000.0;
-            final List<double> peakParameters = [
-              peakLevel,
-              peakPh,
-              peakTurbidity,
-            ];
-
+            final live = provider.snapshotById(snapshot.deposit.id) ?? snapshot;
             return _buildParameterDetail(
               context,
-              index: _selectedTabIndex,
-              currentValue: inputParameters[_selectedTabIndex],
-              peakValue: peakParameters[_selectedTabIndex],
+              snapshot: live,
+              index: currentSensorIndex,
             );
           },
         ),
@@ -215,32 +236,17 @@ class _DetailScreenState extends State<DetailScreen> {
 
   Widget _buildParameterDetail(
     BuildContext context, {
+    required DepositSnapshot snapshot,
     required int index,
-    required double currentValue,
-    required double peakValue,
   }) {
-    final depositData = widget.depositData;
-    final sensorType = _sensorTypes[index];
-    final unit = _unitParameters[index];
-    final color = _sensorColors[index];
-    final maxY = index == 2 ? peakValue : const [100.0, 14.0, 0.0][index];
+    final sensorType = snapshot.sensorTypeAt(index);
+    final unit = snapshot.unitAt(index);
+    final currentValue = snapshot.valueAt(index);
+    final peakValue = snapshot.peakAt(index);
+    final sensor = snapshot.sensorAt(index);
 
-    double? minVal;
-    double? maxVal;
-    final sensors = depositData["sensors"];
-    if (sensors is List) {
-      for (final s in sensors) {
-        final type = s is Map ? s["type"] : s.type;
-        if (type == sensorType) {
-          minVal = s is Map ? (s["min_value"] as num?)?.toDouble() : s.minValue;
-          maxVal = s is Map ? (s["max_value"] as num?)?.toDouble() : s.maxValue;
-          break;
-        }
-      }
-    }
-
-    final rangeMin = minVal?.toCleanString();
-    final rangeMax = maxVal?.toCleanString();
+    final rangeMin = sensor?.minValue?.toCleanString();
+    final rangeMax = sensor?.maxValue?.toCleanString();
     final stateText = StateParameters.show(context, currentValue, unit);
 
     final filters = [
@@ -357,10 +363,10 @@ class _DetailScreenState extends State<DetailScreen> {
         // Gráfico histórico
         LineaChart(
           key: ValueKey("$sensorType-$_selectedFilter"),
-          depositId: depositData["id"] ?? "",
+          depositId: snapshot.deposit.id ?? "",
           sensorType: sensorType,
-          color: color,
-          maxY: maxY,
+          color: _sensorColors[index],
+          maxY: snapshot.chartMaxAt(index),
           unit: unit,
           selectedFilter: _selectedFilter,
         ),

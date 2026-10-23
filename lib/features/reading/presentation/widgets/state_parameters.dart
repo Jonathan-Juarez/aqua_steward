@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 class StateParameters {
   static String show(BuildContext context, double inputValue, String unit) {
     if (unit == "pH") {
-      if (inputValue < 0 || inputValue > 14)
-        // ignore: curly_braces_in_flow_control_structures
+      if (inputValue < 0 || inputValue > 14) {
         return context.l10n.estado_error_lectura;
+      }
       if (inputValue < 6.0) return context.l10n.estado_muy_acido;
       if (inputValue < 6.5) return context.l10n.estado_acido;
       if (inputValue <= 8.5) return context.l10n.estado_optimo;

@@ -6,7 +6,7 @@ import 'package:aqua_steward/core/theme/app_icon.dart';
 import 'package:aqua_steward/core/widgets/dialog_emergent.dart';
 import 'package:aqua_steward/core/widgets/menu_button_format.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
-import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
+import 'package:aqua_steward/features/deposit/domain/entities/deposit.dart';
 import 'package:aqua_steward/features/deposit/presentation/providers/deposit_provider.dart';
 import 'package:aqua_steward/features/reading/presentation/widgets/dialog_export_csv.dart';
 import 'package:aqua_steward/features/team/presentation/providers/team_provider.dart';
@@ -14,24 +14,20 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class DepositMenuButton extends StatelessWidget {
-  final Map<String, dynamic> depositData;
+  final Deposit deposit;
   final VoidCallback? onDepositDeleted;
   final VoidCallback? onDepositLeft;
 
   const DepositMenuButton({
     super.key,
-    required this.depositData,
+    required this.deposit,
     this.onDepositDeleted,
     this.onDepositLeft,
   });
 
   void _deleteDeposit(BuildContext context, String depositId) async {
-    final authProvider = context.read<AuthProvider>();
-    final token = authProvider.currentUser?.token ?? "";
-
     final result = await context.read<DepositProvider>().deleteDeposit(
       depositId: depositId,
-      token: token,
     );
     if (context.mounted) {
       context.processResult(
@@ -45,28 +41,25 @@ class DepositMenuButton extends StatelessWidget {
   }
 
   void _leaveDeposit(BuildContext context, String depositId) async {
-    final token = context.read<AuthProvider>().currentUser?.token ?? "";
-    if (token.isNotEmpty) {
-      final result = await context.read<TeamProvider>().leaveDeposit(
-        depositId: depositId,
-        token: token,
+    final result = await context.read<TeamProvider>().leaveDeposit(
+      depositId: depositId,
+    );
+    if (context.mounted) {
+      context.processResult(
+        result,
+        successMessage: context.l10n.snackbar_abandonar_deposito,
       );
-      if (context.mounted) {
-        context.processResult(
-          result,
-          successMessage: context.l10n.snackbar_abandonar_deposito,
-        );
-        if (result.isSuccess) {
-          context.read<DepositProvider>().getDeposits(token: token);
-          onDepositLeft?.call();
-        }
+      if (result.isSuccess) {
+        context.read<DepositProvider>().getDeposits();
+        onDepositLeft?.call();
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final String role = depositData["role"] ?? "analyst";
+    final String role = deposit.role ?? "analyst";
+    final String depositId = deposit.id ?? "";
 
     final List<MenuItemModel> menuItems = [
       MenuItemModel(
@@ -112,50 +105,56 @@ class DepositMenuButton extends StatelessWidget {
       onSelected: (value) {
         final Map<String, VoidCallback> actions = {
           "exportCsv": () {
-            DialogExportCsv.show(context: context, depositData: depositData);
+            DialogExportCsv.show(context: context, deposit: deposit);
           },
           "generatePdf": () {
             Navigator.pushNamed(
               context,
               AppRouter.generateReports,
-              arguments: {"depositData": depositData},
+              arguments: {"deposit": deposit},
             );
           },
           "members": () {
             Navigator.pushNamed(
               context,
               AppRouter.members,
-              arguments: {"depositId": depositData["id"]},
+              arguments: {"depositId": depositId},
             );
           },
           "deposit": () {
             Navigator.pushNamed(
               context,
               AppRouter.depositScreen,
-              arguments: {"depositData": depositData},
+              arguments: {"deposit": deposit},
             );
           },
           "delete": () {
-            showDialog(
-              context: context,
-              builder: (dialogCtx) => DialogEmergent(
-                title: context.l10n.dialogo_eliminar_deposito_titulo,
-                content: TextFormat(
-                  text: context.l10n.dialogo_eliminar_deposito,
-                  context: dialogCtx,
-                  type: "body",
-                ),
-                onPressed: () {
-                  Navigator.pop(dialogCtx);
-                  _deleteDeposit(context, depositData["id"]);
-                },
-                formKey: null,
-                isLoading: false,
+            DialogEmergent(
+              title: context.l10n.dialogo_eliminar_deposito_titulo,
+              content: TextFormat(
+                text: context.l10n.dialogo_eliminar_deposito,
+                context: context,
+                type: "body",
               ),
-            );
+              onPressed: () {
+                Navigator.pop(context);
+                _deleteDeposit(context, depositId);
+              },
+            ).show(context);
           },
           "leave": () {
-            _leaveDeposit(context, depositData["id"]);
+            DialogEmergent(
+              title: context.l10n.dialogo_abandonar_equipo_titulo,
+              content: TextFormat(
+                text: context.l10n.dialogo_abandonar_equipo,
+                context: context,
+                type: "body",
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                _leaveDeposit(context, depositId);
+              },
+            ).show(context);
           },
         };
 

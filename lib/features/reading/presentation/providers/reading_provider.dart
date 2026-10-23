@@ -15,11 +15,14 @@ class ReadingProvider extends ChangeNotifier {
   final GetReadingsUseCase getReadingsUseCase;
   final ExportReadingsUseCase exportReadingsUseCase;
   final GetReadingReportStatsUseCase getReportStatsUseCase;
+  // Entrega el token de la sesión actual sin exponerlo a la interfaz.
+  final String Function() readToken;
 
   ReadingProvider({
     required this.getReadingsUseCase,
     required this.exportReadingsUseCase,
     required this.getReportStatsUseCase,
+    required this.readToken,
   });
 
   bool _isLoading = false;
@@ -28,7 +31,6 @@ class ReadingProvider extends ChangeNotifier {
   Future<Result<List<Reading>>> getReadings(
     String depositId,
     String sensorType,
-    String token,
     String filter,
   ) async {
     _isLoading = true;
@@ -39,7 +41,7 @@ class ReadingProvider extends ChangeNotifier {
       final result = await getReadingsUseCase.call(
         depositId: depositId,
         sensorType: sensorType,
-        token: token,
+        token: readToken(),
         filter: filter,
       );
       return result;
@@ -54,7 +56,6 @@ class ReadingProvider extends ChangeNotifier {
   Future<Result<void>> exportReadings({
     required String depositId,
     required List<String> sensorTypes,
-    required String token,
     required String depositName,
     required String filter,
   }) async {
@@ -65,7 +66,7 @@ class ReadingProvider extends ChangeNotifier {
       final result = await exportReadingsUseCase.call(
         depositId: depositId,
         sensorTypes: sensorTypes,
-        token: token,
+        token: readToken(),
         filter: filter,
       );
 
@@ -113,7 +114,6 @@ class ReadingProvider extends ChangeNotifier {
 
   Future<Result<ReportStats>> getReportStats({
     required String depositId,
-    required String token,
     required String filter,
   }) async {
     _isLoading = true;
@@ -122,7 +122,7 @@ class ReadingProvider extends ChangeNotifier {
     try {
       final result = await getReportStatsUseCase.call(
         depositId: depositId,
-        token: token,
+        token: readToken(),
         filter: filter,
       );
       return result;

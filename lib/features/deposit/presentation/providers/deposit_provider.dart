@@ -5,6 +5,7 @@ import 'package:aqua_steward/features/deposit/domain/usecases/delete_deposit_use
 import 'package:aqua_steward/features/deposit/domain/usecases/get_deposits_usecase.dart';
 import 'package:aqua_steward/features/deposit/domain/usecases/update_deposit_usecase.dart';
 import 'package:aqua_steward/features/deposit/domain/entities/deposit.dart';
+import 'package:aqua_steward/features/deposit/domain/entities/deposit_snapshot.dart';
 import 'package:aqua_steward/core/network/socket_service.dart';
 import 'package:flutter/material.dart';
 
@@ -13,12 +14,14 @@ class DepositProvider extends ChangeNotifier {
   final CreateDepositUseCase createDepositUseCase;
   final DeleteDepositUseCase deleteDepositUseCase;
   final UpdateDepositUsecase updateDepositUseCase;
+  final String Function()? readToken;
 
   DepositProvider({
     required this.getDepositsUseCase,
     required this.createDepositUseCase,
     required this.deleteDepositUseCase,
     required this.updateDepositUseCase,
+    this.readToken,
   }) {
     _initSocket();
   }
@@ -38,6 +41,26 @@ class DepositProvider extends ChangeNotifier {
     }
     if (id != null && id.isNotEmpty && _realTimeData.containsKey(id)) {
       return _realTimeData[id];
+    }
+    return null;
+  }
+
+  // Estado actual (con lecturas en tiempo real) de un depósito.
+  DepositSnapshot snapshotOf(Deposit deposit) {
+    final realTime = getRealTimeDataForDeposit(ip: deposit.ip, id: deposit.id);
+    return DepositSnapshot(
+      deposit: deposit,
+      level: realTime?['level'] ?? 0.0,
+      ph: realTime?['ph'] ?? 0.0,
+      turbidity: realTime?['turbidity'] ?? 0.0,
+    );
+  }
+
+  List<DepositSnapshot> get snapshots => _deposits.map(snapshotOf).toList();
+
+  DepositSnapshot? snapshotById(String? id) {
+    for (final deposit in _deposits) {
+      if (deposit.id == id) return snapshotOf(deposit);
     }
     return null;
   }
@@ -103,14 +126,15 @@ class DepositProvider extends ChangeNotifier {
   }
 
   // Carga la lista de depósitos desde el dominio y notifica a la vista.
-  Future<Result<List<Deposit>>> getDeposits({required String token}) async {
+  Future<Result<List<Deposit>>> getDeposits({String? token}) async {
+    final effectiveToken = token ?? readToken?.call() ?? "";
     // Activa el estado de carga para feedback visual en la interfaz.
     _isLoading = true;
     notifyListeners();
 
     try {
       // Solicita la colección de depósitos al caso de uso correspondiente.
-      final result = await getDepositsUseCase.call(token: token);
+      final result = await getDepositsUseCase.call(token: effectiveToken);
       if (result.isSuccess) {
         // El backend ya filtra por owner_id usando el token JWT.
         _deposits = result.data!;
@@ -131,8 +155,9 @@ class DepositProvider extends ChangeNotifier {
   // Ejecuta la creación de un nuevo depósito y sincroniza la lista local.
   Future<Result<void>> createDeposit({
     required Deposit deposit,
-    required String token,
+    String? token,
   }) async {
+    final effectiveToken = token ?? readToken?.call() ?? "";
     // Inicia el spinner de carga para la acción de guardado.
     _isLoading = true;
     notifyListeners();
@@ -141,11 +166,11 @@ class DepositProvider extends ChangeNotifier {
       // Invoca el caso de uso de creación con los datos del modelo.
       final result = await createDepositUseCase.call(
         deposit: deposit,
-        token: token,
+        token: effectiveToken,
       );
       if (result.isSuccess) {
         // Refresca la lista de depósitos para reflejar el nuevo registro.
-        await getDeposits(token: token);
+        await getDeposits(token: effectiveToken);
       }
       return result;
     } catch (e) {
@@ -161,8 +186,9 @@ class DepositProvider extends ChangeNotifier {
   // Procesa la eliminación de un depósito por ID y actualiza el estado.
   Future<Result<void>> deleteDeposit({
     required String depositId,
-    required String token,
+    String? token,
   }) async {
+    final effectiveToken = token ?? readToken?.call() ?? "";
     // Activa el indicador de carga para la operación de borrado.
     _isLoading = true;
     notifyListeners();
@@ -171,12 +197,12 @@ class DepositProvider extends ChangeNotifier {
       // Delega la eliminación al caso de uso de dominio especializado.
       final result = await deleteDepositUseCase.call(
         depositId: depositId,
-        token: token,
+        token: effectiveToken,
       );
       if (result.isSuccess) {
         // Elimina el depósito de la lista local inmediatamente para fluidez visual.
         _deposits.removeWhere((deposit) => deposit.id == depositId);
-        await getDeposits(token: token);
+        await getDeposits(token: effectiveToken);
       }
       return result;
     } catch (e) {
@@ -193,8 +219,9 @@ class DepositProvider extends ChangeNotifier {
   Future<Result<void>> updateDeposit({
     required String depositId,
     required Deposit deposit,
-    required String token,
+    String? token,
   }) async {
+    final effectiveToken = token ?? readToken?.call() ?? "";
     // Activa el indicador de carga para la operación de actualización.
     _isLoading = true;
     notifyListeners();
@@ -203,7 +230,7 @@ class DepositProvider extends ChangeNotifier {
       // Delega la actualización al caso de uso de dominio especializado.
       final result = await updateDepositUseCase.updateDeposit(
         depositId: depositId,
-        token: token,
+        token: effectiveToken,
         deposit: deposit,
       );
       if (result.isSuccess) {
@@ -216,7 +243,7 @@ class DepositProvider extends ChangeNotifier {
           _deposits[index] = deposit;
         }
         // Llamada en segundo plano para corroborar la db.
-        getDeposits(token: token);
+        getDeposits(token: effectiveToken);
       }
       return result;
     } catch (e) {

@@ -143,68 +143,63 @@ class _SliderFormatState extends State<SliderFormat> {
         text: widget.rangeValues?.end.toCleanString(),
       );
 
-      showDialog(
-        context: context,
-        builder: (context) {
-          return DialogEmergent(
-            title: "Editar ${widget.labelLimit}",
-            content: Form(
-              key: formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFieldFormat(
-                    maxLength: 5,
-                    controller: startController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: inputFormatters,
-                    labelText: "Valor inicial (${widget.unit})",
-                    icon: AppIcon.edit(context: context),
-                    validator: (val) =>
-                        AppValidators.validateNumber(context, val),
-                  ),
-                  TextFieldFormat(
-                    maxLength: 5,
-                    controller: endController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: inputFormatters,
-                    labelText: "Valor final (${widget.unit})",
-                    icon: AppIcon.edit(context: context),
-                    validator: (val) =>
-                        AppValidators.validateNumber(context, val),
-                  ),
-                ],
+      DialogEmergent(
+        title: "Editar ${widget.labelLimit}",
+        formKey: formKey,
+        content: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFieldFormat(
+                maxLength: 5,
+                controller: startController,
+                keyboardType: TextInputType.number,
+                inputFormatters: inputFormatters,
+                labelText: "Valor inicial (${widget.unit})",
+                icon: AppIcon.edit(context: context),
+                validator: (val) =>
+                    AppValidators.validateNumber(context, val),
               ),
-            ),
-            onPressed: () {
-              // Se convierte los valores del controlador a double.
-              double valueMin = double.parse(startController.text);
-              double valueMax = double.parse(endController.text);
-              // Se valida que el rango esté dentro del rango permitido, si sobrepasa, se le asigna el valor máximo o mínimo.
-              if (valueMin < widget.min) valueMin = widget.min;
-              if (valueMin > widget.max) valueMin = widget.max;
+              TextFieldFormat(
+                maxLength: 5,
+                controller: endController,
+                keyboardType: TextInputType.number,
+                inputFormatters: inputFormatters,
+                labelText: "Valor final (${widget.unit})",
+                icon: AppIcon.edit(context: context),
+                validator: (val) =>
+                    AppValidators.validateNumber(context, val),
+              ),
+            ],
+          ),
+        ),
+        onPressed: () {
+          // Se convierte los valores del controlador a double.
+          double valueMin = double.parse(startController.text);
+          double valueMax = double.parse(endController.text);
+          // Se valida que el rango esté dentro del rango permitido, si sobrepasa, se le asigna el valor máximo o mínimo.
+          if (valueMin < widget.min) valueMin = widget.min;
+          if (valueMin > widget.max) valueMin = widget.max;
 
-              if (valueMax < widget.min) valueMax = widget.min;
-              if (valueMax > widget.max) valueMax = widget.max;
+          if (valueMax < widget.min) valueMax = widget.min;
+          if (valueMax > widget.max) valueMax = widget.max;
 
-              // Redondear para evitar errores de precisión.
-              valueMin = double.parse(valueMin.toCleanString());
-              valueMax = double.parse(valueMax.toCleanString());
+          // Redondear para evitar errores de precisión.
+          valueMin = double.parse(valueMin.toCleanString());
+          valueMax = double.parse(valueMax.toCleanString());
 
-              // Se valida que el valor inicial no sea mayor al valor final.
-              if (valueMin > valueMax) {
-                double tempMax = valueMin;
-                valueMin = valueMax;
-                valueMax = tempMax;
-              }
+          // Se valida que el valor inicial no sea mayor al valor final.
+          if (valueMin > valueMax) {
+            double tempMax = valueMin;
+            valueMin = valueMax;
+            valueMax = tempMax;
+          }
 
-              widget.onChanged(RangeValues(valueMin, valueMax));
-              Navigator.pop(context);
-            },
-            formKey: formKey,
-          );
+          widget.onChanged(RangeValues(valueMin, valueMax));
+          Navigator.pop(context);
         },
-      );
+      ).show(context);
     }
   }
 }

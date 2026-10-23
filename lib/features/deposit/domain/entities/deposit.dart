@@ -19,4 +19,31 @@ class Deposit {
     this.role,
     this.sensors,
   });
+
+  // Indica si el depósito tiene coordenadas almacenadas distintas de cero.
+  bool get hasValidCoordinates =>
+      latitude != null &&
+      longitude != null &&
+      latitude != 0.0 &&
+      longitude != 0.0;
+
+  // Busca el sensor configurado según su tipo.
+  Sensor? sensorOfType(String type) {
+    for (final sensor in sensors ?? const <Sensor>[]) {
+      if (sensor.type == type) return sensor;
+    }
+    return null;
+  }
+
+  // Un sensor sin configuración o sin estado definido se considera activo.
+  bool isSensorActive(String type) {
+    final state = sensorOfType(type)?.state;
+    return state is bool ? state : true;
+  }
+
+  // Tipos de sensor activos, en el orden de SensorTypes.
+  List<String> get activeSensorTypes => [
+    for (final type in SensorTypes.all)
+      if (isSensorActive(type)) type,
+  ];
 }

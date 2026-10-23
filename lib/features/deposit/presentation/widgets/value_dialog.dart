@@ -29,60 +29,57 @@ class ValueDialog {
     final minStr = min.toCleanString();
     final maxStr = max.toCleanString();
 
-    return showDialog(
-      context: context,
-      builder: (context2) => DialogEmergent(
-        title: title,
-        formKey: formKey,
-        content: Form(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (description != null) ...[
-                TextFormat(
-                  text: description,
-                  context: context2,
-                  type: "bodySecondary",
-                ),
-                AppSizedBox.height12,
-              ],
-              if (illustration != null) ...[
-                Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: illustration,
-                  ),
-                ),
-                AppSizedBox.height12,
-              ],
-              TextFieldFormat(
-                maxLength: 6,
-                controller: controller,
-                keyboardType: TextInputType.number,
-                inputFormatters: [
-                  if (!allowDecimals) FilteringTextInputFormatter.digitsOnly,
-                ],
-                labelText: context2.l10n.comun_rango(maxStr, minStr, unit),
-                icon: AppIcon.edit(context: context2),
-                validator: (val) => AppValidators.validateNumber(context2, val),
+    return DialogEmergent(
+      title: title,
+      formKey: formKey,
+      content: Form(
+        key: formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (description != null) ...[
+              TextFormat(
+                text: description,
+                context: context,
+                type: "bodySecondary",
               ),
+              AppSizedBox.height12,
             ],
-          ),
+            if (illustration != null) ...[
+              Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: illustration,
+                ),
+              ),
+              AppSizedBox.height12,
+            ],
+            TextFieldFormat(
+              maxLength: 6,
+              controller: controller,
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                if (!allowDecimals) FilteringTextInputFormatter.digitsOnly,
+              ],
+              labelText: context.l10n.comun_rango(maxStr, minStr, unit),
+              icon: AppIcon.edit(context: context),
+              validator: (val) => AppValidators.validateNumber(context, val),
+            ),
+          ],
         ),
-        onPressed: () {
-          if (formKey.currentState?.validate() ?? false) {
-            double limitValue = double.parse(controller.text);
-            if (limitValue < min) limitValue = min;
-            if (limitValue > max) limitValue = max;
-            limitValue = double.parse(limitValue.toCleanString());
-
-            onSaved(limitValue);
-            Navigator.pop(context2);
-          }
-        },
       ),
-    );
+      onPressed: () {
+        if (formKey.currentState?.validate() ?? false) {
+          double limitValue = double.parse(controller.text);
+          if (limitValue < min) limitValue = min;
+          if (limitValue > max) limitValue = max;
+          limitValue = double.parse(limitValue.toCleanString());
+
+          onSaved(limitValue);
+          Navigator.pop(context);
+        }
+      },
+    ).show(context);
   }
 }

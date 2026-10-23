@@ -26,8 +26,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class DepositScreen extends StatefulWidget {
-  final Map<String, dynamic>? depositData;
-  const DepositScreen({super.key, this.depositData});
+  final Deposit? deposit;
+  const DepositScreen({super.key, this.deposit});
 
   @override
   State<DepositScreen> createState() => _DepositScreenState();
@@ -63,55 +63,39 @@ class _DepositScreenState extends State<DepositScreen> {
   @override
   void initState() {
     super.initState();
-    final data = widget.depositData;
+    final deposit = widget.deposit;
 
-    if (data != null) {
+    if (deposit != null) {
       // Modo edición: carga los valores existentes del depósito.
-      _ipController.text = (data["ip"] as String?) ?? "";
-      _nameController.text = (data["name"] as String?) ?? "";
+      _ipController.text = deposit.ip ?? "";
+      _nameController.text = deposit.name ?? "";
 
-      final sensors = data["sensors"] as List?;
-      if (sensors != null && sensors.length >= 3) {
+      final levelSensor = deposit.sensorOfType(SensorTypes.level);
+      final phSensor = deposit.sensorOfType(SensorTypes.ph);
+      final turbiditySensor = deposit.sensorOfType(SensorTypes.turbidity);
+
+      if (levelSensor != null || phSensor != null || turbiditySensor != null) {
         _switchValues = [
-          _getSensorState(sensors[0]),
-          _getSensorState(sensors[1]),
-          _getSensorState(sensors[2]),
+          levelSensor?.state == true,
+          phSensor?.state == true,
+          turbiditySensor?.state == true,
         ];
       } else {
         _switchValues = [true, false, false];
       }
 
-      _depositCapacity = (data["capacity"] as num?)?.toDouble() ?? 100;
-      _depositHeight = (data["installation_height"] as num?)?.toDouble() ?? 50;
-      _fillGap = (data["fill_gap"] as num?)?.toDouble() ?? 10;
-      _latitude = (data["latitude"] as num?)?.toDouble();
-      _longitude = (data["longitude"] as num?)?.toDouble();
+      _depositCapacity = deposit.capacity ?? 100;
+      _depositHeight = deposit.installation_height ?? 50;
+      _fillGap = deposit.fill_gap ?? 10;
+      _latitude = deposit.latitude;
+      _longitude = deposit.longitude;
 
       // Lee los umbrales existentes de cada sensor.
-      double levelMin = 10.0;
-      double levelMax = 90.0;
-      double phMin = 6.5;
-      double phMax = 8.5;
-      _maxTurbidity = 5.0;
-
-      if (sensors != null) {
-        for (var sensor in sensors) {
-          final sMap = sensor as Map<String, dynamic>;
-          final String? type = sMap["type"]?.toString();
-          final double? minVal = (sMap["min_value"] as num?)?.toDouble();
-          final double? maxVal = (sMap["max_value"] as num?)?.toDouble();
-
-          if (type == "HC-SR04") {
-            levelMin = minVal ?? levelMin;
-            levelMax = maxVal ?? levelMax;
-          } else if (type == "PH-4502C") {
-            phMin = minVal ?? phMin;
-            phMax = maxVal ?? phMax;
-          } else if (type == "TS300B") {
-            _maxTurbidity = maxVal ?? _maxTurbidity;
-          }
-        }
-      }
+      final double levelMin = levelSensor?.minValue ?? 10.0;
+      final double levelMax = levelSensor?.maxValue ?? 90.0;
+      final double phMin = phSensor?.minValue ?? 6.5;
+      final double phMax = phSensor?.maxValue ?? 8.5;
+      _maxTurbidity = turbiditySensor?.maxValue ?? 5.0;
 
       _levelRange = RangeValues(levelMin, levelMax);
       _phRange = RangeValues(phMin, phMax);
@@ -127,12 +111,6 @@ class _DepositScreenState extends State<DepositScreen> {
     }
   }
 
-  // Extrae el estado del sensor desde un Map.
-  bool _getSensorState(dynamic sensor) {
-    if (sensor is Map) return sensor["state"] as bool? ?? false;
-    return false;
-  }
-
   @override
   void dispose() {
     _ipController.dispose();
@@ -144,21 +122,21 @@ class _DepositScreenState extends State<DepositScreen> {
   List<Sensor> _buildSensors() {
     return [
       Sensor(
-        type: "HC-SR04",
+        type: SensorTypes.level,
         state: _switchValues[0],
         unit: "L",
         minValue: _levelRange.start,
         maxValue: _levelRange.end,
       ),
       Sensor(
-        type: "PH-4502C",
+        type: SensorTypes.ph,
         state: _switchValues[1],
         unit: "pH",
         minValue: _phRange.start,
         maxValue: _phRange.end,
       ),
       Sensor(
-        type: "TS300B",
+        type: SensorTypes.turbidity,
         state: _switchValues[2],
         unit: "NTU",
         maxValue: _maxTurbidity,
@@ -205,7 +183,6 @@ class _DepositScreenState extends State<DepositScreen> {
   void _saveDeposit() async {
     final authProvider = context.read<AuthProvider>();
     final currentUser = authProvider.currentUser;
-    final token = currentUser?.token ?? "";
 
     final macError = AppValidators.validateMac(context, _ipController.text);
     if (macError != null) {
@@ -214,7 +191,7 @@ class _DepositScreenState extends State<DepositScreen> {
       return;
     }
 
-    final String? depositId = widget.depositData?["id"] as String?;
+    final String? depositId = widget.deposit?.id;
     final bool isEditing = depositId != null && depositId.isNotEmpty;
 
     final Deposit deposit = Deposit(
@@ -235,12 +212,10 @@ class _DepositScreenState extends State<DepositScreen> {
       result = await context.read<DepositProvider>().updateDeposit(
         depositId: depositId,
         deposit: deposit,
-        token: token,
       );
     } else {
       result = await context.read<DepositProvider>().createDeposit(
         deposit: deposit,
-        token: token,
       );
     }
 
@@ -487,7 +462,7 @@ class _DepositScreenState extends State<DepositScreen> {
             title: context.l10n.umbrales_capacidad,
             subtitle: "${_depositCapacity.toInt()} L",
             subsubtitle: context.l10n.comun_rango("100000", "0", "L"),
-            icon: AppIcon.localDrinkOutlined,
+            icon: AppIcon.deposit,
             onTap: () => ValueDialog.show(
               context: context,
               title: context.l10n.umbrales_capacidad,

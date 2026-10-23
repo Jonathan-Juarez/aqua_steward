@@ -63,7 +63,7 @@ Future<void> main() async {
   );
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   final ThemeStorage savedTheme;
   final LanguageStorage savedLanguage;
   final AuthProvider savedAuthProvider;
@@ -78,72 +78,114 @@ class MainApp extends StatelessWidget {
   });
 
   @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  late final DepositProvider _depositProvider;
+  late final ReadingProvider _readingProvider;
+  late final TeamProvider _teamProvider;
+  late final NotificationProvider _notificationProvider;
+  VoidCallback? _authListener;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final depositDataSource = DepositDataSourceImpl();
+    final depositRepository = DepositRepositoryImpl(depositDataSource);
+    _depositProvider = DepositProvider(
+      getDepositsUseCase: GetDepositsUseCase(depositRepository),
+      createDepositUseCase: CreateDepositUseCase(depositRepository),
+      deleteDepositUseCase: DeleteDepositUseCase(depositRepository),
+      updateDepositUseCase: UpdateDepositUsecase(
+        repository: depositRepository,
+      ),
+      readToken: () => widget.savedAuthProvider.currentUser?.token ?? "",
+    );
+
+    final readingDataSource = ReadingDataSourceImpl();
+    final readingRepository = ReadingRepositoryImpl(readingDataSource);
+    final getReadingsUseCase = GetReadingsUseCase(readingRepository);
+    _readingProvider = ReadingProvider(
+      getReadingsUseCase: getReadingsUseCase,
+      exportReadingsUseCase: ExportReadingsUseCase(readingRepository),
+      getReportStatsUseCase: GetReadingReportStatsUseCase(readingRepository),
+      readToken: () => widget.savedAuthProvider.currentUser?.token ?? "",
+    );
+
+    final teamDataSource = TeamDataSourceImpl();
+    final teamRepository = TeamRepositoryImpl(teamDataSource);
+    _teamProvider = TeamProvider(
+      getMembersUseCase: GetMembersUseCase(teamRepository),
+      inviteMemberUseCase: InviteMemberUseCase(teamRepository),
+      deleteMemberUseCase: DeleteMemberUseCase(teamRepository),
+      updateMemberUseCase: UpdateMemberUseCase(teamRepository),
+      getInvitationsUseCase: GetInvitationsUseCase(teamRepository),
+      acceptInvitationUseCase: AcceptInvitationUseCase(teamRepository),
+      rejectInvitationUseCase: RejectInvitationUseCase(teamRepository),
+      leaveDepositUseCase: LeaveDepositUseCase(teamRepository),
+      readToken: () => widget.savedAuthProvider.currentUser?.token ?? "",
+    );
+
+    final notifDataSource = NotificationRemoteDataSource();
+    final notifRepository = NotificationRepositoryImpl(notifDataSource);
+    _notificationProvider = NotificationProvider(
+      registerFCMTokenUseCase: RegisterFCMTokenUseCase(notifRepository),
+      unregisterFCMTokenUseCase: UnregisterFCMTokenUseCase(notifRepository),
+      getNotificationsUseCase: GetNotificationsUseCase(notifRepository),
+      deleteNotificationUseCase: DeleteNotificationUseCase(notifRepository),
+      deleteAllNotificationsUseCase: DeleteAllNotificationsUseCase(
+        notifRepository,
+      ),
+      markNotificationsAsReadUseCase: MarkNotificationsAsReadUseCase(
+        notifRepository,
+      ),
+      readToken: () => widget.savedAuthProvider.currentUser?.token ?? "",
+      onMessageReceived: () {
+        _depositProvider.getDeposits();
+        _teamProvider.getInvitations();
+      },
+    );
+
+    // Si ya existe sesión activa, inicializa el servicio de notificaciones
+    if (widget.savedAuthProvider.currentUser?.token != null) {
+      _notificationProvider.init();
+    }
+
+    // Sincroniza el registro de notificaciones al cambiar el estado de autenticación
+    _authListener = () {
+      final token = widget.savedAuthProvider.currentUser?.token;
+      if (token != null && token.isNotEmpty) {
+        _notificationProvider.init(token);
+      }
+    };
+    widget.savedAuthProvider.addListener(_authListener!);
+  }
+
+  @override
+  void dispose() {
+    if (_authListener != null) {
+      widget.savedAuthProvider.removeListener(_authListener!);
+    }
+    _depositProvider.dispose();
+    _readingProvider.dispose();
+    _teamProvider.dispose();
+    _notificationProvider.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: savedTheme),
-        ChangeNotifierProvider.value(value: savedLanguage),
-        ChangeNotifierProvider.value(value: savedAuthProvider),
-        // NotificationProvider para notificaciones push
-        ChangeNotifierProvider(
-          create: (_) {
-            final remoteDataSource = NotificationRemoteDataSource();
-            final repository = NotificationRepositoryImpl(remoteDataSource);
-            return NotificationProvider(
-              registerFCMTokenUseCase: RegisterFCMTokenUseCase(repository),
-              unregisterFCMTokenUseCase: UnregisterFCMTokenUseCase(repository),
-              getNotificationsUseCase: GetNotificationsUseCase(repository),
-              deleteNotificationUseCase: DeleteNotificationUseCase(repository),
-              deleteAllNotificationsUseCase: DeleteAllNotificationsUseCase(
-                repository,
-              ),
-              markNotificationsAsReadUseCase: MarkNotificationsAsReadUseCase(
-                repository,
-              ),
-            );
-          },
-        ),
-        ChangeNotifierProvider(
-          create: (_) {
-            final dataSource = DepositDataSourceImpl();
-            final repository = DepositRepositoryImpl(dataSource);
-            return DepositProvider(
-              getDepositsUseCase: GetDepositsUseCase(repository),
-              createDepositUseCase: CreateDepositUseCase(repository),
-              deleteDepositUseCase: DeleteDepositUseCase(repository),
-              updateDepositUseCase: UpdateDepositUsecase(
-                repository: repository,
-              ),
-            );
-          },
-        ),
-        ChangeNotifierProvider(
-          create: (_) {
-            final dataSource = ReadingDataSourceImpl();
-            final repository = ReadingRepositoryImpl(dataSource);
-            return ReadingProvider(
-              getReadingsUseCase: GetReadingsUseCase(repository),
-              exportReadingsUseCase: ExportReadingsUseCase(repository),
-              getReportStatsUseCase: GetReadingReportStatsUseCase(repository),
-            );
-          },
-        ),
-        ChangeNotifierProvider(
-          create: (_) {
-            final dataSource = TeamDataSourceImpl();
-            final repository = TeamRepositoryImpl(dataSource);
-            return TeamProvider(
-              getMembersUseCase: GetMembersUseCase(repository),
-              inviteMemberUseCase: InviteMemberUseCase(repository),
-              deleteMemberUseCase: DeleteMemberUseCase(repository),
-              updateMemberUseCase: UpdateMemberUseCase(repository),
-              getInvitationsUseCase: GetInvitationsUseCase(repository),
-              acceptInvitationUseCase: AcceptInvitationUseCase(repository),
-              rejectInvitationUseCase: RejectInvitationUseCase(repository),
-              leaveDepositUseCase: LeaveDepositUseCase(repository),
-            );
-          },
-        ),
+        ChangeNotifierProvider.value(value: widget.savedTheme),
+        ChangeNotifierProvider.value(value: widget.savedLanguage),
+        ChangeNotifierProvider.value(value: widget.savedAuthProvider),
+        ChangeNotifierProvider.value(value: _notificationProvider),
+        ChangeNotifierProvider.value(value: _depositProvider),
+        ChangeNotifierProvider.value(value: _readingProvider),
+        ChangeNotifierProvider.value(value: _teamProvider),
       ],
       // Se consume el tema y el idioma para configurar la app.
       child: Consumer2<ThemeStorage, LanguageStorage>(
@@ -170,7 +212,7 @@ class MainApp extends StatelessWidget {
           ],
           supportedLocales: AppLocalizations.supportedLocales,
 
-          initialRoute: initialRoute,
+          initialRoute: widget.initialRoute,
           routes: AppRouter.routes,
           // Se limita el escalado de texto globalmente sin reconstruir MaterialApp al abrir teclado.
           builder: (context, child) {

@@ -4,7 +4,7 @@ import 'package:aqua_steward/core/utils/app_validators.dart';
 import 'package:aqua_steward/core/utils/send_otp.dart';
 import 'package:aqua_steward/core/widgets/button_format.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
-import 'package:aqua_steward/features/auth/presentation/widgets/scaffold_account.dart';
+import 'package:aqua_steward/core/widgets/scaffold_main.dart';
 import 'package:aqua_steward/core/widgets/text_field_format.dart';
 import 'package:aqua_steward/core/widgets/container_formart.dart';
 import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
@@ -38,7 +38,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Widget build(BuildContext context) {
     // Se envía el OTP.
 
-    return ScaffoldAccount(
+    return ScaffoldMain.account(
       formKey: _formKey,
       body: ContainerFormat(
         children: [

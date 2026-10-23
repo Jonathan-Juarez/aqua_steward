@@ -16,6 +16,7 @@ import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:aqua_steward/core/widgets/button_format.dart';
 import 'package:aqua_steward/core/widgets/container_formart.dart';
 import 'package:aqua_steward/core/widgets/filter_chip_format.dart';
+import 'package:aqua_steward/core/widgets/scaffold_main.dart';
 import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
 import 'package:aqua_steward/features/deposit/presentation/providers/deposit_provider.dart';
 import 'package:aqua_steward/features/notification/presentation/providers/notification_provider.dart';
@@ -77,10 +78,10 @@ class _ProfileScreenState extends State<ProfileScreen>
     final String name = provider.currentUser?.name ?? "";
     final String lastName = provider.currentUser?.last_name ?? "";
 
-    return Column(
+    return ScaffoldMain(
       children: [
         Padding(
-          padding: const EdgeInsets.only(bottom: 12),
+          padding: AppPadding.symmetric8_0,
           child: Row(
             children: [
               TextFormat(
@@ -284,68 +285,62 @@ class _ProfileScreenState extends State<ProfileScreen>
         ContainerListTile(
           title: context.l10n.dialogo_cerrar_sesion_titulo,
           icon: AppIcon.logoutOutlined,
-          onTap: () => showDialog(
-            context: context,
-            builder: (context) => DialogEmergent(
-              title: context.l10n.dialogo_cerrar_sesion_titulo,
-              content: TextFormat(
-                text: context.l10n.dialogo_cerrar_sesion,
-                context: context,
-                type: "body",
-              ),
-              onPressed: () async {
-                final token = provider.currentUser?.token;
-                if (token != null) {
-                  await context.read<NotificationProvider>().cleanup(token);
-                }
-                if (context.mounted) {
-                  context.read<DepositProvider>().clearDeposits();
-                  provider.logout();
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    AppRouter.start,
-                    (route) => false,
-                  );
-                }
-              },
+          onTap: () => DialogEmergent(
+            title: context.l10n.dialogo_cerrar_sesion_titulo,
+            content: TextFormat(
+              text: context.l10n.dialogo_cerrar_sesion,
+              context: context,
+              type: "body",
             ),
-          ),
+            onPressed: () async {
+              final token = provider.currentUser?.token;
+              if (token != null) {
+                await context.read<NotificationProvider>().cleanup(token);
+              }
+              if (context.mounted) {
+                context.read<DepositProvider>().clearDeposits();
+                provider.logout();
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  AppRouter.start,
+                  (route) => false,
+                );
+              }
+            },
+          ).show(context),
         ),
         AppSizedBox.height12,
         ContainerListTile(
           title: context.l10n.dialogo_eliminar_cuenta_titulo,
           icon: AppIcon.noAccounts,
-          onTap: () => showDialog(
-            context: context,
-            builder: (context) => DialogEmergent(
-              title: context.l10n.dialogo_eliminar_cuenta_titulo,
-              content: TextFormat(
-                text: context.l10n.dialogo_eliminar_cuenta,
-                context: context,
-                type: "body",
-              ),
-              onPressed: () async {
-                final token = provider.currentUser?.token;
-                if (token != null) {
-                  await context.read<NotificationProvider>().cleanup(token);
-                }
-                final result = await deleteUser(_email);
-                if (result) {
+          onTap: () => DialogEmergent(
+            title: context.l10n.dialogo_eliminar_cuenta_titulo,
+            content: TextFormat(
+              text: context.l10n.dialogo_eliminar_cuenta,
+              context: context,
+              type: "body",
+            ),
+            onPressed: () async {
+              final token = provider.currentUser?.token;
+              if (token != null) {
+                await context.read<NotificationProvider>().cleanup(token);
+              }
+              final result = await deleteUser(_email);
+              if (result) {
+                if (context.mounted) {
+                  context.read<DepositProvider>().clearDeposits();
+                  await provider.logout();
                   if (context.mounted) {
-                    context.read<DepositProvider>().clearDeposits();
-                    await provider.logout();
-                    if (context.mounted) {
-                      Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        AppRouter.start,
-                        (route) => false,
-                      );
-                    }
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      AppRouter.start,
+                      (route) => false,
+                    );
                   }
                 }
-              },
-            ),
-          ),
+              }
+            },
+          ).show(context),
         ),
 
         // Soporte
@@ -356,7 +351,7 @@ class _ProfileScreenState extends State<ProfileScreen>
         ),
 
         ContainerListTile(
-          title: context.l10n.soporte_preguntas_frecuentes,
+          title: context.l10n.soporte_titulo,
           onTap: () => Navigator.pushNamed(context, AppRouter.support),
           icon: AppIcon.supportOutline,
         ),
@@ -379,44 +374,37 @@ class _ProfileScreenState extends State<ProfileScreen>
   }
 
   void _showEditProfileDialog(AuthProvider provider) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return DialogEmergent(
-          title: context.l10n.perfil_editar_titulo,
-          formKey: _formkey,
-          content: Form(
-            key: _formkey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextFieldFormat(
-                  labelText: context.l10n.perfil_nombre,
-                  icon: AppIcon.personOutlined(context: context),
-                  controller: _nameController,
-                  maxLength: 20,
-                  validator: (val) =>
-                      AppValidators.validateRequired(context, val),
-                ),
-                AppSizedBox.height12,
-                TextFieldFormat(
-                  labelText: context.l10n.perfil_apellido,
-                  icon: AppIcon.personOutlined(context: context),
-                  controller: _lastNameController,
-                  maxLength: 20,
-                  validator: (val) =>
-                      AppValidators.validateRequired(context, val),
-                ),
-              ],
+    DialogEmergent(
+      title: context.l10n.perfil_editar_titulo,
+      formKey: _formkey,
+      content: Form(
+        key: _formkey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFieldFormat(
+              labelText: context.l10n.perfil_nombre,
+              icon: AppIcon.personOutlined(context: context),
+              controller: _nameController,
+              maxLength: 20,
+              validator: (val) => AppValidators.validateRequired(context, val),
             ),
-          ),
-          onPressed: () {
-            updateProfile(provider, context);
-            Navigator.pop(context);
-          },
-        );
+            AppSizedBox.height12,
+            TextFieldFormat(
+              labelText: context.l10n.perfil_apellido,
+              icon: AppIcon.personOutlined(context: context),
+              controller: _lastNameController,
+              maxLength: 20,
+              validator: (val) => AppValidators.validateRequired(context, val),
+            ),
+          ],
+        ),
+      ),
+      onPressed: () {
+        updateProfile(provider, context);
+        Navigator.pop(context);
       },
-    );
+    ).show(context);
   }
 
   Future<bool> updateProfile(

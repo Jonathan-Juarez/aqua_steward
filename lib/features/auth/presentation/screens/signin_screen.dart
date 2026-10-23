@@ -8,8 +8,8 @@ import 'package:aqua_steward/core/widgets/container_formart.dart';
 import 'package:aqua_steward/core/error/result_handler.dart';
 import 'package:aqua_steward/core/widgets/text_field_format.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
+import 'package:aqua_steward/core/widgets/scaffold_main.dart';
 import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
-import 'package:aqua_steward/features/auth/presentation/widgets/scaffold_account.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -36,7 +36,7 @@ class _SigninScreenState extends State<SigninScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldAccount(
+    return ScaffoldMain.account(
       formKey: _formKey,
       body: ContainerFormat(
         children: [

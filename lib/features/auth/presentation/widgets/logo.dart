@@ -7,25 +7,28 @@ class Logo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          width: 200,
-          height: 200,
-          child: Image.asset("assets/images/logo_transparente_AquaSteward.png"),
-        ),
-        TextFormat(
-          text: context.l10n.logo_nombre,
-          context: context,
-          type: "title",
-        ),
-        TextFormat(
-          text: context.l10n.logo_slogan,
-          context: context,
-          type: "body",
-        ),
-        const SizedBox(height: 20),
-      ],
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            width: 200,
+            height: 200,
+            child: Image.asset("assets/images/logo_transparente_AquaSteward.png"),
+          ),
+          TextFormat(
+            text: context.l10n.logo_nombre,
+            context: context,
+            type: "title",
+          ),
+          TextFormat(
+            text: context.l10n.logo_slogan,
+            context: context,
+            type: "body",
+          ),
+          const SizedBox(height: 20),
+        ],
+      ),
     );
   }
 }

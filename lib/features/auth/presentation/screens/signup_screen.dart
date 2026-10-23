@@ -7,8 +7,8 @@ import 'package:aqua_steward/core/theme/app_sizedbox.dart';
 import 'package:aqua_steward/core/utils/app_validators.dart';
 import 'package:aqua_steward/core/widgets/button_format.dart';
 import 'package:aqua_steward/core/widgets/container_formart.dart';
+import 'package:aqua_steward/core/widgets/scaffold_main.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
-import 'package:aqua_steward/features/auth/presentation/widgets/scaffold_account.dart';
 import 'package:aqua_steward/core/widgets/text_field_format.dart';
 import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:aqua_steward/features/auth/presentation/widgets/password_requirements_widget.dart';
@@ -55,7 +55,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldAccount(
+    return ScaffoldMain.account(
       formKey: _formKey,
       body: ContainerFormat(
         children: [

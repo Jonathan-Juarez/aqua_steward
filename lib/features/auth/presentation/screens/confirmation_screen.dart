@@ -10,7 +10,7 @@ import 'package:aqua_steward/core/widgets/text_field_format.dart';
 import 'package:aqua_steward/core/widgets/text_format.dart';
 import 'package:aqua_steward/core/extensions/l10n_extensions.dart';
 import 'package:aqua_steward/features/auth/presentation/providers/auth_provider.dart';
-import 'package:aqua_steward/features/auth/presentation/widgets/scaffold_account.dart';
+import 'package:aqua_steward/core/widgets/scaffold_main.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -144,7 +144,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldAccount(
+    return ScaffoldMain.account(
       formKey: formKey,
       body: Consumer<AuthProvider>(
         builder: (context, authProvider, _) {

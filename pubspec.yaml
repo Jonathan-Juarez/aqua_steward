@@ -1,7 +1,7 @@
 name: aqua_steward
 description: "Un sistema diseñado para el monitoreo del nivel y calidad del agua en tiempo real mediante tecnología IoT, promoviendo una gestión eficiente y responsable del recurso hídrico."
 publish_to: 'none'
-version: 1.0.2+4
+version: 1.1.0+6 # flutter build appbundle --release
 
 environment:
   sdk: ^3.8.1

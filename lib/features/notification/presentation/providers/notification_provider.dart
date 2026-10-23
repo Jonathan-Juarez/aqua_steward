@@ -35,6 +35,9 @@ class NotificationProvider extends ChangeNotifier {
   StreamSubscription? _messageSubscription;
   String? _currentAuthToken;
 
+  final String Function()? readToken;
+  final VoidCallback? onMessageReceived;
+
   NotificationProvider({
     required RegisterFCMTokenUseCase registerFCMTokenUseCase,
     required UnregisterFCMTokenUseCase unregisterFCMTokenUseCase,
@@ -42,6 +45,8 @@ class NotificationProvider extends ChangeNotifier {
     required DeleteNotificationUseCase deleteNotificationUseCase,
     required DeleteAllNotificationsUseCase deleteAllNotificationsUseCase,
     required MarkNotificationsAsReadUseCase markNotificationsAsReadUseCase,
+    this.readToken,
+    this.onMessageReceived,
   }) : _registerFCMTokenUseCase = registerFCMTokenUseCase,
        _unregisterFCMTokenUseCase = unregisterFCMTokenUseCase,
        _getNotificationsUseCase = getNotificationsUseCase,
@@ -50,15 +55,20 @@ class NotificationProvider extends ChangeNotifier {
        _markNotificationsAsReadUseCase = markNotificationsAsReadUseCase;
 
   // Inicializa la escucha de refresco de tokens FCM y registra el token actual si hay sesión activa.
-  Future<void> init(String? authToken) async {
-    _currentAuthToken = authToken;
+  Future<void> init([String? authToken]) async {
+    _currentAuthToken = authToken ?? readToken?.call();
+
+    // Solicita permisos de notificación al sistema
+    await NotificationService.instance.requestPermissions();
 
     // Obtener token inicial
     final token = await NotificationService.instance.getToken();
     _fcmToken = token;
     notifyListeners();
 
-    if (_fcmToken != null && _currentAuthToken != null) {
+    if (_fcmToken != null &&
+        _currentAuthToken != null &&
+        _currentAuthToken!.isNotEmpty) {
       await registerToken(_fcmToken!, _currentAuthToken!);
       await fetchNotifications(_currentAuthToken!);
     }
@@ -72,27 +82,31 @@ class NotificationProvider extends ChangeNotifier {
         .listen((newToken) async {
           _fcmToken = newToken;
           notifyListeners();
-          if (_currentAuthToken != null) {
-            await registerToken(newToken, _currentAuthToken!);
+          final effectiveToken = _currentAuthToken ?? readToken?.call();
+          if (effectiveToken != null && effectiveToken.isNotEmpty) {
+            await registerToken(newToken, effectiveToken);
           }
         });
 
     // Escuchar llegada de notificaciones en tiempo real para refrescar la lista y el contador
     _messageSubscription = NotificationService.instance.onMessageReceived
         .listen((_) async {
-          if (_currentAuthToken != null) {
-            await fetchNotifications(_currentAuthToken!);
+          final effectiveToken = _currentAuthToken ?? readToken?.call();
+          if (effectiveToken != null && effectiveToken.isNotEmpty) {
+            await fetchNotifications(effectiveToken);
           }
+          onMessageReceived?.call();
         });
   }
 
   // Obtiene la lista de notificaciones desde la API.
-  Future<Result<void>> fetchNotifications(String token) async {
-    _currentAuthToken = token;
+  Future<Result<void>> fetchNotifications([String? token]) async {
+    final effectiveToken = token ?? _currentAuthToken ?? readToken?.call() ?? "";
+    _currentAuthToken = effectiveToken;
     _isLoading = true;
     notifyListeners();
     try {
-      final result = await _getNotificationsUseCase(token: token);
+      final result = await _getNotificationsUseCase(token: effectiveToken);
       if (result.isSuccess) {
         _notifications = result.data ?? [];
       }
@@ -106,12 +120,13 @@ class NotificationProvider extends ChangeNotifier {
   }
 
   // Marca las notificaciones activas como leídas/inactivas (todas o una específica).
-  Future<Result<void>> markNotificationsAsRead(
-    String token, {
+  Future<Result<void>> markNotificationsAsRead({
+    String? token,
     String? notificationId,
   }) async {
+    final effectiveToken = token ?? _currentAuthToken ?? readToken?.call() ?? "";
     final result = await _markNotificationsAsReadUseCase(
-      token: token,
+      token: effectiveToken,
       notificationId: notificationId,
     );
     if (result.isSuccess) {
@@ -136,12 +151,13 @@ class NotificationProvider extends ChangeNotifier {
 
   // Elimina una notificación por ID.
   Future<Result<void>> deleteNotification(
-    String notificationId,
-    String token,
-  ) async {
+    String notificationId, [
+    String? token,
+  ]) async {
+    final effectiveToken = token ?? _currentAuthToken ?? readToken?.call() ?? "";
     final result = await _deleteNotificationUseCase(
       notificationId: notificationId,
-      token: token,
+      token: effectiveToken,
     );
     if (result.isSuccess) {
       _notifications.removeWhere((n) => n.id == notificationId);
@@ -151,8 +167,9 @@ class NotificationProvider extends ChangeNotifier {
   }
 
   // Elimina todas las notificaciones del usuario.
-  Future<Result<void>> deleteAllNotifications(String token) async {
-    final result = await _deleteAllNotificationsUseCase(token: token);
+  Future<Result<void>> deleteAllNotifications([String? token]) async {
+    final effectiveToken = token ?? _currentAuthToken ?? readToken?.call() ?? "";
+    final result = await _deleteAllNotificationsUseCase(token: effectiveToken);
     if (result.isSuccess) {
       _notifications.clear();
       notifyListeners();
@@ -161,54 +178,37 @@ class NotificationProvider extends ChangeNotifier {
   }
 
   // Registra el token FCM actual en el servidor backend.
-  Future<Result<void>> registerToken(String fcmToken, String authToken) async {
-    // debugPrint("NotificationProvider: Iniciando registro de token FCM...");
+  Future<Result<void>> registerToken(String fcmToken, [String? authToken]) async {
+    final effectiveToken =
+        authToken ?? _currentAuthToken ?? readToken?.call() ?? "";
     final result = await _registerFCMTokenUseCase(
       fcmToken: fcmToken,
-      authToken: authToken,
+      authToken: effectiveToken,
     );
-    // if (result.isSuccess) {
-    //   debugPrint(
-    //     "NotificationProvider: Token FCM registrado exitosamente en el backend.",
-    //   );
-    // } else {
-    //   debugPrint(
-    //     "NotificationProvider: Error al registrar token FCM: ${result.error}",
-    //   );
-    // }
     return result;
   }
 
   // Elimina el token FCM del servidor backend.
   Future<Result<void>> unregisterToken(
-    String fcmToken,
-    String authToken,
-  ) async {
-    // debugPrint("NotificationProvider: Iniciando desregistro de token FCM...");
+    String fcmToken, [
+    String? authToken,
+  ]) async {
+    final effectiveToken =
+        authToken ?? _currentAuthToken ?? readToken?.call() ?? "";
     final result = await _unregisterFCMTokenUseCase(
       fcmToken: fcmToken,
-      authToken: authToken,
+      authToken: effectiveToken,
     );
-    // if (result.isSuccess) {
-    //   debugPrint(
-    //     "NotificationProvider: Token FCM removido exitosamente del backend.",
-    //   );
-    // } else {
-    //   debugPrint(
-    //     "NotificationProvider: Error al remover token FCM: ${result.error}",
-    //   );
-    // }
     return result;
   }
 
   // Limpia la suscripción activa al cerrar sesión.
-  Future<void> cleanup(String authToken) async {
-    // debugPrint("NotificationProvider: Iniciando cleanup de notificaciones.");
+  Future<void> cleanup([String? authToken]) async {
+    final effectiveToken =
+        authToken ?? _currentAuthToken ?? readToken?.call() ?? "";
     _fcmToken ??= await NotificationService.instance.getToken();
-    if (_fcmToken != null) {
-      await unregisterToken(_fcmToken!, authToken);
-    } else {
-      // debugPrint("NotificationProvider: No se pudo obtener el token FCM para desregistrar.");
+    if (_fcmToken != null && effectiveToken.isNotEmpty) {
+      await unregisterToken(_fcmToken!, effectiveToken);
     }
     await _tokenRefreshSubscription?.cancel();
     await _messageSubscription?.cancel();

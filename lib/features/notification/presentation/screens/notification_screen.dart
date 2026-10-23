@@ -2,6 +2,7 @@ import "package:aqua_steward/core/theme/app_border.dart";
 import "package:aqua_steward/core/theme/app_color.dart";
 import "package:aqua_steward/core/theme/app_icon.dart";
 import "package:aqua_steward/core/theme/app_padding.dart";
+import "package:aqua_steward/core/theme/app_sizedbox.dart";
 import "package:aqua_steward/core/widgets/dialog_emergent.dart";
 import "package:aqua_steward/core/widgets/list_view_format.dart";
 import "package:aqua_steward/core/widgets/button_format.dart";
@@ -11,7 +12,6 @@ import "package:aqua_steward/core/widgets/scaffold_main.dart";
 import "package:aqua_steward/core/widgets/text_format.dart";
 import "package:aqua_steward/core/error/result_handler.dart";
 import "package:aqua_steward/core/extensions/l10n_extensions.dart";
-import "package:aqua_steward/features/auth/presentation/providers/auth_provider.dart";
 import "package:aqua_steward/features/deposit/presentation/providers/deposit_provider.dart";
 import "package:aqua_steward/features/notification/presentation/widgets/formater_time.dart";
 import "package:aqua_steward/features/team/presentation/providers/team_provider.dart";
@@ -30,7 +30,12 @@ class NotificationScreen extends StatefulWidget {
   State<NotificationScreen> createState() => _NotificationScreenState();
 }
 
-class _NotificationScreenState extends State<NotificationScreen> {
+class _NotificationScreenState extends State<NotificationScreen>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  // Mantiene el estado del widget aunque se navegue a otra pantalla.
+  bool get wantKeepAlive => true;
+
   // Filtro seleccionado actualmente.
   NotificationFilter _selectedFilter = NotificationFilter.all;
 
@@ -43,34 +48,26 @@ class _NotificationScreenState extends State<NotificationScreen> {
     });
   }
 
-  String get _token => context.read<AuthProvider>().currentUser?.token ?? "";
-
   void _loadInvitations() {
-    if (_token.isNotEmpty) {
-      context.read<TeamProvider>().getInvitations(token: _token);
-    }
+    context.read<TeamProvider>().getInvitations();
   }
 
   void _loadNotifications() async {
-    if (_token.isNotEmpty) {
-      final provider = context.read<NotificationProvider>();
-      await provider.fetchNotifications(_token);
-    }
+    final provider = context.read<NotificationProvider>();
+    await provider.fetchNotifications();
   }
 
   Future<void> _onRefresh() async {
-    if (_token.isNotEmpty) {
-      await Future.wait([
-        context.read<NotificationProvider>().fetchNotifications(_token),
-        context.read<TeamProvider>().getInvitations(token: _token),
-      ]);
-    }
+    await Future.wait([
+      context.read<NotificationProvider>().fetchNotifications(),
+      context.read<TeamProvider>().getInvitations(),
+    ]);
   }
 
   void _markAllAsRead() async {
     final provider = context.read<NotificationProvider>();
     if (provider.hasUnreadNotifications) {
-      await provider.markNotificationsAsRead(_token);
+      await provider.markNotificationsAsRead();
     }
   }
 
@@ -101,7 +98,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   void _deleteAll() async {
     final result = await context
         .read<NotificationProvider>()
-        .deleteAllNotifications(_token);
+        .deleteAllNotifications();
     if (!mounted) return;
     context.processResult(
       result,
@@ -111,93 +108,100 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final notifProvider = context.watch<NotificationProvider>();
 
     return ScaffoldMain(
       onRefresh: _onRefresh,
-      titleAppBar: context.l10n.titulo_alertas,
-      actions: [
-        IconButton(
-          onPressed: notifProvider.hasUnreadNotifications
-              ? _markAllAsRead
-              : null,
-          icon: AppIcon.doneAll(
-            color: notifProvider.hasUnreadNotifications
-                ? AppColor.white
-                : Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-          tooltip: context.l10n.alertas_marcar_leidas,
-        ),
-        IconButton(
-          onPressed: notifProvider.notifications.isNotEmpty
-              ? () => showDialog(
-                  context: context,
-                  builder: (dialogContext) => DialogEmergent(
-                    title: context.l10n.dialogo_eliminar_alertas_titulo,
-                    content: TextFormat(
-                      text: context.l10n.dialogo_eliminar_alertas,
-                      type: "body",
-                      context: dialogContext,
-                    ),
-                    onPressed: () {
-                      Navigator.pop(dialogContext);
-                      _deleteAll();
-                    },
-                  ),
-                )
-              : null,
-          icon: AppIcon.deleteSweep(
-            color: notifProvider.notifications.isNotEmpty
-                ? AppColor.error
-                : Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-          tooltip: context.l10n.alertas_eliminar_todas,
-        ),
-      ],
       children: [
-        // Filtros (Chips).
         Padding(
-          padding: AppPadding.symmetric16_0,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                FilterChipFormat(
-                  label: context.l10n.alertas_filtro_todos,
-                  isSelected: _selectedFilter == NotificationFilter.all,
-                  onSelected: (val) =>
-                      setState(() => _selectedFilter = NotificationFilter.all),
+          padding: AppPadding.symmetric8_0,
+          child: Row(
+            children: [
+              Expanded(
+                child: TextFormat(
+                  text: context.l10n.titulo_alertas,
+                  context: context,
+                  type: "title",
                 ),
-                FilterChipFormat(
-                  label: context.l10n.alertas_filtro_nivel,
-                  isSelected: _selectedFilter == NotificationFilter.level,
-                  onSelected: (val) => setState(
-                    () => _selectedFilter = NotificationFilter.level,
-                  ),
+              ),
+              IconButton(
+                onPressed: notifProvider.hasUnreadNotifications
+                    ? _markAllAsRead
+                    : null,
+                icon: AppIcon.doneAll(
+                  color: notifProvider.hasUnreadNotifications
+                      ? AppColor.white
+                      : Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
-                FilterChipFormat(
-                  label: context.l10n.alertas_filtro_ph,
-                  isSelected: _selectedFilter == NotificationFilter.ph,
-                  onSelected: (val) =>
-                      setState(() => _selectedFilter = NotificationFilter.ph),
+                tooltip: context.l10n.alertas_marcar_leidas,
+              ),
+              IconButton(
+                onPressed: notifProvider.notifications.isNotEmpty
+                    ? () => DialogEmergent(
+                        title: context.l10n.dialogo_eliminar_alertas_titulo,
+                        content: TextFormat(
+                          text: context.l10n.dialogo_eliminar_alertas,
+                          type: "body",
+                          context: context,
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          _deleteAll();
+                        },
+                      ).show(context)
+                    : null,
+                icon: AppIcon.deleteSweep(
+                  color: notifProvider.notifications.isNotEmpty
+                      ? AppColor.error
+                      : Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
-                FilterChipFormat(
-                  label: context.l10n.alertas_filtro_turbidez,
-                  isSelected: _selectedFilter == NotificationFilter.turbidity,
-                  onSelected: (val) => setState(
-                    () => _selectedFilter = NotificationFilter.turbidity,
-                  ),
-                ),
-                FilterChipFormat(
-                  label: context.l10n.alertas_filtro_invitaciones,
-                  isSelected: _selectedFilter == NotificationFilter.team,
-                  onSelected: (val) =>
-                      setState(() => _selectedFilter = NotificationFilter.team),
-                ),
-              ],
-            ),
+                tooltip: context.l10n.alertas_eliminar_todas,
+              ),
+            ],
           ),
         ),
+        // Filtros (Chips).
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              FilterChipFormat(
+                label: context.l10n.alertas_filtro_todos,
+                isSelected: _selectedFilter == NotificationFilter.all,
+                onSelected: (val) =>
+                    setState(() => _selectedFilter = NotificationFilter.all),
+              ),
+              FilterChipFormat(
+                label: context.l10n.alertas_filtro_nivel,
+                isSelected: _selectedFilter == NotificationFilter.level,
+                onSelected: (val) =>
+                    setState(() => _selectedFilter = NotificationFilter.level),
+              ),
+              FilterChipFormat(
+                label: context.l10n.alertas_filtro_ph,
+                isSelected: _selectedFilter == NotificationFilter.ph,
+                onSelected: (val) =>
+                    setState(() => _selectedFilter = NotificationFilter.ph),
+              ),
+              FilterChipFormat(
+                label: context.l10n.alertas_filtro_turbidez,
+                isSelected: _selectedFilter == NotificationFilter.turbidity,
+                onSelected: (val) => setState(
+                  () => _selectedFilter = NotificationFilter.turbidity,
+                ),
+              ),
+              FilterChipFormat(
+                label: context.l10n.alertas_filtro_invitaciones,
+                isSelected: _selectedFilter == NotificationFilter.team,
+                onSelected: (val) =>
+                    setState(() => _selectedFilter = NotificationFilter.team),
+              ),
+            ],
+          ),
+        ),
+
+        AppSizedBox.height12,
 
         // Lista unificada de notificaciones y equipo.
         Consumer2<TeamProvider, NotificationProvider>(
@@ -295,7 +299,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       key: Key(notif.id),
       direction: DismissDirection.startToEnd,
       onDismissed: (direction) {
-        notifProvider.deleteNotification(notif.id, _token);
+        notifProvider.deleteNotification(notif.id);
       },
       background: Container(
         decoration: BoxDecoration(
@@ -309,7 +313,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
       child: ContainerListTile(
         onTap: notif.state == "activa"
             ? () => notifProvider.markNotificationsAsRead(
-                _token,
                 notificationId: notif.id,
               )
             : null,
@@ -370,10 +373,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   void acceptInvitation(String depositId) async {
     if (depositId == "loading") return;
     final provider = context.read<TeamProvider>();
-    final result = await provider.acceptInvitation(
-      depositId: depositId,
-      token: _token,
-    );
+    final result = await provider.acceptInvitation(depositId: depositId);
 
     if (!mounted) return;
     final isSuccess = context.processResult(
@@ -381,17 +381,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
       successMessage: context.l10n.snackbar_invitacion_aceptada,
     );
     if (isSuccess) {
-      context.read<DepositProvider>().getDeposits(token: _token);
+      context.read<DepositProvider>().getDeposits();
     }
   }
 
   void rejectInvitation(String depositId) async {
     if (depositId == "loading") return;
     final provider = context.read<TeamProvider>();
-    final result = await provider.rejectInvitation(
-      depositId: depositId,
-      token: _token,
-    );
+    final result = await provider.rejectInvitation(depositId: depositId);
 
     if (!mounted) return;
     context.processResult(

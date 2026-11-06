@@ -98,9 +98,7 @@ class _MainAppState extends State<MainApp> {
       getDepositsUseCase: GetDepositsUseCase(depositRepository),
       createDepositUseCase: CreateDepositUseCase(depositRepository),
       deleteDepositUseCase: DeleteDepositUseCase(depositRepository),
-      updateDepositUseCase: UpdateDepositUsecase(
-        repository: depositRepository,
-      ),
+      updateDepositUseCase: UpdateDepositUsecase(repository: depositRepository),
       readToken: () => widget.savedAuthProvider.currentUser?.token ?? "",
     );
 

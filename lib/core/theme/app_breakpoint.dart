@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
-// Puntos de quiebre responsivos para móvil, tablet y escritorio.
 class AppBreakpoint {
-  // Ancho para dispositivos móviles compactos.
+  // Móviles vertical.
   static const double mobileSmall = 320;
-  // Ancho para pantallas de tablet o celular horizontal.
+  // Tablet o celular horizontal.
   static const double tablet = 700;
-  // Ancho para pantallas de escritorio y web amplia.
+  // Escritorio y web amplia.
   static const double desktop = 960;
   // Ancho máximo recomendado de contenido en pantallas grandes.
   static const double contentMaxWidth = 700;
@@ -17,10 +16,12 @@ class AppBreakpoint {
   static double width(BuildContext context) => MediaQuery.sizeOf(context).width;
 
   // Obtiene la altura actual de la pantalla.
-  static double height(BuildContext context) => MediaQuery.sizeOf(context).height;
+  static double height(BuildContext context) =>
+      MediaQuery.sizeOf(context).height;
 
   // Determina si la pantalla es móvil compacto.
-  static bool isSmallMobile(BuildContext context) => width(context) <= mobileSmall;
+  static bool isSmallMobile(BuildContext context) =>
+      width(context) <= mobileSmall;
 
   // Determina si la pantalla es móvil estándar.
   static bool isMobile(BuildContext context) => width(context) < tablet;
